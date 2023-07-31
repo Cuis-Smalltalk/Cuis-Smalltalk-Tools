@@ -1,6 +1,6 @@
 'From Cuis 4.2 of 25 July 2013 [latest update: #2781] on 31 May 2016 at 12:06:51.48049 pm'!
 'Description '!
-!provides: 'SUnit XML reports' 1 8!
+!provides: 'SUnitXMLreports' 1 10!
 !requires: 'YAXO' 1 nil nil!
 
 !TestRunner methodsFor: '*SUnit XML reports' stamp: 'jmv 6/5/2015 10:48'!
