@@ -1,40 +1,40 @@
-'From Cuis 6.0 [latest update: #5848] on 13 June 2023 at 12:56:38 pm'!
+'From Cuis 6.0 [latest update: #6043] on 11 October 2023 at 2:26:33 pm'!
 'Description Tool that combines an explorer and an inspector specialized for Morphs.
 
 Open from the Morphs Halo menu: Debug -> Explore.
 
 Pickup morph to explore from the Window menu.'!
-!provides: 'MorphExplorer' 1 16!
-SystemOrganization addCategory: 'MorphExplorer'!
+!provides: 'MorphExplorer' 1 17!
+SystemOrganization addCategory: #MorphExplorer!
 
 
-!classDefinition: #MorphExplorer category: 'MorphExplorer'!
+!classDefinition: #MorphExplorer category: #MorphExplorer!
 AbstractHierarchicalList subclass: #MorphExplorer
 	instanceVariableNames: 'rootMorph previousSelection'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MorphExplorer'!
-!classDefinition: 'MorphExplorer class' category: 'MorphExplorer'!
+!classDefinition: 'MorphExplorer class' category: #MorphExplorer!
 MorphExplorer class
 	instanceVariableNames: ''!
 
-!classDefinition: #MorphExplorerWindow category: 'MorphExplorer'!
+!classDefinition: #MorphExplorerWindow category: #MorphExplorer!
 SystemWindow subclass: #MorphExplorerWindow
 	instanceVariableNames: 'listMorph inspectorMorph activateWindows'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MorphExplorer'!
-!classDefinition: 'MorphExplorerWindow class' category: 'MorphExplorer'!
+!classDefinition: 'MorphExplorerWindow class' category: #MorphExplorer!
 MorphExplorerWindow class
 	instanceVariableNames: ''!
 
-!classDefinition: #MorphExplorerWrapper category: 'MorphExplorer'!
+!classDefinition: #MorphExplorerWrapper category: #MorphExplorer!
 ListItemWrapper subclass: #MorphExplorerWrapper
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MorphExplorer'!
-!classDefinition: 'MorphExplorerWrapper class' category: 'MorphExplorer'!
+!classDefinition: 'MorphExplorerWrapper class' category: #MorphExplorer!
 MorphExplorerWrapper class
 	instanceVariableNames: ''!
 
@@ -176,7 +176,7 @@ morphMenu
 		
 	^ menu! !
 
-!MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/13/2023 12:08:16'!
+!MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'jmv 10/11/2023 14:25:53'!
 pickMorph
 
 	| morph prevMorph delay world |
@@ -195,7 +195,7 @@ pickMorph
 			prevMorph ifNotNil: [prevMorph highlighted: false].
 			morph ifNotNil: [morph highlighted: true.
 						model noteNewSelection: (MorphExplorerWrapper with: morph)]].
-		world doOneCycleNow.
+		world doOneCycleNowOn: world mainCanvas.
 		delay wait].
 	
 	prevMorph ifNotNil: [prevMorph highlighted: false].
