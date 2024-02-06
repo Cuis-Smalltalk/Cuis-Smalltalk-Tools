@@ -143,7 +143,7 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '!
-!provides: 'Assessments' 2 37!
+!provides: 'Assessments' 2 38!
 SystemOrganization addCategory: #'Assessments-Framework-Exceptions'!
 SystemOrganization addCategory: #'Assessments-Tools'!
 SystemOrganization addCategory: #'Assessments-Tools-Support'!
@@ -5025,8 +5025,8 @@ inTheContextOf: originalChecklistClass
 	"The unique check closure is necessary for checklists that inherit check selectors"
 
 	| uniqueChecks uniqueSet |
-	uniqueChecks := OrderedCollection new: self checksPerChecklistGuesstimate.
-	uniqueSet := Set new: self checksPerChecklistGuesstimate.
+	uniqueChecks := OrderedCollection new": self checksPerChecklistGuesstimate".
+	uniqueSet := Set newWithRoomForMoreThan: self checksPerChecklistGuesstimate.
 	self
 		addChecklist: aChecklistClass
 		inTheContextOf: originalChecklistClass
@@ -5098,8 +5098,8 @@ inTheContextOf: originalChecklistClass
 	"The unique check closure is necessary for checklists that inherit check selectors"
 
 	| uniqueChecks uniqueSet |
-	uniqueChecks := OrderedCollection new: self checksPerChecklistGuesstimate.
-	uniqueSet := Set new: self checksPerChecklistGuesstimate.
+	uniqueChecks := OrderedCollection new": self checksPerChecklistGuesstimate".
+	uniqueSet := Set newWithRoomForMoreThan: self checksPerChecklistGuesstimate.
 	self
 		addChecksWithSelectors: checkSelectorInclusionSet
 		startingAtChecklist: aChecklistClass
