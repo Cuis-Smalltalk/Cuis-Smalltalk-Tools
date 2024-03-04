@@ -1,38 +1,39 @@
-'From Cuis 6.0 [latest update: #5492] on 20 September 2022 at 3:46:44 pm'!
+'From Cuis6.3 [latest update: #6252] on 4 March 2024 at 5:33:07 pm'!
 'Description Tool for downloading Cuis packages from the internet.'!
-!provides: 'PackageDownloader' 1 40!
+!provides: 'PackageDownloader' 1 42!
 !requires: 'WebClient' 1 22 nil!
 !requires: 'JSON' 1 19 nil!
-SystemOrganization addCategory: 'PackageDownloader'!
+!requires: 'PackageInstaller' 1 1 nil!
+SystemOrganization addCategory: #PackageDownloader!
 
 
-!classDefinition: #PackageDownloaderWindow category: 'PackageDownloader'!
+!classDefinition: #PackageDownloaderWindow category: #PackageDownloader!
 SystemWindow subclass: #PackageDownloaderWindow
 	instanceVariableNames: 'filterString filterInput currentIndex'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PackageDownloader'!
-!classDefinition: 'PackageDownloaderWindow class' category: 'PackageDownloader'!
+!classDefinition: 'PackageDownloaderWindow class' category: #PackageDownloader!
 PackageDownloaderWindow class
 	instanceVariableNames: ''!
 
-!classDefinition: #PackageDownloader category: 'PackageDownloader'!
+!classDefinition: #PackageDownloader category: #PackageDownloader!
 Object subclass: #PackageDownloader
 	instanceVariableNames: 'packageList downloadDirectory'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PackageDownloader'!
-!classDefinition: 'PackageDownloader class' category: 'PackageDownloader'!
+!classDefinition: 'PackageDownloader class' category: #PackageDownloader!
 PackageDownloader class
 	instanceVariableNames: ''!
 
-!classDefinition: #RemotePackageDescription category: 'PackageDownloader'!
+!classDefinition: #RemotePackageDescription category: #PackageDownloader!
 Object subclass: #RemotePackageDescription
 	instanceVariableNames: 'packageName description provides requires downloadUrl homepage tags'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PackageDownloader'!
-!classDefinition: 'RemotePackageDescription class' category: 'PackageDownloader'!
+!classDefinition: 'RemotePackageDescription class' category: #PackageDownloader!
 RemotePackageDescription class
 	instanceVariableNames: ''!
 
@@ -223,6 +224,18 @@ selectedPackage
 open
 
 	^ self open: PackageDownloader new label: 'Package Downloader'! !
+
+!PackageDownloaderWindow class methodsFor: 'as yet unclassified' stamp: 'jmv 3/4/2024 17:32:12'!
+worldMenuOptions
+	^ `{{
+			#submenuOf  				-> 		TheWorldMenu openLabel.
+			#itemGroup 				-> 		20.
+			#itemOrder 				-> 		40.
+			#label 				->		'Package Downloader'.
+			#selector 				-> 		#openPackageDownloader.
+			#icon 				-> 		#packageIcon.
+			#balloonText 				-> 		'A tool for downloading Cuis packages from the internet.'.
+		} asDictionary}`! !
 
 !PackageDownloader methodsFor: 'accessing' stamp: 'MM 12/27/2021 19:56:59'!
 downloadDirectory
