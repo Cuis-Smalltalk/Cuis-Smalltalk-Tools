@@ -1,9 +1,11 @@
-'From Cuis 4.2 of 25 July 2013 [latest update: #2781] on 31 May 2016 at 12:06:51.48049 pm'!
+'From Cuis6.3 [latest update: #6283] on 20 March 2024 at 12:50:31 pm'!
 'Description '!
-!provides: 'SUnitXMLreports' 1 10!
+!provides: 'SUnitXmlReports' 1 11!
 !requires: 'YAXO' 1 nil nil!
 
-!TestRunner methodsFor: '*SUnit XML reports' stamp: 'jmv 6/5/2015 10:48'!
+
+
+!TestRunner methodsFor: '*SUnitXmlReports' stamp: 'jmv 6/5/2015 10:48'!
 runTestsAndBuildReport
 "
 TestRunner new runTestsAndBuildReport edit
@@ -13,7 +15,7 @@ TestRunner new runTestsAndBuildReport edit
 	^String streamContents: [ :strm |
 		xmlDoc printXMLOn: (XMLWriter on: strm) ]! !
 
-!TestRunner methodsFor: '*SUnit XML reports' stamp: 'jmv 6/5/2015 10:47'!
+!TestRunner methodsFor: '*SUnitXmlReports' stamp: 'jmv 6/5/2015 10:47'!
 runTestsAndBuildReportXMLDoc
 "
 TestRunner new runTestsAndBuildReport edit
@@ -26,7 +28,7 @@ TestRunner new runTestsAndBuildReport edit
 	runSemaphore wait.
 	^self xmlReport: suite! !
 
-!TestRunner methodsFor: '*SUnit XML reports' stamp: 'jmv 6/5/2015 10:46'!
+!TestRunner methodsFor: '*SUnitXmlReports' stamp: 'jmv 6/5/2015 10:46'!
 xmlReport: suite
 	"See http://llg.cubic.org/docs/junit/"
 	" a description of the JUnit XML format and how Jenkins parses it. See also junit.xsd "
@@ -130,18 +132,18 @@ xmlReport: suite
 
 	^xmlDoc! !
 
-!TestRunner class methodsFor: '*SUnit XML reports' stamp: 'jmv 10/16/2015 14:48'!
+!TestRunner class methodsFor: '*SUnitXmlReports' stamp: 'jmv 3/20/2024 12:43:20'!
 buildTestRunnerApp
 	"
 	TestRunner buildTestRunnerApp
 	"
 	AppLauncher appGlobalName: self name appSelector: #runTestsAndSaveReportTo:.
-	Smalltalk saveAs: 'TestRunner.image' andQuit: true clearAllClassState: false! !
+	Smalltalk saveAndQuitAs: 'TestRunner.image' clearAllClassState: false! !
 
-!TestRunner class methodsFor: '*SUnit XML reports' stamp: 'jmv 5/31/2016 11:24'!
+!TestRunner class methodsFor: '*SUnitXmlReports' stamp: 'jmv 3/20/2024 12:43:24'!
 runTestsAndSaveReportTo: outputFileName
 	| xmlDoc |
-	xmlDoc _ self new runTestsAndBuildReportXMLDoc.
+	xmlDoc := self new runTestsAndBuildReportXMLDoc.
 	outputFileName asFileEntry forceWriteStreamDo: [ :stream |
 		xmlDoc printXMLOn: (XMLWriter on: stream) ].
-	Smalltalk snapshot: false andQuit: true clearAllClassState: false! !
+	Smalltalk quit! !
