@@ -1,26 +1,26 @@
-'From Cuis 6.0 [latest update: #5832] on 5 June 2023 at 6:49:54 pm'!
+'From Cuis6.3 [latest update: #6304] on 31 March 2024 at 9:23:35 pm'!
 'Description '!
-!provides: 'ExamplesBrowser' 1 18!
-SystemOrganization addCategory: 'ExamplesBrowser'!
+!provides: 'ExamplesBrowser' 1 19!
+SystemOrganization addCategory: #ExamplesBrowser!
 
 
-!classDefinition: #ExamplesBrowserWindow category: 'ExamplesBrowser'!
+!classDefinition: #ExamplesBrowserWindow category: #ExamplesBrowser!
 SystemWindow subclass: #ExamplesBrowserWindow
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExamplesBrowser'!
-!classDefinition: 'ExamplesBrowserWindow class' category: 'ExamplesBrowser'!
+!classDefinition: 'ExamplesBrowserWindow class' category: #ExamplesBrowser!
 ExamplesBrowserWindow class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExamplesBrowser category: 'ExamplesBrowser'!
+!classDefinition: #ExamplesBrowser category: #ExamplesBrowser!
 Object subclass: #ExamplesBrowser
 	instanceVariableNames: 'examples categoriesIndex subCategoriesIndex examplesListIndex subCategoriesList examplesList categoriesList'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExamplesBrowser'!
-!classDefinition: 'ExamplesBrowser class' category: 'ExamplesBrowser'!
+!classDefinition: 'ExamplesBrowser class' category: #ExamplesBrowser!
 ExamplesBrowser class
 	instanceVariableNames: ''!
 
@@ -253,6 +253,11 @@ shouldStyle: text with: anSHTextStyler
 
 !ExamplesBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2023 18:39:53'!
 shoutMustKeepContentsSize
+	^ false! !
+
+!ExamplesBrowser methodsFor: 'as yet unclassified' stamp: 'MM 3/31/2024 21:23:04'!
+styleByParagraphs
+
 	^ false! !
 
 !ExamplesBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2023 18:38:51'!
