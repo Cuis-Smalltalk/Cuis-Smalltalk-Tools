@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3727] on 11 May 2019 at 2:53:07 pm'!
+'From Cuis7.1 [latest update: #6378] on 18 May 2024 at 4:26:31 pm'!
 'Description List classes whose names include terms such as "Pluggable," "Morphic," "Text," or "Morph", search their class comments or open browsers on them.'!
-!provides: 'ClassCommentBrowser' 1 46!
+!provides: 'ClassCommentBrowser' 1 47!
 SystemOrganization addCategory: #ClassCommentBrowser!
 
 
@@ -473,25 +473,25 @@ showFind: aName
 	self scrollToClass: aName.
 	^ cmt! !
 
-!CommentGuideWindow methodsFor: 'instance creation' stamp: 'dhn 6/16/2016 13:08'!
+!CommentGuideWindow methodsFor: 'instance creation' stamp: 'jmv 5/17/2024 18:00:38'!
 buildMorphicWindow
 	"Answer a window for the class comment browser"
 	| row |
-	listMorph _ CommentGuideListMorph
-		model: model
+	listMorph := (CommentGuideListMorph
+		withModel: model
 		listGetter: #getList
 		indexGetter: #getCurrentSelection
-		indexSetter: #noteNewSelection:
-		mainView: self
-		menuGetter: #commentGuideMenu
-		keystrokeAction: #respondToKey:.
+		indexSetter: #noteNewSelection:)
+			mainView: self
+			menuGetter: #commentGuideMenu
+			keystrokeAction: #respondToKey:.
 	listMorph name: #Hierarchy.
 	self when: #getList send: #update: to: listMorph withArguments: #(#getList).
-	textMorph _ TextModelMorph textProvider: model.
+	textMorph := TextModelMorph textProvider: model.
 	textMorph 
 		name: 'Class Comment';
 		askBeforeDiscardingEdits: false.
-	row _ LayoutMorph newRow.
+	row := LayoutMorph newRow.
 	row
 		addMorph: listMorph fixedWidth: 250;
 		addAdjusterAndMorph: textMorph proportionalWidth: 1.0.
@@ -679,21 +679,17 @@ closeBoxHit
 	hwin ifNotNil: [hwin delete].
 	super closeBoxHit! !
 
-!NoCommentsWindow methodsFor: 'initialization' stamp: 'dhn 5/10/2019 21:31:05'!
+!NoCommentsWindow methodsFor: 'initialization' stamp: 'jmv 5/17/2024 18:03:41'!
 buildMorphicWindow
 	"Build the window for the list of classes without comments"
 	
-	aList _ (PluggableListMorph
-				model: model
+	aList := (PluggableListMorph
+				withModel: model
 				listGetter: #bumList  "answers the list content"
 				indexGetter: #bumListIndex  "answers the selection made in the list"
-				indexSetter: #bumListIndex:  "sets the list index"
-				mainView: self
-				menuGetter: nil
-				keystrokeAction: nil)
+				indexSetter: #bumListIndex:)  "sets the list index"
 					name: 'The List'.
-	layoutMorph addMorphUseAll: aList
-! !
+	layoutMorph addMorphUseAll: aList! !
 
 !CommentGuideWrapper methodsFor: 'access' stamp: 'dhn 9/12/2015 11:31'!
 asString

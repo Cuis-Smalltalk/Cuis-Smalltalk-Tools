@@ -1,8 +1,8 @@
-'From Cuis 5.0 [latest update: #4040] on 18 February 2020 at 10:47:41 am'!
+'From Cuis7.1 [latest update: #6378] on 18 May 2024 at 4:33:26 pm'!
 'Description Browsers of chain of messages.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'MessageChainBrowsers' 1 21!
+!provides: 'MessageChainBrowsers' 1 22!
 SystemOrganization addCategory: #MessageChainBrowsers!
 
 
@@ -66,6 +66,16 @@ MessageChainExplorer subclass: #SendersChainExplorer
 SendersChainExplorer class
 	instanceVariableNames: ''!
 
+!classDefinition: #MessageChainListItemMorph category: #MessageChainBrowsers!
+IndentingListItemMorph subclass: #MessageChainListItemMorph
+	instanceVariableNames: 'chainHighlight'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MessageChainBrowsers'!
+!classDefinition: 'MessageChainListItemMorph class' category: #MessageChainBrowsers!
+MessageChainListItemMorph class
+	instanceVariableNames: ''!
+
 !classDefinition: #MessageChainExplorerMorph category: #MessageChainBrowsers!
 HierarchicalListMorph subclass: #MessageChainExplorerMorph
 	instanceVariableNames: ''
@@ -124,16 +134,6 @@ MessageChainBrowserWindow subclass: #SendersChainBrowserWindow
 	category: 'MessageChainBrowsers'!
 !classDefinition: 'SendersChainBrowserWindow class' category: #MessageChainBrowsers!
 SendersChainBrowserWindow class
-	instanceVariableNames: ''!
-
-!classDefinition: #MessageChainListItemMorph category: #MessageChainBrowsers!
-IndentingListItemMorph subclass: #MessageChainListItemMorph
-	instanceVariableNames: 'chainHighlight'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'MessageChainBrowsers'!
-!classDefinition: 'MessageChainListItemMorph class' category: #MessageChainBrowsers!
-MessageChainListItemMorph class
 	instanceVariableNames: ''!
 
 !classDefinition: #MessageImplementorsWrapper category: #MessageChainBrowsers!
@@ -317,6 +317,34 @@ getList
 on: aMethodReference
 	^ self new initialize: aMethodReference! !
 
+!MessageChainListItemMorph methodsFor: 'accessing' stamp: 'MM 2/4/2020 09:56:40'!
+chainHighlight
+	"Answer the value of chainHighlight"
+
+	^ chainHighlight! !
+
+!MessageChainListItemMorph methodsFor: 'accessing' stamp: 'MM 2/4/2020 10:00:07'!
+chainHighlight: anObject
+	"Set the value of chainHighlight"
+
+	chainHighlight _ anObject.
+	self redrawNeeded.! !
+
+!MessageChainListItemMorph methodsFor: 'as yet unclassified' stamp: 'MM 2/4/2020 09:56:47'!
+drawOn: aCanvas
+
+	super drawOn: aCanvas.
+	
+	chainHighlight ifTrue: [
+		aCanvas
+			fillRectangle: (`0@0` extent: extent)
+			color: (Color orange alpha: 0.3) ].! !
+
+!MessageChainListItemMorph methodsFor: 'as yet unclassified' stamp: 'MM 2/4/2020 09:56:51'!
+initialize
+	chainHighlight _ false.
+	super initialize.! !
+
 !MessageChainExplorerMorph methodsFor: 'as yet unclassified' stamp: 'MM 2/5/2020 08:36:50'!
 expandRoot
 	scroller submorphs first toggleExpandedState ! !
@@ -453,6 +481,12 @@ messageListMenu
 	aMenu addItemsFromDictionaries: itemColl.
 	^ aMenu.! !
 
+!MessageChainBrowserWindow methodsFor: 'as yet unclassified' stamp: 'jmv 5/17/2024 18:19:57'!
+openMessageListMenu
+	"Offer the unshifted selector-list menu"
+
+	^ self messageListMenu popUpInWorld! !
+
 !MessageChainBrowserWindow methodsFor: 'GUI building' stamp: 'jmv 2/18/2020 10:47:30'!
 windowColor
     ^ Theme current messageSet! !
@@ -473,14 +507,14 @@ initializeChainExplorer
 
 	^ ImplementorsChainExplorer on: model method! !
 
-!ImplementorsChainBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 2/8/2020 12:35:03'!
+!ImplementorsChainBrowserWindow methodsFor: 'as yet unclassified' stamp: 'jmv 5/17/2024 17:48:57'!
 initializeChainExplorerMorph
 
-	^ ImplementorsChainExplorerMorph
-			model: chainExplorer
-			listGetter: #getList
-			indexGetter: #getCurrentSelection
-			indexSetter: #noteNewSelection:
+	^ (ImplementorsChainExplorerMorph
+		withModel: chainExplorer
+		listGetter: #getList
+		indexGetter: #getCurrentSelection
+		indexSetter: #noteNewSelection:)
 			mainView: self
 			menuGetter: #openMessageListMenu
 			keystrokeAction: #explorerKey:from:! !
@@ -512,14 +546,14 @@ initializeChainExplorer
 
 	^ SendersChainExplorer on: model method! !
 
-!SendersChainBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 2/8/2020 12:34:57'!
+!SendersChainBrowserWindow methodsFor: 'as yet unclassified' stamp: 'jmv 5/17/2024 17:48:52'!
 initializeChainExplorerMorph
 
-	^ SendersChainExplorerMorph
-			model: chainExplorer
-			listGetter: #getList
-			indexGetter: #getCurrentSelection
-			indexSetter: #noteNewSelection:
+	^ (SendersChainExplorerMorph
+		withModel: chainExplorer
+		listGetter: #getList
+		indexGetter: #getCurrentSelection
+		indexSetter: #noteNewSelection:)
 			mainView: self
 			menuGetter: #openMessageListMenu
 			keystrokeAction: #explorerKey:from:! !
@@ -547,34 +581,6 @@ open: aMethodReference
 	title _ 'Senders chain of ', aMethodReference actualClass asString, '>>', aMethodReference selector.
 
 	^self open: model label: 'Chain of senders of...'! !
-
-!MessageChainListItemMorph methodsFor: 'accessing' stamp: 'MM 2/4/2020 09:56:40'!
-chainHighlight
-	"Answer the value of chainHighlight"
-
-	^ chainHighlight! !
-
-!MessageChainListItemMorph methodsFor: 'accessing' stamp: 'MM 2/4/2020 10:00:07'!
-chainHighlight: anObject
-	"Set the value of chainHighlight"
-
-	chainHighlight _ anObject.
-	self redrawNeeded.! !
-
-!MessageChainListItemMorph methodsFor: 'as yet unclassified' stamp: 'MM 2/4/2020 09:56:47'!
-drawOn: aCanvas
-
-	super drawOn: aCanvas.
-	
-	chainHighlight ifTrue: [
-		aCanvas
-			fillRectangle: (`0@0` extent: extent)
-			color: (Color orange alpha: 0.3) ].! !
-
-!MessageChainListItemMorph methodsFor: 'as yet unclassified' stamp: 'MM 2/4/2020 09:56:51'!
-initialize
-	chainHighlight _ false.
-	super initialize.! !
 
 !MessageImplementorsWrapper methodsFor: 'as yet unclassified' stamp: 'MM 2/5/2020 16:34:59'!
 contents

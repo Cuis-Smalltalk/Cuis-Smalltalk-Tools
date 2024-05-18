@@ -1,46 +1,46 @@
-'From Cuis 6.0 [latest update: #5492] on 24 September 2022 at 9:25:37 am'!
+'From Cuis7.1 [latest update: #6378] on 18 May 2024 at 4:30:57 pm'!
 'Description Flat file browser tool. Alternative to Cuis default FileList tool.'!
-!provides: 'FlatFileList' 1 43!
-SystemOrganization addCategory: 'FlatFileList'!
+!provides: 'FlatFileList' 1 44!
+SystemOrganization addCategory: #FlatFileList!
 
 
-!classDefinition: #FlatFileListWindow category: 'FlatFileList'!
+!classDefinition: #FlatFileListWindow category: #FlatFileList!
 SystemWindow subclass: #FlatFileListWindow
 	instanceVariableNames: 'directoryList fileList directoryIndex fileIndex directoryInput'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FlatFileList'!
-!classDefinition: 'FlatFileListWindow class' category: 'FlatFileList'!
+!classDefinition: 'FlatFileListWindow class' category: #FlatFileList!
 FlatFileListWindow class
 	instanceVariableNames: ''!
 
-!classDefinition: #FlatFileContentsBrowserWindow category: 'FlatFileList'!
+!classDefinition: #FlatFileContentsBrowserWindow category: #FlatFileList!
 FlatFileListWindow subclass: #FlatFileContentsBrowserWindow
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FlatFileList'!
-!classDefinition: 'FlatFileContentsBrowserWindow class' category: 'FlatFileList'!
+!classDefinition: 'FlatFileContentsBrowserWindow class' category: #FlatFileList!
 FlatFileContentsBrowserWindow class
 	instanceVariableNames: ''!
 
-!classDefinition: #FlatFileSelectionWindow category: 'FlatFileList'!
+!classDefinition: #FlatFileSelectionWindow category: #FlatFileList!
 FlatFileListWindow subclass: #FlatFileSelectionWindow
 	instanceVariableNames: 'selectionAction filenameFilter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FlatFileList'!
-!classDefinition: 'FlatFileSelectionWindow class' category: 'FlatFileList'!
+!classDefinition: 'FlatFileSelectionWindow class' category: #FlatFileList!
 FlatFileSelectionWindow class
 	instanceVariableNames: ''!
 
-!classDefinition: #FlatFileList category: 'FlatFileList'!
+!classDefinition: #FlatFileList category: #FlatFileList!
 Object subclass: #FlatFileList
 	instanceVariableNames: 'currentDirectory selectedFile sortBy sortAscending'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'FlatFileList'!
-!classDefinition: 'FlatFileList class' category: 'FlatFileList'!
+!classDefinition: 'FlatFileList class' category: #FlatFileList!
 FlatFileList class
 	instanceVariableNames: ''!
 
@@ -74,28 +74,28 @@ addSortMenuItems: aMenu
 browseFileChanges
 	ChangeList browseRecentLogOn: model selectedFile! !
 
-!FlatFileListWindow methodsFor: 'as yet unclassified' stamp: 'MM 5/9/2022 17:31:36'!
+!FlatFileListWindow methodsFor: 'as yet unclassified' stamp: 'jmv 5/17/2024 18:08:20'!
 buildMorphicWindow
 
 	| upperPanel directoryPanel toolbar gotoParentButton refreshButton statusBar |
 	
-	upperPanel _ LayoutMorph newRow.
+	upperPanel := LayoutMorph newRow.
 	
-	directoryPanel _ LayoutMorph newColumn.
+	directoryPanel := LayoutMorph newColumn.
 	
-	toolbar _ LayoutMorph newRow.
+	toolbar := LayoutMorph newRow.
 	
-	gotoParentButton _ PluggableButtonMorph model: self 
+	gotoParentButton := PluggableButtonMorph model: self 
 						action: #gotoParentDirectory.
 	gotoParentButton icon: Theme current goUpIcon.
 	
 	toolbar addMorph: gotoParentButton.
 	
-	refreshButton _ PluggableButtonMorph model: self action: #refreshDirectory.
+	refreshButton := PluggableButtonMorph model: self action: #refreshDirectory.
 	refreshButton icon: Theme current changesIcon .
 	toolbar addMorph: refreshButton.
 	
-	directoryInput _ TextModelMorph textProvider: self 
+	directoryInput := TextModelMorph textProvider: self 
 					textGetter: #currentDirectoryName 
 					textSetter: #currentDirectoryName:.
 	directoryInput acceptOnCR: true.
@@ -104,7 +104,7 @@ buildMorphicWindow
 	
 	layoutMorph addMorph: toolbar fixedHeight: 30.
 	
-	directoryList _ PluggableListMorph model: self 
+	directoryList := PluggableListMorph withModel: self 
 					listGetter: #directoryListNames
 					indexGetter: #directoryIndex 
 					indexSetter: #directoryIndex:.
@@ -114,20 +114,20 @@ buildMorphicWindow
 		
 	upperPanel addMorph: directoryPanel proportionalWidth: 0.4.
 	
-	fileList _ PluggableListMorph model: self 
+	fileList := (PluggableListMorph withModel: self 
 				listGetter: #fileListNames
 				indexGetter: #fileIndex 
-				indexSetter: #fileIndex:
-				mainView: self
-				menuGetter: #fileListMenu
-				keystrokeAction: #fileListKey:from:.
+				indexSetter: #fileIndex:)
+					mainView: self
+					menuGetter: #fileListMenu
+					keystrokeAction: #fileListKey:from:.
 	fileList 	doubleClickSelector: #doubleClickFile.
 	
 	upperPanel addAdjusterAndMorph: fileList layoutSpec: LayoutSpec useAll.
 	
 	layoutMorph addMorph: upperPanel.
 	
-	statusBar _ TextModelMorph textProvider: self textGetter: #statusMessage.
+	statusBar := TextModelMorph textProvider: self textGetter: #statusMessage.
 	
 	layoutMorph addMorph: statusBar fixedHeight: 30.
 	! !
@@ -283,8 +283,8 @@ sortBySize
 !FlatFileListWindow methodsFor: 'as yet unclassified' stamp: 'MM 5/9/2022 17:58:56'!
 statusMessage
 	^ model selectedFile ifNotNil: [:file |
-		file name , ' ° ', file fileSize printStringAsBytes , ' ° last modified: ', file modificationTime asString]
-	ifNil: [model currentDirectory name, ' ° ', model currentDirectory children size asString, ' elements']! !
+		file name , ' Â° ', file fileSize printStringAsBytes , ' Â° last modified: ', file modificationTime asString]
+	ifNil: [model currentDirectory name, ' Â° ', model currentDirectory children size asString, ' elements']! !
 
 !FlatFileListWindow methodsFor: 'as yet unclassified' stamp: 'MM 5/9/2022 09:51:14'!
 update: aSymbol

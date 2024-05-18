@@ -1,10 +1,10 @@
-'From Cuis 6.0 [latest update: #6043] on 11 October 2023 at 2:26:33 pm'!
+'From Cuis7.1 [latest update: #6378] on 18 May 2024 at 4:43:10 pm'!
 'Description Tool that combines an explorer and an inspector specialized for Morphs.
 
 Open from the Morphs Halo menu: Debug -> Explore.
 
 Pickup morph to explore from the Window menu.'!
-!provides: 'MorphExplorer' 1 17!
+!provides: 'MorphExplorer' 1 18!
 SystemOrganization addCategory: #MorphExplorer!
 
 
@@ -81,21 +81,21 @@ noteNewSelection: anItemWrapper
 	
 	^ super noteNewSelection: anItemWrapper! !
 
-!MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/13/2023 12:55:47'!
+!MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'jmv 5/17/2024 17:57:02'!
 buildMorphicWindow
 
 	|leftCol|
 	
 	leftCol := LayoutMorph newColumn.
 
-	listMorph := HierarchicalListMorph
-				model: model
+	listMorph := (HierarchicalListMorph
+				withModel: model
 				listGetter: #getList
 				indexGetter: #getCurrentSelection
-				indexSetter: #noteNewSelection:
-				mainView: self
-				menuGetter: #morphMenu
-				keystrokeAction: #exploreKey:from:.
+				indexSetter: #noteNewSelection:)
+					mainView: self
+					menuGetter: #morphMenu
+					keystrokeAction: #exploreKey:from:.
 	listMorph autoDeselect: false.
 	listMorph doubleClickSelector: #inspectSelectedMorph.
 	

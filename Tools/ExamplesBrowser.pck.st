@@ -1,6 +1,6 @@
-'From Cuis6.3 [latest update: #6304] on 31 March 2024 at 9:23:35 pm'!
+'From Cuis7.1 [latest update: #6378] on 18 May 2024 at 4:30:24 pm'!
 'Description '!
-!provides: 'ExamplesBrowser' 1 19!
+!provides: 'ExamplesBrowser' 1 20!
 SystemOrganization addCategory: #ExamplesBrowser!
 
 
@@ -25,24 +25,24 @@ ExamplesBrowser class
 	instanceVariableNames: ''!
 
 
-!ExamplesBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2023 18:29:45'!
+!ExamplesBrowserWindow methodsFor: 'as yet unclassified' stamp: 'jmv 5/17/2024 18:08:11'!
 buildMorphicWindow
 
 	| navigationLayout categoriesList subCategoriesList examplesList content buttons exampleSourceMorph |
 	
 	navigationLayout := LayoutMorph newColumn.
 	
-	categoriesList := PluggableListMorph model: model 
+	categoriesList := PluggableListMorph withModel: model 
 					listGetter: #examplesCategories 
 					indexGetter: #examplesCategoriesIndex 
 					indexSetter: #examplesCategoriesIndex:.
 					
-	subCategoriesList := PluggableListMorph model: model 
+	subCategoriesList := PluggableListMorph withModel: model 
 						listGetter: #examplesSubCategories
 						indexGetter: #examplesSubCategoriesIndex 
 						indexSetter: #examplesSubCategoriesIndex:.
 						
-	examplesList := PluggableListMorph model: model 
+	examplesList := PluggableListMorph withModel: model 
 						listGetter: #examplesList
 						indexGetter: #examplesListIndex
 						indexSetter: #examplesListIndex:.

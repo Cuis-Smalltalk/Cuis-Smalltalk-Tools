@@ -1,66 +1,66 @@
-'From Cuis 6.0 [latest update: #5861] on 16 June 2023 at 6:52:00 pm'!
+'From Cuis7.1 [latest update: #6378] on 18 May 2024 at 4:28:31 pm'!
 'Description Tool for browsing and editing Cuis preferences.'!
-!provides: 'CompactPreferenceBrowser' 1 2!
-SystemOrganization addCategory: 'CompactPreferenceBrowser'!
+!provides: 'CompactPreferenceBrowser' 1 3!
+SystemOrganization addCategory: #CompactPreferenceBrowser!
 
 
-!classDefinition: #PreferenceEditorMorph category: 'CompactPreferenceBrowser'!
+!classDefinition: #PreferenceEditorMorph category: #CompactPreferenceBrowser!
 LayoutMorph subclass: #PreferenceEditorMorph
 	instanceVariableNames: 'preference'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'CompactPreferenceBrowser'!
-!classDefinition: 'PreferenceEditorMorph class' category: 'CompactPreferenceBrowser'!
+!classDefinition: 'PreferenceEditorMorph class' category: #CompactPreferenceBrowser!
 PreferenceEditorMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #PreferencesPanel category: 'CompactPreferenceBrowser'!
+!classDefinition: #PreferencesPanel category: #CompactPreferenceBrowser!
 LayoutMorph subclass: #PreferencesPanel
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'CompactPreferenceBrowser'!
-!classDefinition: 'PreferencesPanel class' category: 'CompactPreferenceBrowser'!
+!classDefinition: 'PreferencesPanel class' category: #CompactPreferenceBrowser!
 PreferencesPanel class
 	instanceVariableNames: ''!
 
-!classDefinition: #PreferenceButtonMorph category: 'CompactPreferenceBrowser'!
+!classDefinition: #PreferenceButtonMorph category: #CompactPreferenceBrowser!
 PluggableButtonMorph subclass: #PreferenceButtonMorph
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'CompactPreferenceBrowser'!
-!classDefinition: 'PreferenceButtonMorph class' category: 'CompactPreferenceBrowser'!
+!classDefinition: 'PreferenceButtonMorph class' category: #CompactPreferenceBrowser!
 PreferenceButtonMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #CompactPreferenceBrowser category: 'CompactPreferenceBrowser'!
+!classDefinition: #CompactPreferenceBrowser category: #CompactPreferenceBrowser!
 SystemWindow subclass: #CompactPreferenceBrowser
 	instanceVariableNames: 'categoriesList selectedCategory selectedPreference preferencesPane scroller categories filter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'CompactPreferenceBrowser'!
-!classDefinition: 'CompactPreferenceBrowser class' category: 'CompactPreferenceBrowser'!
+!classDefinition: 'CompactPreferenceBrowser class' category: #CompactPreferenceBrowser!
 CompactPreferenceBrowser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PreferenceSelectionButtonMorph category: 'CompactPreferenceBrowser'!
+!classDefinition: #PreferenceSelectionButtonMorph category: #CompactPreferenceBrowser!
 BoxedMorph subclass: #PreferenceSelectionButtonMorph
 	instanceVariableNames: 'elems model placeHolder button printer getter setter selectionStrategy'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'CompactPreferenceBrowser'!
-!classDefinition: 'PreferenceSelectionButtonMorph class' category: 'CompactPreferenceBrowser'!
+!classDefinition: 'PreferenceSelectionButtonMorph class' category: #CompactPreferenceBrowser!
 PreferenceSelectionButtonMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #PreferenceToggleButtonMorph category: 'CompactPreferenceBrowser'!
+!classDefinition: #PreferenceToggleButtonMorph category: #CompactPreferenceBrowser!
 BoxedMorph subclass: #PreferenceToggleButtonMorph
 	instanceVariableNames: 'model getStateSelector isPressed actWhen actionSelector'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'CompactPreferenceBrowser'!
-!classDefinition: 'PreferenceToggleButtonMorph class' category: 'CompactPreferenceBrowser'!
+!classDefinition: 'PreferenceToggleButtonMorph class' category: #CompactPreferenceBrowser!
 PreferenceToggleButtonMorph class
 	instanceVariableNames: ''!
 
@@ -505,7 +505,7 @@ selectedPreference: anObject
 
 	selectedPreference _ anObject! !
 
-!CompactPreferenceBrowser methodsFor: 'initialization' stamp: 'MM 6/14/2023 14:59:05'!
+!CompactPreferenceBrowser methodsFor: 'initialization' stamp: 'jmv 5/17/2024 18:07:42'!
 initialize
 	
 	| row leftPane filterInput |
@@ -521,7 +521,7 @@ initialize
 	leftPane axisEdgeWeight: 0.
 	
 	categoriesList := PluggableListMorphByItem
-		model: self
+		withModel: self
 		listGetter: #categories
 		indexGetter: #selectedCategory
 		indexSetter: #selectedCategory:.

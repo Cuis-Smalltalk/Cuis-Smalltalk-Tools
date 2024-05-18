@@ -1,6 +1,6 @@
-'From Cuis6.3 [latest update: #6252] on 4 March 2024 at 5:33:12 pm'!
+'From Cuis7.1 [latest update: #6378] on 18 May 2024 at 4:49:02 pm'!
 'Description '!
-!provides: 'PackageInstaller' 1 2!
+!provides: 'PackageInstaller' 1 3!
 SystemOrganization addCategory: #PackageInstaller!
 
 
@@ -74,10 +74,10 @@ buildMorphicWindow
 	self addMorph: self buildActionsBar layoutSpec: (LayoutSpec new fixedHeight: 30; proportionalWidth: 1; yourself). 
 	! !
 
-!PackageInstallerWindow methodsFor: 'GUI building' stamp: 'MM 11/25/2021 15:29:21'!
+!PackageInstallerWindow methodsFor: 'GUI building' stamp: 'jmv 5/17/2024 18:07:47'!
 buildPackageListMorph
 	
-	^ PluggableListMorph model: self listGetter: #packageListNames indexGetter: #currentIndex indexSetter: #currentIndex:.! !
+	^ PluggableListMorph withModel: self listGetter: #packageListNames indexGetter: #currentIndex indexSetter: #currentIndex:.! !
 
 !PackageInstallerWindow methodsFor: 'GUI building' stamp: 'MM 1/3/2022 22:30:37'!
 windowColor

@@ -1,4 +1,4 @@
-'From Cuis 5.0 [latest update: #3866] on 2 November 2019 at 7:43:42 pm'!
+'From Cuis7.1 [latest update: #6378] on 18 May 2024 at 4:25:44 pm'!
 'Description Assessments is a replacement / reimplementation of the SUnit evaluation machinery, published under the MIT license (see below), with the following characteristics.
 
 * It provides all the functionality and features of SUnit and SUnit VM (including SUnit Based Validation and SUnit Benchmarks) natively.
@@ -143,7 +143,7 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '!
-!provides: 'Assessments' 2 38!
+!provides: 'Assessments' 2 39!
 SystemOrganization addCategory: #'Assessments-Framework-Exceptions'!
 SystemOrganization addCategory: #'Assessments-Tools'!
 SystemOrganization addCategory: #'Assessments-Tools-Support'!
@@ -2408,130 +2408,6 @@ See package comments for more information.!
 !SingleThreadRunToFailureCheck commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
-!AssessmentsListItemWrapper methodsFor: 'printing' stamp: 'SqR 9/7/2015 16:48'!
-printOn: aStream
-
-	aStream nextPutAll: self displayString! !
-
-!AbstractCustomChecklist methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-superclass
-
-	self shouldNotImplement! !
-
-!AbstractPrerequisite methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
-printOn: aStream
-
-	aStream
-		nextPutAll: self prettyPrint;
-		nextPut: $(;
-		print: self class;
-		nextPut: $)! !
-
-!SUnitPrerequisite methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
-printOn: aStream
-
-	self class printOn: aStream.
-	aStream nextPut: $(.
-	self testResource printOn: aStream.
-	aStream nextPut: $)! !
-
-!Assessment methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
-printOn: aStream
-
-	aStream nextPutAll: self class name.
-	aStream nextPut: $(.
-	self checks
-		do: [:each | each printOn: aStream]
-		separatedBy: [aStream nextPutAll: ', '].
-	aStream nextPut: $)! !
-
-!AssessmentResult methodsFor: 'printing' stamp: 'sqr 10/4/2018 19:49:15'!
-printOn: aStream
-
-	aStream nextPutAll: self class name.
-	aStream nextPut: $(.
-	(self results keys asSortedCollection: [:x :y | x name < y name])
-		do:
-			[:eachResultTag |
-				(self results at: eachResultTag)
-					do: [:eachResult | eachResult printOn: aStream]
-					separatedBy: [aStream newLine]
-			]
-		separatedBy: [aStream newLine; newLine].
-	aStream nextPut: $)! !
-
-!CheckRepository class methodsFor: 'selector lookup'!
-selectorsDo: aBlock
-	"This is ~3x faster than self selectors do:"
-
-	self selectorsAndMethodsDo: [:eachSelector :eachMethod | aBlock value: eachSelector]! !
-
-!CheckRepositoryMetaclass methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-name
-
-	self classToImpersonate isNil ifTrue: [^self class name].
-	^self classToImpersonate name! !
-
-!CheckRepositoryMetaclass methodsFor: 'browsing' stamp: 'SqR 3/8/2015 18:10'!
-classForBrowsing
-
-	^self classToImpersonate! !
-
-!CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-subclasses
-
-	^subclasses! !
-
-!CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-superclass
-
-	^superclass! !
-
-!CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-superclass: anObject
-
-	superclass := anObject! !
-
-!CheckRepositoryMetaclass methodsFor: 'classification' stamp: 'sqr 6/26/2019 09:35:13'!
-category
-
-	^self classToImpersonate category! !
-
-!CheckRepositoryMetaclass methodsFor: 'classification' stamp: 'sqr 6/26/2019 09:34:42'!
-isMeta
-
-	^self classToImpersonate isMeta! !
-
-!CheckRepositoryMetaclass methodsFor: 'selector lookup' stamp: 'SqR 3/8/2015 18:10'!
-selectorsDo: aBlock
-	"This is ~3x faster than self selectors do:"
-
-	self classToImpersonate selectorsAndMethodsDo:
-		[:eachSelector :eachMethod | aBlock value: eachSelector]! !
-
-!CheckRepositoryMetaclass methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
-printOn: aStream
-
-	self classToImpersonate printOn: aStream.
-	aStream nextPut: $*! !
-
-!AbstractResult methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
-printOn: aStream
-
-	aStream nextPutAll: self class name.
-	aStream nextPut: $(.
-	self printResultDetailsOn: aStream.
-	aStream nextPut: $).
-	self printPrettyPrintDetailsOn: aStream! !
-
-!ProtectedMessageSend methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
-printOn: aStream
-
-	aStream
-		nextPutAll: self receiverPrintString;
-		nextPutAll: '>>'.
-	self printBrieflyOn: aStream! !
-
 !AssessmentNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
 handlerActionForEvaluation
 
@@ -2968,18 +2844,18 @@ buildMorphicButtons
 		addMorph: self buildMorphicRefreshButton proportionalWidth: 0.25;
 		yourself! !
 
-!AssessmentsChecklistEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/6/2015 02:38'!
+!AssessmentsChecklistEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'jmv 5/17/2024 17:57:18'!
 buildMorphicChecklistTree
 
 	| answer |
-	answer := HierarchicalListMorph
-		model: self model
+	answer := (HierarchicalListMorph
+		withModel: self model
 		listGetter: #checklists
 		indexGetter: #selectedChecklist
-		indexSetter: #selectedChecklist:
-		mainView: self
-		menuGetter: #checklistMenu
-		keystrokeAction: nil.
+		indexSetter: #selectedChecklist:)
+			mainView: self
+			menuGetter: #checklistMenu
+			keystrokeAction: nil.
 	answer autoDeselect: false.
 	answer autoExpand: true.
 	answer expandAll.
@@ -3125,18 +3001,18 @@ buildMorphicReEvaluateButton
 
 	^self buildMorphicButtonAction: #reEvaluate label: 'Reevaluate Assessment'! !
 
-!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/17/2015 03:13'!
+!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'jmv 5/17/2024 17:57:33'!
 buildMorphicResultTree
 
 	| answer |
-	answer := HierarchicalListMorph
-		model: self model
+	answer := (HierarchicalListMorph
+		withModel: self model
 		listGetter: #results
 		indexGetter: #selectedResult
-		indexSetter: #selectedResult:
-		mainView: self
-		menuGetter: #resultMenu
-		keystrokeAction: nil.
+		indexSetter: #selectedResult:)
+			mainView: self
+			menuGetter: #resultMenu
+			keystrokeAction: nil.
 	answer autoDeselect: false.
 	answer autoExpand: false.
 	^answer! !
@@ -3194,6 +3070,11 @@ windowLabel
 newDisplayString
 
 	^self item printString! !
+
+!AssessmentsListItemWrapper methodsFor: 'printing' stamp: 'SqR 9/7/2015 16:48'!
+printOn: aStream
+
+	aStream nextPutAll: self displayString! !
 
 !AssessmentsListItemWrapper methodsFor: 'converting' stamp: 'SqR 9/7/2015 16:49'!
 asString
@@ -4017,6 +3898,11 @@ prerequisites
 	^Array new! !
 
 !AbstractCustomChecklist methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+superclass
+
+	self shouldNotImplement! !
+
+!AbstractCustomChecklist methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
 usesClassBasedPrerequisites
 	"Custom checklists collect prerequisites by asking checks"
 
@@ -4818,6 +4704,15 @@ prettyPrint
 
 	^'A prerequisite'! !
 
+!AbstractPrerequisite methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
+printOn: aStream
+
+	aStream
+		nextPutAll: self prettyPrint;
+		nextPut: $(;
+		print: self class;
+		nextPut: $)! !
+
 !AbstractPrerequisite methodsFor: 'comparing' stamp: 'sqr 1/13/2016 21:51'!
 <= aPrerequisite
 	"For the dialects in which Set new = Set new evaluates to false"
@@ -4930,6 +4825,14 @@ attemptToStop
 
 	1 / 0! !
 
+!SUnitPrerequisite methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
+printOn: aStream
+
+	self class printOn: aStream.
+	aStream nextPut: $(.
+	self testResource printOn: aStream.
+	aStream nextPut: $)! !
+
 !SUnitPrerequisite methodsFor: 'comparing' stamp: 'SqR 3/8/2015 18:10'!
 = aPrerequisite
 
@@ -4986,6 +4889,16 @@ for: aTestResource
 	^self new
 		testResource: aTestResource;
 		yourself! !
+
+!Assessment methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
+printOn: aStream
+
+	aStream nextPutAll: self class name.
+	aStream nextPut: $(.
+	self checks
+		do: [:each | each printOn: aStream]
+		separatedBy: [aStream nextPutAll: ', '].
+	aStream nextPut: $)! !
 
 !Assessment methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
 addChecklist: aChecklistClass
@@ -5220,6 +5133,21 @@ new
 	"Become independent of whether super new sends initialize"
 
 	^self basicNew initialize! !
+
+!AssessmentResult methodsFor: 'printing' stamp: 'sqr 10/4/2018 19:49:15'!
+printOn: aStream
+
+	aStream nextPutAll: self class name.
+	aStream nextPut: $(.
+	(self results keys asSortedCollection: [:x :y | x name < y name])
+		do:
+			[:eachResultTag |
+				(self results at: eachResultTag)
+					do: [:eachResult | eachResult printOn: aStream]
+					separatedBy: [aStream newLine]
+			]
+		separatedBy: [aStream newLine; newLine].
+	aStream nextPut: $)! !
 
 !AssessmentResult methodsFor: 'private - results' stamp: 'sqr 1/14/2016 01:52'!
 addResult: aCheckResult
@@ -5475,6 +5403,12 @@ selector: aSelector beginsWith: aPrefix
 				ifFalse: [^false]
 		].
 	^true! !
+
+!CheckRepository class methodsFor: 'selector lookup'!
+selectorsDo: aBlock
+	"This is ~3x faster than self selectors do:"
+
+	self selectorsAndMethodsDo: [:eachSelector :eachMethod | aBlock value: eachSelector]! !
 
 !CheckRepository class methodsFor: 'classification'!
 abstractHierarchyRoot
@@ -7904,10 +7838,21 @@ atSelector: aSelector
 		at: aSelector
 		ifAbsent: [nil]! !
 
+!CheckRepositoryMetaclass methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+name
+
+	self classToImpersonate isNil ifTrue: [^self class name].
+	^self classToImpersonate name! !
+
 !CheckRepositoryMetaclass methodsFor: 'browsing' stamp: 'SqR 9/7/2015 15:15'!
 classAndSelectorForBrowsingDo: aBlock
 
 	aBlock value: self classForBrowsing value: nil! !
+
+!CheckRepositoryMetaclass methodsFor: 'browsing' stamp: 'SqR 3/8/2015 18:10'!
+classForBrowsing
+
+	^self classToImpersonate! !
 
 !CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
 classToImpersonate
@@ -7920,14 +7865,39 @@ classToImpersonate: anObject
 	classToImpersonate := anObject! !
 
 !CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+subclasses
+
+	^subclasses! !
+
+!CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
 subclasses: anObject
 
 	subclasses := anObject! !
+
+!CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+superclass
+
+	^superclass! !
+
+!CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+superclass: anObject
+
+	superclass := anObject! !
+
+!CheckRepositoryMetaclass methodsFor: 'classification' stamp: 'sqr 6/26/2019 09:35:13'!
+category
+
+	^self classToImpersonate category! !
 
 !CheckRepositoryMetaclass methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
 isAbstract
 
 	^self classToImpersonate isAbstract! !
+
+!CheckRepositoryMetaclass methodsFor: 'classification' stamp: 'sqr 6/26/2019 09:34:42'!
+isMeta
+
+	^self classToImpersonate isMeta! !
 
 !CheckRepositoryMetaclass methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
 shouldInheritChecks
@@ -7955,6 +7925,19 @@ selector: aSelector beginsWith: aPrefix
 				ifFalse: [^false]
 		].
 	^true! !
+
+!CheckRepositoryMetaclass methodsFor: 'selector lookup' stamp: 'SqR 3/8/2015 18:10'!
+selectorsDo: aBlock
+	"This is ~3x faster than self selectors do:"
+
+	self classToImpersonate selectorsAndMethodsDo:
+		[:eachSelector :eachMethod | aBlock value: eachSelector]! !
+
+!CheckRepositoryMetaclass methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
+printOn: aStream
+
+	self classToImpersonate printOn: aStream.
+	aStream nextPut: $*! !
 
 !CheckRepositoryMetaclass methodsFor: 'comparing' stamp: 'SqR 3/8/2015 18:10'!
 = anotherMetaclass
@@ -8402,6 +8385,15 @@ shouldInheritChecks
 subclassClass
 
 	^SUnitTooCheckRepositoryMetaclass! !
+
+!AbstractResult methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
+printOn: aStream
+
+	aStream nextPutAll: self class name.
+	aStream nextPut: $(.
+	self printResultDetailsOn: aStream.
+	aStream nextPut: $).
+	self printPrettyPrintDetailsOn: aStream! !
 
 !AbstractResult methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
 printPrettyPrintDetailsOn: aStream
@@ -10491,6 +10483,14 @@ newActualReceiverForCheck: aCheck inTheContextOf: anEvaluationContext
 printBrieflyOn: aStream
 
 	aStream nextPutAll: (self selector ifNil: ['[none]'])! !
+
+!ProtectedMessageSend methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
+printOn: aStream
+
+	aStream
+		nextPutAll: self receiverPrintString;
+		nextPutAll: '>>'.
+	self printBrieflyOn: aStream! !
 
 !ProtectedMessageSend methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
 receiverPrintString

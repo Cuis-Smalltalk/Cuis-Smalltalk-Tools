@@ -1,47 +1,47 @@
-'From Cuis 6.0 [latest update: #5552] on 5 November 2022 at 8:43:24 pm'!
+'From Cuis7.1 [latest update: #6378] on 18 May 2024 at 4:34:01 pm'!
 'Description Utility library for tracing the sending of messages.'!
-!provides: 'MessageTracer' 1 35!
-SystemOrganization addCategory: 'MessageTracer-Tests'!
-SystemOrganization addCategory: 'MessageTracer'!
+!provides: 'MessageTracer' 1 36!
+SystemOrganization addCategory: #'MessageTracer-Tests'!
+SystemOrganization addCategory: #MessageTracer!
 
 
-!classDefinition: #MessageTracerWindow category: 'MessageTracer'!
+!classDefinition: #MessageTracerWindow category: #MessageTracer!
 SystemWindow subclass: #MessageTracerWindow
 	instanceVariableNames: 'messageListIndex tracedMessage'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MessageTracer'!
-!classDefinition: 'MessageTracerWindow class' category: 'MessageTracer'!
+!classDefinition: 'MessageTracerWindow class' category: #MessageTracer!
 MessageTracerWindow class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageTracerTestSubject category: 'MessageTracer-Tests'!
+!classDefinition: #MessageTracerTestSubject category: #'MessageTracer-Tests'!
 Object subclass: #MessageTracerTestSubject
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MessageTracer-Tests'!
-!classDefinition: 'MessageTracerTestSubject class' category: 'MessageTracer-Tests'!
+!classDefinition: 'MessageTracerTestSubject class' category: #'MessageTracer-Tests'!
 MessageTracerTestSubject class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageTracer category: 'MessageTracer'!
+!classDefinition: #MessageTracer category: #MessageTracer!
 Object subclass: #MessageTracer
 	instanceVariableNames: 'outputStream tracing'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MessageTracer'!
-!classDefinition: 'MessageTracer class' category: 'MessageTracer'!
+!classDefinition: 'MessageTracer class' category: #MessageTracer!
 MessageTracer class
 	instanceVariableNames: 'singleton'!
 
-!classDefinition: #TracedMethodWrapper category: 'MessageTracer'!
+!classDefinition: #TracedMethodWrapper category: #MessageTracer!
 Object subclass: #TracedMethodWrapper
 	instanceVariableNames: 'compiledMethod methodClass enabled when'
 	classVariableNames: 'InvocationLevel'
 	poolDictionaries: ''
 	category: 'MessageTracer'!
-!classDefinition: 'TracedMethodWrapper class' category: 'MessageTracer'!
+!classDefinition: 'TracedMethodWrapper class' category: #MessageTracer!
 TracedMethodWrapper class
 	instanceVariableNames: ''!
 
@@ -104,20 +104,20 @@ initialize
 	
 	messageListIndex _ 0.! !
 
-!MessageTracerWindow methodsFor: 'GUI building' stamp: 'MM 11/5/2022 20:43:11'!
+!MessageTracerWindow methodsFor: 'GUI building' stamp: 'jmv 5/17/2024 18:08:28'!
 buildMorphicWindow
 
 	| messageList actionsRow |
 	
-	messageList _ PluggableListMorph
-					model: self
+	messageList := PluggableListMorph
+					withModel: self
 					listGetter: #messageList
 					indexGetter: #messageListIndex
 					indexSetter: #messageListIndex:.
 					
 	layoutMorph addMorphUseAll: messageList.
 	
-	actionsRow _ LayoutMorph newRow.
+	actionsRow := LayoutMorph newRow.
 	
 	actionsRow addMorph: (PluggableButtonMorph model: self action: #browseSelectedMessage label: 'Browse').
 	actionsRow addMorph: (PluggableButtonMorph model: self action: #untraceSelectedMessage label: 'Untrace').

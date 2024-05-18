@@ -1,4 +1,4 @@
-'From Cuis 6.0 [latest update: #5861] on 16 June 2023 at 6:42:16 pm'!
+'From Cuis7.1 [latest update: #6378] on 18 May 2024 at 4:46:08 pm'!
 'Description This is a variation of Cuis Finder by Nicolas Papagna, that uses a popup morph as user interface.
 
 Finder is a system-wide search tool for Cuis Smalltalk.
@@ -19,240 +19,240 @@ Also, you can use catalog specific shortcuts:
     alt-s : Selectors catalog.
     alt-p : System categories catalog.
     alt-t : Tools catalog.'!
-!provides: 'PopupFinder' 1 60!
+!provides: 'PopupFinder' 1 61!
 !requires: 'WorldKeyStrokes' 1 4 nil!
-SystemOrganization addCategory: 'PopupFinder-Model'!
-SystemOrganization addCategory: 'PopupFinder-UI'!
-SystemOrganization addCategory: 'PopupFinder-UI-Model'!
+SystemOrganization addCategory: #'PopupFinder-Model'!
+SystemOrganization addCategory: #'PopupFinder-UI'!
+SystemOrganization addCategory: #'PopupFinder-UI-Model'!
 
 
-!classDefinition: #FinderMorph category: 'PopupFinder-UI'!
+!classDefinition: #FinderMorph category: #'PopupFinder-UI'!
 LayoutMorph subclass: #FinderMorph
 	instanceVariableNames: 'toolbar searchBar results model focusFollowsMouse'
 	classVariableNames: 'CurrentFinder'
 	poolDictionaries: ''
 	category: 'PopupFinder-UI'!
-!classDefinition: 'FinderMorph class' category: 'PopupFinder-UI'!
+!classDefinition: 'FinderMorph class' category: #'PopupFinder-UI'!
 FinderMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #FinderSearchInnerTextMorph category: 'PopupFinder-UI'!
+!classDefinition: #FinderSearchInnerTextMorph category: #'PopupFinder-UI'!
 InnerTextMorph subclass: #FinderSearchInnerTextMorph
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-UI'!
-!classDefinition: 'FinderSearchInnerTextMorph class' category: 'PopupFinder-UI'!
+!classDefinition: 'FinderSearchInnerTextMorph class' category: #'PopupFinder-UI'!
 FinderSearchInnerTextMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #FinderResultsListMorph category: 'PopupFinder-UI'!
+!classDefinition: #FinderResultsListMorph category: #'PopupFinder-UI'!
 PluggableListMorph subclass: #FinderResultsListMorph
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-UI'!
-!classDefinition: 'FinderResultsListMorph class' category: 'PopupFinder-UI'!
+!classDefinition: 'FinderResultsListMorph class' category: #'PopupFinder-UI'!
 FinderResultsListMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #FinderSearchTextModelMorph category: 'PopupFinder-UI'!
+!classDefinition: #FinderSearchTextModelMorph category: #'PopupFinder-UI'!
 TextModelMorph subclass: #FinderSearchTextModelMorph
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-UI'!
-!classDefinition: 'FinderSearchTextModelMorph class' category: 'PopupFinder-UI'!
+!classDefinition: 'FinderSearchTextModelMorph class' category: #'PopupFinder-UI'!
 FinderSearchTextModelMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #FinderSearchBarMorph category: 'PopupFinder-UI'!
+!classDefinition: #FinderSearchBarMorph category: #'PopupFinder-UI'!
 BoxedMorph subclass: #FinderSearchBarMorph
 	instanceVariableNames: 'layoutMorph searchBox changeHandler keyPressedHandler dateAndTimeOfLastKeyStroke timeToWaitBeforeNotifyingChanges'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-UI'!
-!classDefinition: 'FinderSearchBarMorph class' category: 'PopupFinder-UI'!
+!classDefinition: 'FinderSearchBarMorph class' category: #'PopupFinder-UI'!
 FinderSearchBarMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #Catalog category: 'PopupFinder-Model'!
+!classDefinition: #Catalog category: #'PopupFinder-Model'!
 Object subclass: #Catalog
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-Model'!
-!classDefinition: 'Catalog class' category: 'PopupFinder-Model'!
+!classDefinition: 'Catalog class' category: #'PopupFinder-Model'!
 Catalog class
 	instanceVariableNames: ''!
 
-!classDefinition: #ClassNamesCatalog category: 'PopupFinder-Model'!
+!classDefinition: #ClassNamesCatalog category: #'PopupFinder-Model'!
 Catalog subclass: #ClassNamesCatalog
 	instanceVariableNames: 'results selectedResultIndex'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-Model'!
-!classDefinition: 'ClassNamesCatalog class' category: 'PopupFinder-Model'!
+!classDefinition: 'ClassNamesCatalog class' category: #'PopupFinder-Model'!
 ClassNamesCatalog class
 	instanceVariableNames: ''!
 
-!classDefinition: #CompositeCatalog category: 'PopupFinder-Model'!
+!classDefinition: #CompositeCatalog category: #'PopupFinder-Model'!
 Catalog subclass: #CompositeCatalog
 	instanceVariableNames: 'catalogs'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-Model'!
-!classDefinition: 'CompositeCatalog class' category: 'PopupFinder-Model'!
+!classDefinition: 'CompositeCatalog class' category: #'PopupFinder-Model'!
 CompositeCatalog class
 	instanceVariableNames: ''!
 
-!classDefinition: #ImplementedSelectorsCatalog category: 'PopupFinder-Model'!
+!classDefinition: #ImplementedSelectorsCatalog category: #'PopupFinder-Model'!
 Catalog subclass: #ImplementedSelectorsCatalog
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-Model'!
-!classDefinition: 'ImplementedSelectorsCatalog class' category: 'PopupFinder-Model'!
+!classDefinition: 'ImplementedSelectorsCatalog class' category: #'PopupFinder-Model'!
 ImplementedSelectorsCatalog class
 	instanceVariableNames: ''!
 
-!classDefinition: #ImplementorsCatalog category: 'PopupFinder-Model'!
+!classDefinition: #ImplementorsCatalog category: #'PopupFinder-Model'!
 Catalog subclass: #ImplementorsCatalog
 	instanceVariableNames: 'resultsSorter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-Model'!
-!classDefinition: 'ImplementorsCatalog class' category: 'PopupFinder-Model'!
+!classDefinition: 'ImplementorsCatalog class' category: #'PopupFinder-Model'!
 ImplementorsCatalog class
 	instanceVariableNames: ''!
 
-!classDefinition: #PackagesCatalog category: 'PopupFinder-Model'!
+!classDefinition: #PackagesCatalog category: #'PopupFinder-Model'!
 Catalog subclass: #PackagesCatalog
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-Model'!
-!classDefinition: 'PackagesCatalog class' category: 'PopupFinder-Model'!
+!classDefinition: 'PackagesCatalog class' category: #'PopupFinder-Model'!
 PackagesCatalog class
 	instanceVariableNames: ''!
 
-!classDefinition: #SendersCatalog category: 'PopupFinder-Model'!
+!classDefinition: #SendersCatalog category: #'PopupFinder-Model'!
 Catalog subclass: #SendersCatalog
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-Model'!
-!classDefinition: 'SendersCatalog class' category: 'PopupFinder-Model'!
+!classDefinition: 'SendersCatalog class' category: #'PopupFinder-Model'!
 SendersCatalog class
 	instanceVariableNames: ''!
 
-!classDefinition: #ToolsCatalog category: 'PopupFinder-Model'!
+!classDefinition: #ToolsCatalog category: #'PopupFinder-Model'!
 Catalog subclass: #ToolsCatalog
 	instanceVariableNames: 'tools implementorsCatalog'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-Model'!
-!classDefinition: 'ToolsCatalog class' category: 'PopupFinder-Model'!
+!classDefinition: 'ToolsCatalog class' category: #'PopupFinder-Model'!
 ToolsCatalog class
 	instanceVariableNames: ''!
 
-!classDefinition: #CompositeCatalogResult category: 'PopupFinder-Model'!
+!classDefinition: #CompositeCatalogResult category: #'PopupFinder-Model'!
 Object subclass: #CompositeCatalogResult
 	instanceVariableNames: 'catalog result'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-Model'!
-!classDefinition: 'CompositeCatalogResult class' category: 'PopupFinder-Model'!
+!classDefinition: 'CompositeCatalogResult class' category: #'PopupFinder-Model'!
 CompositeCatalogResult class
 	instanceVariableNames: ''!
 
-!classDefinition: #Finder category: 'PopupFinder-Model'!
+!classDefinition: #Finder category: #'PopupFinder-Model'!
 Object subclass: #Finder
 	instanceVariableNames: 'results selectedResultIndex selectedCatalog catalogs currentQuery changeSelectedCatalogSelectorPrefix isSelectedCatalogSelectorPrefix selectedCatalogChangeEvent browseSelectedResultEvent closeEvent'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-Model'!
-!classDefinition: 'Finder class' category: 'PopupFinder-Model'!
+!classDefinition: 'Finder class' category: #'PopupFinder-Model'!
 Finder class
 	instanceVariableNames: ''!
 
-!classDefinition: #ResultsSorter category: 'PopupFinder-Model'!
+!classDefinition: #ResultsSorter category: #'PopupFinder-Model'!
 Object subclass: #ResultsSorter
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-Model'!
-!classDefinition: 'ResultsSorter class' category: 'PopupFinder-Model'!
+!classDefinition: 'ResultsSorter class' category: #'PopupFinder-Model'!
 ResultsSorter class
 	instanceVariableNames: ''!
 
-!classDefinition: #AlphabeticalResultsSorter category: 'PopupFinder-Model'!
+!classDefinition: #AlphabeticalResultsSorter category: #'PopupFinder-Model'!
 ResultsSorter subclass: #AlphabeticalResultsSorter
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-Model'!
-!classDefinition: 'AlphabeticalResultsSorter class' category: 'PopupFinder-Model'!
+!classDefinition: 'AlphabeticalResultsSorter class' category: #'PopupFinder-Model'!
 AlphabeticalResultsSorter class
 	instanceVariableNames: ''!
 
-!classDefinition: #SelectorSizeResultsSorter category: 'PopupFinder-Model'!
+!classDefinition: #SelectorSizeResultsSorter category: #'PopupFinder-Model'!
 ResultsSorter subclass: #SelectorSizeResultsSorter
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-Model'!
-!classDefinition: 'SelectorSizeResultsSorter class' category: 'PopupFinder-Model'!
+!classDefinition: 'SelectorSizeResultsSorter class' category: #'PopupFinder-Model'!
 SelectorSizeResultsSorter class
 	instanceVariableNames: ''!
 
-!classDefinition: #SequentialResultsSorter category: 'PopupFinder-Model'!
+!classDefinition: #SequentialResultsSorter category: #'PopupFinder-Model'!
 ResultsSorter subclass: #SequentialResultsSorter
 	instanceVariableNames: 'renameMe1 resultsSorters'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-Model'!
-!classDefinition: 'SequentialResultsSorter class' category: 'PopupFinder-Model'!
+!classDefinition: 'SequentialResultsSorter class' category: #'PopupFinder-Model'!
 SequentialResultsSorter class
 	instanceVariableNames: ''!
 
-!classDefinition: #SizeResultsSorter category: 'PopupFinder-Model'!
+!classDefinition: #SizeResultsSorter category: #'PopupFinder-Model'!
 ResultsSorter subclass: #SizeResultsSorter
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-Model'!
-!classDefinition: 'SizeResultsSorter class' category: 'PopupFinder-Model'!
+!classDefinition: 'SizeResultsSorter class' category: #'PopupFinder-Model'!
 SizeResultsSorter class
 	instanceVariableNames: ''!
 
-!classDefinition: #SubstringMatcher category: 'PopupFinder-Model'!
+!classDefinition: #SubstringMatcher category: #'PopupFinder-Model'!
 Object subclass: #SubstringMatcher
 	instanceVariableNames: 'collection substring resultsSorter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-Model'!
-!classDefinition: 'SubstringMatcher class' category: 'PopupFinder-Model'!
+!classDefinition: 'SubstringMatcher class' category: #'PopupFinder-Model'!
 SubstringMatcher class
 	instanceVariableNames: ''!
 
-!classDefinition: #CatalogButton category: 'PopupFinder-UI-Model'!
+!classDefinition: #CatalogButton category: #'PopupFinder-UI-Model'!
 Object subclass: #CatalogButton
 	instanceVariableNames: 'catalog model'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-UI-Model'!
-!classDefinition: 'CatalogButton class' category: 'PopupFinder-UI-Model'!
+!classDefinition: 'CatalogButton class' category: #'PopupFinder-UI-Model'!
 CatalogButton class
 	instanceVariableNames: ''!
 
-!classDefinition: #SearchBoxEditor category: 'PopupFinder-UI-Model'!
+!classDefinition: #SearchBoxEditor category: #'PopupFinder-UI-Model'!
 Object subclass: #SearchBoxEditor
 	instanceVariableNames: 'textEditor model keyStrokeHandler'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PopupFinder-UI-Model'!
-!classDefinition: 'SearchBoxEditor class' category: 'PopupFinder-UI-Model'!
+!classDefinition: 'SearchBoxEditor class' category: #'PopupFinder-UI-Model'!
 SearchBoxEditor class
 	instanceVariableNames: ''!
 
@@ -333,19 +333,19 @@ buildMorphicWindow
 	self buildResults.
 	self buildLayout.! !
 
-!FinderMorph methodsFor: 'GUI building' stamp: 'MM 11/9/2021 14:28:26'!
+!FinderMorph methodsFor: 'GUI building' stamp: 'jmv 5/17/2024 18:06:37'!
 buildResults
 
 	results := (FinderResultsListMorph 
-		model: model
+		withModel: model
 		listGetter: #results
 		indexGetter: #selectedResultIndex
 		indexSetter: #selectedResultIndex:)
-		color: Color veryVeryLightGray ;
-		autoDeselect: false;
-		setProperty: #click:localPosition:
-		toValue: [ :aMouseEvent :localEventPosition | self browseResultAt: localEventPosition ];
-		yourself! !
+			color: Color veryVeryLightGray ;
+			autoDeselect: false;
+			setProperty: #click:localPosition:
+			toValue: [ :aMouseEvent :localEventPosition | self browseResultAt: localEventPosition ];
+			yourself! !
 
 !FinderMorph methodsFor: 'GUI building' stamp: 'MM 2/6/2021 12:49:39'!
 buildSearchBar

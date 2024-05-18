@@ -1,6 +1,6 @@
-'From Cuis6.3 [latest update: #6252] on 4 March 2024 at 5:33:07 pm'!
+'From Cuis7.1 [latest update: #6378] on 18 May 2024 at 4:48:55 pm'!
 'Description Tool for downloading Cuis packages from the internet.'!
-!provides: 'PackageDownloader' 1 42!
+!provides: 'PackageDownloader' 1 43!
 !requires: 'WebClient' 1 22 nil!
 !requires: 'JSON' 1 19 nil!
 !requires: 'PackageInstaller' 1 1 nil!
@@ -95,10 +95,10 @@ buildMorphicWindow
 	self addMorph: self buildActionsBar layoutSpec: (LayoutSpec new fixedHeight: 30; proportionalWidth: 1; yourself). 
 	! !
 
-!PackageDownloaderWindow methodsFor: 'GUI building' stamp: 'MM 11/25/2021 21:23:05'!
+!PackageDownloaderWindow methodsFor: 'GUI building' stamp: 'jmv 5/17/2024 18:07:59'!
 buildPackageListMorph
 	
-	^ PluggableListMorph model: self listGetter: #packageListNames indexGetter: #currentIndex indexSetter: #currentIndex:.! !
+	^ PluggableListMorph withModel: self listGetter: #packageListNames indexGetter: #currentIndex indexSetter: #currentIndex:.! !
 
 !PackageDownloaderWindow methodsFor: 'GUI building' stamp: 'MM 12/27/2021 20:32:43'!
 windowColor
