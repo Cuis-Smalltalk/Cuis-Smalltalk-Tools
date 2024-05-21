@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6387] on 21 May 2024 at 9:47:15 am'!
+'From Cuis7.1 [latest update: #6387] on 21 May 2024 at 10:39:34 am'!
 'Description A ProtocolBrowser tool with an additional list pane for navigating messages by category.'!
-!provides: 'CategorizedProtocolBrowser' 1 10!
+!provides: 'CategorizedProtocolBrowser' 1 11!
 SystemOrganization addCategory: #CategorizedProtocolBrowser!
 
 
@@ -56,11 +56,12 @@ categoriesListIndex
 
 	^ categoriesListIndex ifNil: [0] ifNotNil: [categoriesListIndex]! !
 
-!CategorizedProtocolBrowser methodsFor: 'private' stamp: 'MM 5/20/2024 22:26:34'!
+!CategorizedProtocolBrowser methodsFor: 'private' stamp: 'MM 5/21/2024 10:38:38'!
 categoriesListIndex: anIndex
 	"Set the value of categoriesListIndex"
 
 	categoriesListIndex := anIndex isZero ifTrue:  [nil] ifFalse: [anIndex].
+	self changed: #categoriesListIndex. "update my selection"
 	self changed: #messageList! !
 
 !CategorizedProtocolBrowser methodsFor: 'private' stamp: 'MM 5/20/2024 21:16:37'!
@@ -177,6 +178,15 @@ initialize
 	super initialize.
 	exclude := OrderedCollection new! !
 
+!CategorizedProtocolBrowser methodsFor: 'as yet unclassified' stamp: 'MM 5/21/2024 10:33:44'!
+selectedMessageName: aSelector
+	"Make the given selector be the selected message name"
+
+	| anIndex |
+	anIndex := self messageList indexOf: aSelector.
+	anIndex > 0 ifTrue:
+		[self messageListIndex: anIndex]! !
+
 !CategorizedProtocolBrowserWindow methodsFor: 'GUI building' stamp: 'MM 5/21/2024 09:44:57'!
 buildCategoriesList
 	"Define the message categories list pane"
@@ -252,6 +262,15 @@ protocolClassListKey: aChar from: view
 	aChar = $h ifTrue: [^ self browseHierarchy].
 	
 	^ nil! !
+
+!CategorizedProtocolBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 5/21/2024 10:34:49'!
+browseCategoryOfCurrentMethod
+
+	model categoryOfCurrentMethod ifNotNil: [:category| |catIndex selectedMessage|
+		selectedMessage := model selectedMessageName.
+		catIndex := model categoriesList indexOf: category.
+		model categoriesListIndex: catIndex.
+		model selectedMessageName: selectedMessage]! !
 
 !CategorizedProtocolBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 5/20/2024 21:27:09'!
 openFullProtocolForClass: aClass
