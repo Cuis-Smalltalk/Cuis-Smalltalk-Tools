@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6387] on 20 May 2024 at 10:34:37 pm'!
+'From Cuis7.1 [latest update: #6387] on 21 May 2024 at 9:47:15 am'!
 'Description A ProtocolBrowser tool with an additional list pane for navigating messages by category.'!
-!provides: 'CategorizedProtocolBrowser' 1 9!
+!provides: 'CategorizedProtocolBrowser' 1 10!
 SystemOrganization addCategory: #CategorizedProtocolBrowser!
 
 
@@ -177,18 +177,15 @@ initialize
 	super initialize.
 	exclude := OrderedCollection new! !
 
-!CategorizedProtocolBrowserWindow methodsFor: 'GUI building' stamp: 'MM 5/20/2024 21:23:58'!
+!CategorizedProtocolBrowserWindow methodsFor: 'GUI building' stamp: 'MM 5/21/2024 09:44:57'!
 buildCategoriesList
 	"Define the message categories list pane"
 
-	^(PluggableListMorph
+	^ PluggableListMorph
 		withModel: model
 		listGetter: #categoriesList
 		indexGetter: #categoriesListIndex
-		indexSetter: #categoriesListIndex:)
-			mainView: self 
-			menuGetter: #categoriesListMenu 
-			keystrokeAction: #categoriesListKey:from:! !
+		indexSetter: #categoriesListIndex:! !
 
 !CategorizedProtocolBrowserWindow methodsFor: 'GUI building' stamp: 'MM 5/20/2024 21:22:51'!
 buildMorphicWindow
