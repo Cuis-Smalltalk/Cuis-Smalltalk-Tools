@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6446] on 5 June 2024 at 10:21:06 am'!
+'From Cuis7.1 [latest update: #6446] on 5 June 2024 at 2:20:00 pm'!
 'Description Browser tool for searching Cuis source code.'!
-!provides: 'SearchBrowser' 1 26!
+!provides: 'SearchBrowser' 1 27!
 SystemOrganization addCategory: #SearchBrowser!
 
 
@@ -495,17 +495,17 @@ contextName
 
 	^ #'system category'! !
 
-!SystemCategorySearchContext class methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2024 10:07:48'!
+!SystemCategorySearchContext class methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2024 14:19:52'!
 createInstanceDo: aBlock
 
-	| menu categories category |
+	| menu categories  |
 	
 	categories := (self systemCategoryRoots, SystemOrganization categories) asSet
 					asSortedCollection.
 	menu := SelectionMenu labels: (categories collect: [:cat | cat asString])
 							selections: categories.
-	category := menu startUpMenu.
-	^ aBlock value: (self on: category)! !
+	menu startUpMenu ifNotNil: [:category |
+		aBlock value: (self on: category)]! !
 
 !SystemCategorySearchContext class methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 08:08:20'!
 on: aSystemCategory
