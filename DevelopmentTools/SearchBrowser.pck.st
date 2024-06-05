@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6446] on 5 June 2024 at 2:33:37 pm'!
+'From Cuis7.1 [latest update: #6446] on 5 June 2024 at 3:48:49 pm'!
 'Description Browser tool for searching Cuis source code.'!
-!provides: 'SearchBrowser' 1 28!
+!provides: 'SearchBrowser' 1 29!
 SystemOrganization addCategory: #SearchBrowser!
 
 
@@ -92,6 +92,19 @@ getMessageNameOf: aMethodReference
 getSourceOf: aMethodReference
 
 	^ aMethodReference sourceCode! !
+
+!SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2024 15:47:49'!
+getStringLiteralsOf: aMethod
+
+	| sources |
+	
+	sources := ''.
+
+	aMethod compiledMethod literalsDo: [ :aLiteral |
+		(aLiteral isMemberOf: String) ifTrue: [
+			sources := sources, ' ', aLiteral]].
+	
+	^ sources! !
 
 !SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 10:51:10'!
 initialize
@@ -190,12 +203,10 @@ toggleCaseSensitive
 !SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/3/2024 16:06:33'!
 updateIfNeeded! !
 
-!SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 11:09:44'!
+!SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2024 15:42:59'!
 wildMatchIn: aString
 
-	^ (aString findString: self searchString
-		startingAt: 1
-		caseSensitive: caseSensitive) > 0! !
+	^ self searchString match: aString! !
 
 !SearchBrowser methodsFor: 'accessing' stamp: 'MM 6/3/2024 18:22:58'!
 domain
