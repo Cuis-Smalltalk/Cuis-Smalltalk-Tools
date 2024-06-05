@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6446] on 5 June 2024 at 10:08:35 am'!
+'From Cuis7.1 [latest update: #6446] on 5 June 2024 at 10:21:06 am'!
 'Description Browser tool for searching Cuis source code.'!
-!provides: 'SearchBrowser' 1 25!
+!provides: 'SearchBrowser' 1 26!
 SystemOrganization addCategory: #SearchBrowser!
 
 
@@ -333,10 +333,29 @@ open
 
 	^ self open: SearchBrowser new label: 'Search Browser'.! !
 
-!SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 12:19:17'!
-searchCategory: anArg
+!SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2024 10:20:49'!
+searchCategory: aSystemCategory
 
-	self halt! !
+	"SearchBrowserWindow searchCategory: 'Morphic'"
+
+	| model |
+	
+	model := SearchBrowser new
+				context: (SystemCategorySearchContext on: aSystemCategory);
+				yourself.
+	self open: model.! !
+
+!SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2024 10:20:34'!
+searchClass: aClassName
+
+	"SearchBrowserWindow searchClass: #Morph."
+
+	| model |
+	
+	model := SearchBrowser new
+				context: (ClassSearchContext on: (Smalltalk at: aClassName));
+				yourself.
+	self open: model.! !
 
 !SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 16:55:39'!
 systemCategoryMenuOptions
