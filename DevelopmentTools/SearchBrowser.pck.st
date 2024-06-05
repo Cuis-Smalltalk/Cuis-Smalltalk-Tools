@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6446] on 5 June 2024 at 9:18:37 am'!
+'From Cuis7.1 [latest update: #6446] on 5 June 2024 at 10:08:35 am'!
 'Description Browser tool for searching Cuis source code.'!
-!provides: 'SearchBrowser' 1 24!
+!provides: 'SearchBrowser' 1 25!
 SystemOrganization addCategory: #SearchBrowser!
 
 
@@ -476,13 +476,14 @@ contextName
 
 	^ #'system category'! !
 
-!SystemCategorySearchContext class methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 08:43:23'!
+!SystemCategorySearchContext class methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2024 10:07:48'!
 createInstanceDo: aBlock
 
 	| menu categories category |
 	
-	categories := SystemOrganization categories.
-	menu := SelectionMenu labels: (categories collect: [:cat | cat name])
+	categories := (self systemCategoryRoots, SystemOrganization categories) asSet
+					asSortedCollection.
+	menu := SelectionMenu labels: (categories collect: [:cat | cat asString])
 							selections: categories.
 	category := menu startUpMenu.
 	^ aBlock value: (self on: category)! !
@@ -491,6 +492,22 @@ createInstanceDo: aBlock
 on: aSystemCategory
 
 	^ self new initialize: aSystemCategory! !
+
+!SystemCategorySearchContext class methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2024 10:07:17'!
+systemCategoryRoots
+	"Answer the roots of the forest of system categories."
+	| categories subcategories roots categoryName |
+	categories := SystemOrganization categories.
+	subcategories := Dictionary new.
+	categories do: [:each|
+		categoryName := (each findTokens: '-') first.
+		(subcategories at: categoryName ifAbsentPut: [OrderedCollection new]) add: each].
+	roots := OrderedCollection new.
+	categories do: [:each|
+		categoryName := (each findTokens: '-') first.
+		(roots includes: categoryName) ifFalse:
+			[(subcategories at: categoryName) size > 1 ifTrue: [roots add: categoryName asSymbol] ifFalse: [roots add: (subcategories at: categoryName) first asSymbol]]].
+	^ roots! !
 
 !SystemSearchContext methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 08:10:50'!
 getClasses
