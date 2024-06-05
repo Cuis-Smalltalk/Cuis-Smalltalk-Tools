@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6446] on 5 June 2024 at 2:20:00 pm'!
+'From Cuis7.1 [latest update: #6446] on 5 June 2024 at 2:33:37 pm'!
 'Description Browser tool for searching Cuis source code.'!
-!provides: 'SearchBrowser' 1 27!
+!provides: 'SearchBrowser' 1 28!
 SystemOrganization addCategory: #SearchBrowser!
 
 
@@ -68,6 +68,11 @@ SystemSearchContext class
 !SearchBrowserWindow commentStamp: '<historical>' prior: 0!
 SearchBrowserWindow open.!
 
+!SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2024 14:27:21'!
+caseSensitive: aBoolean
+	
+	caseSensitive := aBoolean! !
+
 !SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 08:45:06'!
 context 
 
@@ -99,6 +104,10 @@ initialize
 	domain := SystemSearchContext new.
 	matcher := self matcherNames first.
 	source := self sourceNames first.! !
+
+!SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2024 14:31:07'!
+isCaseSensitive
+	^ caseSensitive ! !
 
 !SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 10:48:48'!
 matcherNames
@@ -173,6 +182,11 @@ substringMatchIn: aString
 		startingAt: 1
 		caseSensitive: caseSensitive) > 0! !
 
+!SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2024 14:31:44'!
+toggleCaseSensitive
+
+	caseSensitive  := caseSensitive not! !
+
 !SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/3/2024 16:06:33'!
 updateIfNeeded! !
 
@@ -232,14 +246,14 @@ source: anObject
 
 	source := anObject! !
 
-!SearchBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 12:43:11'!
+!SearchBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2024 14:31:52'!
 buildMorphicWindow
 
-	|topPanel|
+	| searchBar |
 	
 	super buildMorphicWindow.
 	
-	topPanel := LayoutMorph newRow.
+	searchBar := LayoutMorph newRow.
 	
 	matcherSelectionButton := (PluggableButtonMorph model: self action: #selectMatcher label: self model matcher asString) 
 		setBalloonText: 'Select the matcher';
@@ -250,21 +264,23 @@ buildMorphicWindow
 	contextSelectionButton := (PluggableButtonMorph model: self action: #selectContext label: self model context asString)
 		setBalloonText: 'Select the search context';
 		yourself.
-	topPanel addMorph: (PluggableButtonMorph model: self model action: #performSearch label: 'Search').
+	searchBar addMorph: (PluggableButtonMorph model: self model action: #performSearch label: 'Search').
 	searchStringInput := (TextModelMorph textProvider: self textGetter: #searchString  textSetter: #searchString: )
 							acceptOnAny: true;
 							askBeforeDiscardingEdits: false;
 							hideScrollBarsIndefinitely;
 							morphHeight: 30; 
 							yourself.
-	topPanel addMorph: searchStringInput.
-	topPanel addMorph:  (LabelMorph contents: ' in: ' );
+	searchBar addMorph: searchStringInput.
+	searchBar addMorph:  (LabelMorph contents: ' in: ' );
 			addMorph: sourceSelectionButton;
 			addMorph: (LabelMorph contents: ' of: ');
 			addMorph: contextSelectionButton;
 			addMorph: (LabelMorph contents: ' using: ');
-			addMorph:  matcherSelectionButton.
-	layoutMorph addAdjusterAndMorph: topPanel fixedHeight: 40.
+			addMorph:  matcherSelectionButton;
+			addMorph: ((PluggableButtonMorph model: self model stateGetter: #isCaseSensitive action: #toggleCaseSensitive) label: 'Case sensitive').
+	
+	layoutMorph addAdjusterAndMorph: searchBar fixedHeight: 40.
 	self setLabel: 'Search browser'! !
 
 !SearchBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 08:15:13'!
