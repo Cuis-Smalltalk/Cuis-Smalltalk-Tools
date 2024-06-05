@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6430] on 4 June 2024 at 4:57:29 pm'!
+'From Cuis7.1 [latest update: #6446] on 5 June 2024 at 9:18:37 am'!
 'Description Browser tool for searching Cuis source code.'!
-!provides: 'SearchBrowser' 1 23!
+!provides: 'SearchBrowser' 1 24!
 SystemOrganization addCategory: #SearchBrowser!
 
 
@@ -143,42 +143,6 @@ performSearch
 							messageList add: method ]]		]]].
 	messageList := messageList asArray sort.
 	self changed: #messageList! !
-
-!SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/3/2024 20:26:11'!
-searchClasses: classes
-	
-	| list classCount adder |
-	
-	list := Set new.
-	adder := [ :mrClass :mrSel |
-		list add: (MethodReference class: mrClass selector: mrSel) ].
-	'Searching source code...'
-		displayProgressAt: Sensor mousePoint
-		from: 0
-		to: classes size
-		during: [ :barBlock |
-			classCount := 0.
-			classes do: [ :class |
-				barBlock value: (classCount := classCount + 1).
-				(Array
-					with: class
-					with: class class) do: [ :cl |
-					cl selectorsDo: [ :sel |
-						((cl sourceCodeAt: sel)
-							findString: searchString
-							startingAt: 1
-							caseSensitive: caseSensitive) > 0 ifTrue: [
-							adder
-								value: cl
-								value: sel ]].
-					(cl organization classComment
-						findString: searchString
-						startingAt: 1
-						caseSensitive: caseSensitive) > 0 ifTrue: [
-						adder
-							value: cl
-							value: #Comment ]]]].
-	^ list asArray sort.! !
 
 !SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 08:13:53'!
 searchContexts
