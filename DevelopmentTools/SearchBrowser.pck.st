@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6456] on 8 June 2024 at 11:57:07 am'!
+'From Cuis7.1 [latest update: #6456] on 8 June 2024 at 3:36:48 pm'!
 'Description Browser tool for searching Cuis source code.'!
-!provides: 'SearchBrowser' 1 32!
+!provides: 'SearchBrowser' 1 33!
 SystemOrganization addCategory: #SearchBrowser!
 
 
@@ -277,7 +277,7 @@ source: anObject
 
 	source := anObject! !
 
-!SearchBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 11:56:10'!
+!SearchBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 15:31:01'!
 buildMorphicWindow
 
 	| searchBar listPane |
@@ -299,9 +299,9 @@ buildMorphicWindow
 	contextSelectionButton := (PluggableButtonMorph model: self action: #selectContext label: self model context asString)
 		setBalloonText: 'Select the search context';
 		yourself.
-	searchBar addMorph: (PluggableButtonMorph model: self model action: #performSearch label: 'Search').
+	searchBar addMorph: (PluggableButtonMorph model: self action: #performSearch label: 'Search').
 	searchStringInput := (TextModelMorph textProvider: self textGetter: #searchString  textSetter: #searchString: )
-							acceptOnAny: true;
+							acceptOnCR: true;
 							askBeforeDiscardingEdits: false;
 							hideScrollBarsIndefinitely;
 							morphHeight: 30; 
@@ -323,15 +323,24 @@ buildMorphicWindow
 context
 	^ self model context! !
 
+!SearchBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 15:36:15'!
+performSearch
+
+	| innerTextMorph |
+	
+	innerTextMorph := searchStringInput submorphsSatisfying: [:m | m isKindOf: InnerTextMorph ] :: first.
+	innerTextMorph acceptContents.! !
+
 !SearchBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/3/2024 20:23:10'!
 searchString
 	^ model searchString! !
 
-!SearchBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 12:43:27'!
+!SearchBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 15:35:35'!
 searchString: aString
 
 	model searchString: aString.
-	searchStringInput hasUnacceptedEdits: false.! !
+	searchStringInput hasUnacceptedEdits: false.
+	self model performSearch.! !
 
 !SearchBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 08:46:40'!
 selectContext
