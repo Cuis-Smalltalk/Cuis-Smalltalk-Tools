@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6456] on 8 June 2024 at 3:36:48 pm'!
+'From Cuis7.1 [latest update: #6456] on 8 June 2024 at 3:46:10 pm'!
 'Description Browser tool for searching Cuis source code.'!
-!provides: 'SearchBrowser' 1 33!
+!provides: 'SearchBrowser' 1 34!
 SystemOrganization addCategory: #SearchBrowser!
 
 
@@ -323,13 +323,15 @@ buildMorphicWindow
 context
 	^ self model context! !
 
-!SearchBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 15:36:15'!
+!SearchBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 15:45:09'!
 performSearch
 
 	| innerTextMorph |
 	
 	innerTextMorph := searchStringInput submorphsSatisfying: [:m | m isKindOf: InnerTextMorph ] :: first.
-	innerTextMorph acceptContents.! !
+	innerTextMorph hasUnacceptedEdits 
+		ifFalse: [self model performSearch]
+		ifTrue: [innerTextMorph acceptContents].! !
 
 !SearchBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/3/2024 20:23:10'!
 searchString
