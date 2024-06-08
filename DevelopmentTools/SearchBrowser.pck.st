@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6446] on 5 June 2024 at 3:48:49 pm'!
+'From Cuis7.1 [latest update: #6456] on 8 June 2024 at 11:41:05 am'!
 'Description Browser tool for searching Cuis source code.'!
-!provides: 'SearchBrowser' 1 29!
+!provides: 'SearchBrowser' 1 30!
 SystemOrganization addCategory: #SearchBrowser!
 
 
@@ -32,6 +32,26 @@ Object subclass: #SearchContext
 	category: 'SearchBrowser'!
 !classDefinition: 'SearchContext class' category: #SearchBrowser!
 SearchContext class
+	instanceVariableNames: ''!
+
+!classDefinition: #ClassHierarchySearchContext category: #SearchBrowser!
+SearchContext subclass: #ClassHierarchySearchContext
+	instanceVariableNames: 'class'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'SearchBrowser'!
+!classDefinition: 'ClassHierarchySearchContext class' category: #SearchBrowser!
+ClassHierarchySearchContext class
+	instanceVariableNames: ''!
+
+!classDefinition: #ClassProtocolSearchContext category: #SearchBrowser!
+SearchContext subclass: #ClassProtocolSearchContext
+	instanceVariableNames: 'class'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'SearchBrowser'!
+!classDefinition: 'ClassProtocolSearchContext class' category: #SearchBrowser!
+ClassProtocolSearchContext class
 	instanceVariableNames: ''!
 
 !classDefinition: #ClassSearchContext category: #SearchBrowser!
@@ -424,6 +444,46 @@ contextName
 createInstanceDo: aBlock
 
 	^ self subclassResponsibility ! !
+
+!ClassHierarchySearchContext methodsFor: 'as yet unclassified'!
+getClasses
+	^ {class} , class allSubclasses.! !
+
+!ClassHierarchySearchContext methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 11:39:37'!
+initialize: aClass
+	class := aClass! !
+
+!ClassHierarchySearchContext methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 11:39:46'!
+printOn: aStream
+	aStream
+		nextPutAll: class name;
+		nextPutAll: ' hierarchy'.! !
+
+!ClassHierarchySearchContext class methodsFor: 'as yet unclassified'!
+contextName
+	^ 'class hierarchy'.! !
+
+!ClassHierarchySearchContext class methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 11:40:21'!
+on: aClass
+	^ self new initialize: aClass! !
+
+!ClassProtocolSearchContext methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 11:40:01'!
+initialize: aClass
+	class := aClass! !
+
+!ClassProtocolSearchContext methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 11:39:54'!
+printOn: aStream
+	aStream
+		nextPutAll: class name;
+		nextPutAll: ' protocol'.! !
+
+!ClassProtocolSearchContext class methodsFor: 'as yet unclassified'!
+contextName
+	^ 'class protocol'.! !
+
+!ClassProtocolSearchContext class methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 11:40:12'!
+on: aClass
+	^ self new initialize: aClass! !
 
 !ClassSearchContext methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 08:04:23'!
 getClasses
