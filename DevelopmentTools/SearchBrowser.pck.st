@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6456] on 8 June 2024 at 11:41:05 am'!
+'From Cuis7.1 [latest update: #6456] on 8 June 2024 at 11:45:00 am'!
 'Description Browser tool for searching Cuis source code.'!
-!provides: 'SearchBrowser' 1 30!
+!provides: 'SearchBrowser' 1 31!
 SystemOrganization addCategory: #SearchBrowser!
 
 
@@ -463,9 +463,21 @@ printOn: aStream
 contextName
 	^ 'class hierarchy'.! !
 
+!ClassHierarchySearchContext class methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 11:42:30'!
+createInstanceDo: aBlock
+
+	^ ClassNameRequestMorph request: 'Class: ' 
+		initialAnswer: '' 
+		do: [ :pattern | ClassSearchContext findClassFrom: (Smalltalk classNames asOrderedCollection) ifFound: [:aClass | aBlock value: (self on: aClass)] with: pattern ]! !
+
 !ClassHierarchySearchContext class methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 11:40:21'!
 on: aClass
 	^ self new initialize: aClass! !
+
+!ClassProtocolSearchContext methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 11:43:08'!
+getClasses
+
+	^ {class}, class allSuperclasses ! !
 
 !ClassProtocolSearchContext methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 11:40:01'!
 initialize: aClass
@@ -480,6 +492,13 @@ printOn: aStream
 !ClassProtocolSearchContext class methodsFor: 'as yet unclassified'!
 contextName
 	^ 'class protocol'.! !
+
+!ClassProtocolSearchContext class methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 11:42:20'!
+createInstanceDo: aBlock
+
+	^ ClassNameRequestMorph request: 'Class: ' 
+		initialAnswer: '' 
+		do: [ :pattern | ClassSearchContext findClassFrom: (Smalltalk classNames asOrderedCollection) ifFound: [:aClass | aBlock value: (self on: aClass)] with: pattern ]! !
 
 !ClassProtocolSearchContext class methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 11:40:12'!
 on: aClass
