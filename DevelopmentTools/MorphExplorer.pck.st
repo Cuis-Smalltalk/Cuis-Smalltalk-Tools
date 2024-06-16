@@ -1,10 +1,10 @@
-'From Cuis7.1 [latest update: #6378] on 18 May 2024 at 4:43:10 pm'!
+'From Cuis7.1 [latest update: #6470] on 16 June 2024 at 5:11:54 pm'!
 'Description Tool that combines an explorer and an inspector specialized for Morphs.
 
 Open from the Morphs Halo menu: Debug -> Explore.
 
 Pickup morph to explore from the Window menu.'!
-!provides: 'MorphExplorer' 1 18!
+!provides: 'MorphExplorer' 1 19!
 SystemOrganization addCategory: #MorphExplorer!
 
 
@@ -155,6 +155,10 @@ initialize
 	super initialize.
 	self beRow.
 	activateWindows := false.! !
+
+!MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'jmv 6/16/2024 17:08:40'!
+inspectSelectedMorph
+	self model inspectSelectedMorph! !
 
 !MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2023 15:37:41'!
 inspectorMorphOn: aMorph
