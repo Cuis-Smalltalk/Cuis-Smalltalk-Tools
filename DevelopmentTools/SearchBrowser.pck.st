@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6456] on 8 June 2024 at 3:46:10 pm'!
+'From Cuis7.1 [latest update: #6492] on 1 July 2024 at 2:53:29 pm'!
 'Description Browser tool for searching Cuis source code.'!
-!provides: 'SearchBrowser' 1 34!
+!provides: 'SearchBrowser' 1 35!
 SystemOrganization addCategory: #SearchBrowser!
 
 
@@ -108,24 +108,6 @@ getMessageNameOf: aMethodReference
 
 	^ aMethodReference selector asString! !
 
-!SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 11:09:10'!
-getSourceOf: aMethodReference
-
-	^ aMethodReference sourceCode! !
-
-!SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2024 15:47:49'!
-getStringLiteralsOf: aMethod
-
-	| sources |
-	
-	sources := ''.
-
-	aMethod compiledMethod literalsDo: [ :aLiteral |
-		(aLiteral isMemberOf: String) ifTrue: [
-			sources := sources, ' ', aLiteral]].
-	
-	^ sources! !
-
 !SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 10:51:10'!
 initialize
 
@@ -141,23 +123,6 @@ initialize
 !SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2024 14:31:07'!
 isCaseSensitive
 	^ caseSensitive ! !
-
-!SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 10:48:48'!
-matcherNames
-
-	^ self matchers collect: [:m | m key]! !
-
-!SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 11:05:42'!
-matcherSelector
-
-	^ self matchers asDictionary at: matcher! !
-
-!SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 11:00:32'!
-matchers
-
-	^ {#'substring matcher' -> #substringMatchIn:.
-	     #'wild matcher' -> #wildMatchIn:
-	    }! !
 
 !SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 11:08:19'!
 performSearch
@@ -191,30 +156,6 @@ searchContexts
 
 	^ SearchContext subclasses! !
 
-!SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 10:49:13'!
-sourceNames
-
-	^ self sources collect: [:src | src key]! !
-
-!SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 11:05:25'!
-sourceSelector
-
-	^ self sources asDictionary at: source! !
-
-!SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 10:52:59'!
-sources
-
-	^ {#'source' -> #getSourceOf: .
-	     #'message name' -> #getMessageNameOf: .
-	     #'string literal'     -> #getStringLiteralsOf: }! !
-
-!SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 11:09:39'!
-substringMatchIn: aString
-
-	^ (aString findString: self searchString
-		startingAt: 1
-		caseSensitive: caseSensitive) > 0! !
-
 !SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2024 14:31:44'!
 toggleCaseSensitive
 
@@ -222,11 +163,6 @@ toggleCaseSensitive
 
 !SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/3/2024 16:06:33'!
 updateIfNeeded! !
-
-!SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2024 15:42:59'!
-wildMatchIn: aString
-
-	^ self searchString match: aString! !
 
 !SearchBrowser methodsFor: 'accessing' stamp: 'MM 6/3/2024 18:22:58'!
 domain
@@ -276,6 +212,70 @@ source: anObject
 	"Set the value of source"
 
 	source := anObject! !
+
+!SearchBrowser methodsFor: 'matchers' stamp: 'MM 6/4/2024 10:48:48'!
+matcherNames
+
+	^ self matchers collect: [:m | m key]! !
+
+!SearchBrowser methodsFor: 'matchers' stamp: 'MM 6/4/2024 11:05:42'!
+matcherSelector
+
+	^ self matchers asDictionary at: matcher! !
+
+!SearchBrowser methodsFor: 'matchers' stamp: 'MM 6/4/2024 11:00:32'!
+matchers
+
+	^ {#'substring matcher' -> #substringMatchIn:.
+	     #'wild matcher' -> #wildMatchIn:
+	    }! !
+
+!SearchBrowser methodsFor: 'matchers' stamp: 'MM 6/4/2024 11:09:39'!
+substringMatchIn: aString
+
+	^ (aString findString: self searchString
+		startingAt: 1
+		caseSensitive: caseSensitive) > 0! !
+
+!SearchBrowser methodsFor: 'matchers' stamp: 'MM 7/1/2024 14:52:36'!
+wildMatchIn: aString
+
+	^ ('*', self searchString, '*') match: aString! !
+
+!SearchBrowser methodsFor: 'sources' stamp: 'MM 6/4/2024 11:09:10'!
+getSourceOf: aMethodReference
+
+	^ aMethodReference sourceCode! !
+
+!SearchBrowser methodsFor: 'sources' stamp: 'MM 6/5/2024 15:47:49'!
+getStringLiteralsOf: aMethod
+
+	| sources |
+	
+	sources := ''.
+
+	aMethod compiledMethod literalsDo: [ :aLiteral |
+		(aLiteral isMemberOf: String) ifTrue: [
+			sources := sources, ' ', aLiteral]].
+	
+	^ sources! !
+
+!SearchBrowser methodsFor: 'sources' stamp: 'MM 6/4/2024 10:49:13'!
+sourceNames
+
+	^ self sources collect: [:src | src key]! !
+
+!SearchBrowser methodsFor: 'sources' stamp: 'MM 6/4/2024 11:05:25'!
+sourceSelector
+
+	^ self sources asDictionary at: source! !
+
+!SearchBrowser methodsFor: 'sources' stamp: 'MM 6/4/2024 10:52:59'!
+sources
+
+	^ {#'source' -> #getSourceOf: .
+	     #'message name' -> #getMessageNameOf: .
+	     #'string literal'     -> #getStringLiteralsOf: }! !
 
 !SearchBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 15:31:01'!
 buildMorphicWindow
