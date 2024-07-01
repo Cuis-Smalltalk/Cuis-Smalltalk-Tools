@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6492] on 1 July 2024 at 2:53:29 pm'!
+'From Cuis7.1 [latest update: #6492] on 1 July 2024 at 3:41:29 pm'!
 'Description Browser tool for searching Cuis source code.'!
-!provides: 'SearchBrowser' 1 35!
+!provides: 'SearchBrowser' 1 39!
 SystemOrganization addCategory: #SearchBrowser!
 
 
@@ -391,13 +391,67 @@ selectSource
 		sourceSelectionButton label: selection asString.
 		sourceSelectionButton owner someSubmorphPositionOrExtentChanged]! !
 
+!SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 7/1/2024 15:31:11'!
+initialize
+
+	BrowserWindow at: #classListMenuSpec registerMenuAndShortcutsSpecProvider:  (MessageSend receiver: self selector: #systemBrowserClassMenu:).
+	BrowserWindow at: #systemCategoriesListMenuSpec registerMenuAndShortcutsSpecProvider: (MessageSend receiver: self selector: #systemBrowserCategoryMenu:)! !
+
 !SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 07:57:56'!
 open
 
 	^ self open: SearchBrowser new label: 'Search Browser'.! !
 
-!SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2024 10:20:49'!
-searchCategory: aSystemCategory
+!SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 7/1/2024 15:17:32'!
+searchClass: aClassNameOrClass
+
+	"SearchBrowserWindow searchClass: #Morph."
+
+	| model class |
+	
+	class := aClassNameOrClass isSymbol 
+			ifTrue: [Smalltalk at: aClassNameOrClass]
+			ifFalse: [aClassNameOrClass].
+	
+	model := SearchBrowser new
+				context: (ClassSearchContext on: class);
+				yourself.
+	self open: model.! !
+
+!SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 7/1/2024 15:22:59'!
+searchClassHierarchy: aClassNameOrClass
+
+	"SearchBrowserWindow searchClassHierarchy: #Morph."
+
+	| model class |
+	
+	class := aClassNameOrClass isSymbol 
+			ifTrue: [Smalltalk at: aClassNameOrClass]
+			ifFalse: [aClassNameOrClass].
+	
+	model := SearchBrowser new
+				context: (ClassHierarchySearchContext on: class);
+				yourself.
+	self open: model.! !
+
+!SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 7/1/2024 15:23:18'!
+searchClassProtocol: aClassNameOrClass
+
+	"SearchBrowserWindow searchClassProtocol: #Morph."
+
+	| model class |
+	
+	class := aClassNameOrClass isSymbol 
+			ifTrue: [Smalltalk at: aClassNameOrClass]
+			ifFalse: [aClassNameOrClass].
+	
+	model := SearchBrowser new
+				context: (ClassProtocolSearchContext on: class);
+				yourself.
+	self open: model.! !
+
+!SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 7/1/2024 15:37:01'!
+searchSystemCategory: aSystemCategory
 
 	"SearchBrowserWindow searchCategory: 'Morphic'"
 
@@ -408,17 +462,17 @@ searchCategory: aSystemCategory
 				yourself.
 	self open: model.! !
 
-!SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2024 10:20:34'!
-searchClass: aClassName
+!SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 7/1/2024 15:38:08'!
+systemBrowserCategoryMenu: aWidget
+	^#(#(21 '----')
+		#(22		'search in category... ' 				$s 	window 			searchSystemCategory 				findIcon))! !
 
-	"SearchBrowserWindow searchClass: #Morph."
-
-	| model |
-	
-	model := SearchBrowser new
-				context: (ClassSearchContext on: (Smalltalk at: aClassName));
-				yourself.
-	self open: model.! !
+!SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 7/1/2024 15:34:03'!
+systemBrowserClassMenu: aWidget
+	^#(#(31 '----')
+		#(32 	'search in class... ' 				$s 	window 			searchClass 				findIcon)
+		#(33 	'search in class hierarchy... ' 				$s 	window 			searchClassHierarchy 				findIcon)
+		#(34 	'search in class protocol... ' 				$s 	window 			searchClassProtocol 				findIcon))! !
 
 !SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 16:55:39'!
 systemCategoryMenuOptions
@@ -684,3 +738,28 @@ performSearch
 				searchBrowser context: (SystemCategorySearchContext on: category									)]].
 						
 	SearchBrowserWindow open: searchBrowser label: 'Search'! !
+
+!BrowserWindow methodsFor: '*SearchBrowser-menu commands' stamp: 'MM 7/1/2024 15:41:03'!
+searchClass
+
+	model selectedClass ifNotNil: [:aClass |
+		SearchBrowserWindow searchClass: aClass] ! !
+
+!BrowserWindow methodsFor: '*SearchBrowser-menu commands' stamp: 'MM 7/1/2024 15:40:42'!
+searchClassHierarchy
+
+	model selectedClass ifNotNil: [:aClass |
+		SearchBrowserWindow searchClassHierarchy: aClass]! !
+
+!BrowserWindow methodsFor: '*SearchBrowser-menu commands' stamp: 'MM 7/1/2024 15:40:24'!
+searchClassProtocol
+	
+	model selectedClass ifNotNil: [:aClass |
+		SearchBrowserWindow searchClassProtocol: aClass]! !
+
+!BrowserWindow methodsFor: '*SearchBrowser-menu commands' stamp: 'MM 7/1/2024 15:40:06'!
+searchSystemCategory
+
+	model selectedSystemCategory ifNotNil: [:category |
+		SearchBrowserWindow searchSystemCategory: category]! !
+SearchBrowserWindow initialize!
