@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6492] on 1 July 2024 at 3:41:29 pm'!
+'From Cuis7.1 [latest update: #6492] on 2 July 2024 at 11:54:46 am'!
 'Description Browser tool for searching Cuis source code.'!
-!provides: 'SearchBrowser' 1 39!
+!provides: 'SearchBrowser' 1 40!
 SystemOrganization addCategory: #SearchBrowser!
 
 
@@ -462,10 +462,11 @@ searchSystemCategory: aSystemCategory
 				yourself.
 	self open: model.! !
 
-!SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 7/1/2024 15:38:08'!
+!SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 7/2/2024 11:52:09'!
 systemBrowserCategoryMenu: aWidget
 	^#(#(21 '----')
-		#(22		'search in category... ' 				$s 	window 			searchSystemCategory 				findIcon))! !
+		#(22		'search in category... ' 				$s 	window 			searchSystemCategory 				findIcon)
+		#(23		'search in every class... ' 				$s 	window 			searchEveryClass 				findIcon))! !
 
 !SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 7/1/2024 15:34:03'!
 systemBrowserClassMenu: aWidget
@@ -756,6 +757,11 @@ searchClassProtocol
 	
 	model selectedClass ifNotNil: [:aClass |
 		SearchBrowserWindow searchClassProtocol: aClass]! !
+
+!BrowserWindow methodsFor: '*SearchBrowser-menu commands' stamp: 'MM 7/2/2024 11:53:26'!
+searchEveryClass
+
+	SearchBrowserWindow open! !
 
 !BrowserWindow methodsFor: '*SearchBrowser-menu commands' stamp: 'MM 7/1/2024 15:40:06'!
 searchSystemCategory
