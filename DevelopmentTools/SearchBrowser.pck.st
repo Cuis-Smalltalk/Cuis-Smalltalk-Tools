@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6492] on 2 July 2024 at 11:54:46 am'!
+'From Cuis7.1 [latest update: #6492] on 2 July 2024 at 12:05:25 pm'!
 'Description Browser tool for searching Cuis source code.'!
-!provides: 'SearchBrowser' 1 40!
+!provides: 'SearchBrowser' 1 41!
 SystemOrganization addCategory: #SearchBrowser!
 
 
@@ -277,17 +277,13 @@ sources
 	     #'message name' -> #getMessageNameOf: .
 	     #'string literal'     -> #getStringLiteralsOf: }! !
 
-!SearchBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/8/2024 15:31:01'!
+!SearchBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 7/2/2024 12:04:49'!
 buildMorphicWindow
 
 	| searchBar listPane |
 	
 	listPane := self buildMorphicMessageList.
 	
-	self layoutMorph
-		addMorph: listPane proportionalHeight: 0.3;
-		addAdjusterAndMorph: self buildLowerPanes proportionalHeight: 0.7.
-			
 	searchBar := LayoutMorph newRow.
 	
 	matcherSelectionButton := (PluggableButtonMorph model: self action: #selectMatcher label: self model matcher asString) 
@@ -315,9 +311,14 @@ buildMorphicWindow
 			addMorph:  matcherSelectionButton;
 			addMorph: ((PluggableButtonMorph model: self model stateGetter: #isCaseSensitive action: #toggleCaseSensitive) label: 'Case sensitive').
 	
-	layoutMorph addAdjusterAndMorph: searchBar fixedHeight: 40.
+	self layoutMorph
+		addMorph: searchBar fixedHeight: 40;
+		addAdjusterAndMorph: listPane proportionalHeight: 0.40;
+		addAdjusterAndMorph: self buildLowerPanes layoutSpec: LayoutSpec useAll	.
+		
 	model changed: #editSelection.
-	self setLabel: 'Search browser'! !
+	
+	self setLabel: 'Search Browser'! !
 
 !SearchBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 08:15:13'!
 context
