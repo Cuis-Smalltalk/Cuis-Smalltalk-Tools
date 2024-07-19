@@ -1,13 +1,14 @@
-'From Cuis7.1 [latest update: #6492] on 2 July 2024 at 12:05:25 pm'!
+'From Cuis7.1 [latest update: #6526] on 19 July 2024 at 8:46:56 am'!
 'Description Browser tool for searching Cuis source code.'!
-!provides: 'SearchBrowser' 1 41!
+!provides: 'SearchBrowser' 1 43!
+!requires: 'Regex-Core' 1 6 nil!
 SystemOrganization addCategory: #SearchBrowser!
 
 
 !classDefinition: #SearchBrowser category: #SearchBrowser!
 MethodSet subclass: #SearchBrowser
 	instanceVariableNames: 'searchString source domain matcher caseSensitive'
-	classVariableNames: ''
+	classVariableNames: 'Matchers'
 	poolDictionaries: ''
 	category: 'SearchBrowser'!
 !classDefinition: 'SearchBrowser class' category: #SearchBrowser!
@@ -223,12 +224,16 @@ matcherSelector
 
 	^ self matchers asDictionary at: matcher! !
 
-!SearchBrowser methodsFor: 'matchers' stamp: 'MM 6/4/2024 11:00:32'!
+!SearchBrowser methodsFor: 'matchers' stamp: 'MM 7/18/2024 16:20:23'!
 matchers
 
-	^ {#'substring matcher' -> #substringMatchIn:.
-	     #'wild matcher' -> #wildMatchIn:
-	    }! !
+	^ self class matchers! !
+
+!SearchBrowser methodsFor: 'matchers' stamp: 'MM 7/19/2024 08:45:27'!
+regexMatchIn: aString
+
+	^ (RxMatcher forString: self searchString)
+		matches: aString! !
 
 !SearchBrowser methodsFor: 'matchers' stamp: 'MM 6/4/2024 11:09:39'!
 substringMatchIn: aString
@@ -276,6 +281,18 @@ sources
 	^ {#'source' -> #getSourceOf: .
 	     #'message name' -> #getMessageNameOf: .
 	     #'string literal'     -> #getStringLiteralsOf: }! !
+
+!SearchBrowser class methodsFor: 'as yet unclassified' stamp: 'MM 7/19/2024 08:43:14'!
+initialize
+
+	Matchers := {#'substring matcher' -> #substringMatchIn:.
+	     			    #'wild matcher' -> #wildMatchIn:.
+				    #'regex matcher' -> #regexMatchIn:   }! !
+
+!SearchBrowser class methodsFor: 'as yet unclassified' stamp: 'MM 7/18/2024 16:24:46'!
+matchers
+
+	^ Matchers! !
 
 !SearchBrowserWindow methodsFor: 'as yet unclassified' stamp: 'MM 7/2/2024 12:04:49'!
 buildMorphicWindow
@@ -769,4 +786,5 @@ searchSystemCategory
 
 	model selectedSystemCategory ifNotNil: [:category |
 		SearchBrowserWindow searchSystemCategory: category]! !
+SearchBrowser initialize!
 SearchBrowserWindow initialize!
