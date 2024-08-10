@@ -1,10 +1,10 @@
-'From Cuis7.1 [latest update: #6470] on 16 June 2024 at 5:11:54 pm'!
+'From Cuis7.1 [latest update: #6578] on 10 August 2024 at 6:05:46 pm'!
 'Description Tool that combines an explorer and an inspector specialized for Morphs.
 
 Open from the Morphs Halo menu: Debug -> Explore.
 
 Pickup morph to explore from the Window menu.'!
-!provides: 'MorphExplorer' 1 19!
+!provides: 'MorphExplorer' 1 20!
 SystemOrganization addCategory: #MorphExplorer!
 
 
@@ -20,7 +20,7 @@ MorphExplorer class
 
 !classDefinition: #MorphExplorerWindow category: #MorphExplorer!
 SystemWindow subclass: #MorphExplorerWindow
-	instanceVariableNames: 'listMorph inspectorMorph activateWindows'
+	instanceVariableNames: 'listMorph inspectorMorph activateWindows inspector'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MorphExplorer'!
@@ -64,6 +64,15 @@ rootMorph: anObject
 
 	rootMorph := anObject! !
 
+!MorphExplorer methodsFor: 'accessing' stamp: 'jmv 8/10/2024 17:39:28'!
+selectedMorph
+	^ currentSelection item! !
+
+!MorphExplorer methodsFor: 'as yet unclassified' stamp: 'jmv 8/10/2024 17:55:33'!
+exploreSelectedMorph
+
+	currentSelection item ifNotNil: [:aMorph | aMorph explore]! !
+
 !MorphExplorer methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2023 16:33:04'!
 getPreviousSelection
 
@@ -81,7 +90,7 @@ noteNewSelection: anItemWrapper
 	
 	^ super noteNewSelection: anItemWrapper! !
 
-!MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'jmv 5/17/2024 17:57:02'!
+!MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'jmv 8/10/2024 18:01:07'!
 buildMorphicWindow
 
 	|leftCol|
@@ -93,13 +102,11 @@ buildMorphicWindow
 				listGetter: #getList
 				indexGetter: #getCurrentSelection
 				indexSetter: #noteNewSelection:)
-					mainView: self
-					menuGetter: #morphMenu
-					keystrokeAction: #exploreKey:from:.
+					menuNshortcutsKey: #morphTreeMenuSpec.
 	listMorph autoDeselect: false.
 	listMorph doubleClickSelector: #inspectSelectedMorph.
 	
-	inspectorMorph := self inspectorMorphOn: model rootMorph.
+	self createInspectorMorphOn: model rootMorph.
 	
 	leftCol addMorph: listMorph layoutSpec: LayoutSpec useAll.
 	leftCol addMorph: (PluggableButtonMorph model: self action: #pickMorph label: 'Pick morph')
@@ -122,6 +129,17 @@ buildWindowMenu
 	menu add: 'pick morph ...' action: #pickMorph icon: #worldIcon.
 	
 	^ menu! !
+
+!MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'jmv 8/10/2024 18:01:42'!
+createInspectorMorphOn: aMorph
+
+	|window|
+	inspector := Inspector inspect: aMorph.
+	window := InspectorWindow new.
+	window
+		model: inspector;
+		buildMorphicWindow.
+	inspectorMorph := window layoutMorph! !
 
 !MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/13/2023 11:48:41'!
 deeperMorphFrom: aMorph that: aBlock
@@ -156,30 +174,6 @@ initialize
 	self beRow.
 	activateWindows := false.! !
 
-!MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'jmv 6/16/2024 17:08:40'!
-inspectSelectedMorph
-	self model inspectSelectedMorph! !
-
-!MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2023 15:37:41'!
-inspectorMorphOn: aMorph
-
-	|window|
-	window := InspectorWindow new.
-	window
-		model: (Inspector inspect: aMorph);
-		buildMorphicWindow.
-	^window layoutMorph! !
-
-!MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/6/2023 10:31:53'!
-morphMenu
-
-	|menu|
-	
-	menu := MenuMorph new.
-	model getCurrentSelection item addStandardHaloMenuItemsTo: menu hand: nil.
-		
-	^ menu! !
-
 !MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'jmv 10/11/2023 14:25:53'!
 pickMorph
 
@@ -208,12 +202,12 @@ pickMorph
 		model noteNewSelection: (MorphExplorerWrapper with: morph)]
 		! !
 
-!MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/13/2023 12:01:46'!
+!MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'jmv 8/10/2024 18:01:18'!
 replaceInspector
 
 	self layoutMorph removeMorph: inspectorMorph.
 	
-	inspectorMorph := self inspectorMorphOn: model getCurrentSelection withoutListWrapper .
+	self createInspectorMorphOn:model getCurrentSelection withoutListWrapper .
 	
 	self layoutMorph addMorph: inspectorMorph layoutSpec: LayoutSpec useAll.
 	self layoutMorph adoptWidgetsColor: self windowColor.! !
@@ -228,6 +222,103 @@ update: aSymbol
 			selectedMorph highlighted: true.
 			activateWindows ifTrue: [selectedMorph isKindOf: SystemWindow :: ifTrue: [selectedMorph activate]].
 			self replaceInspector]].! !
+
+!MorphExplorerWindow methodsFor: 'menu & kbd shortcuts' stamp: 'jmv 8/10/2024 17:44:54'!
+fieldListMenuSpec
+	"Spec for the menu and shortcut keys for the list of variables in our object.
+	See coment at Morph >> #getMenu
+	"
+	| answer |
+	answer := #(
+		#(10		'inspect (i)' 					$i 	window 			inspectSelectedVar 								inspectIcon)
+		#(20		'explore (I)' 					$I 	window 			exploreSelectedVar 								exploreIcon)
+		#(210 		'-----')
+		#(220		'browser full (b)' 					$b 	window 			browseSelectedVarFull 								editFindReplaceIcon)
+		#(230		'browser hierarch (h)' 					$h 	window 			browseSelectedVarHierarchy 								goTopIcon)
+		#(240		'browser protocol (p)' 					$p 	window 			browseSelectedVarProtocol 								spreadsheetIcon)
+	).
+	^answer! !
+
+!MorphExplorerWindow methodsFor: 'menu & kbd shortcuts' stamp: 'jmv 8/10/2024 17:55:12'!
+morphTreeMenuSpec
+	"Spec for the menu and shortcut keys for the list of variables in our object.
+	See coment at Morph >> #getMenu
+	"
+	| answer |
+	answer := #(
+		#(10		'inspect (i)' 					$i 	window 			inspectSelectedMorph 									inspectIcon)
+		#(20		'explore (I)' 					$I 	window 			exploreSelectedMorph 									exploreIcon)
+		#(30		'copy to clipboard (c)' 					$c 	window 			copySelectionToClipboard 									copyIcon)
+		#(210 		'-----')
+		#(220		'browser full (b)' 					$b 	window 			browseSelectedMorphFull 									editFindReplaceIcon)
+		#(230		'browser hierarch (h)' 					$h 	window 			browseSelectedMorphHierarchy 									goTopIcon)
+		#(240		'browser protocol (p)' 					$p 	window 			browseSelectedMorphProtocol 									spreadsheetIcon)
+	).
+	^answer! !
+
+!MorphExplorerWindow methodsFor: 'menu commands' stamp: 'jmv 8/10/2024 17:58:51'!
+browseSelectedMorphFull
+	"Create and schedule a full Browser and then select the current class and message."
+
+	|  myClass |
+	(myClass := model selectedMorph class) ifNotNil: [
+		BrowserWindow fullOnClass: myClass selector: nil]! !
+
+!MorphExplorerWindow methodsFor: 'menu commands' stamp: 'jmv 8/10/2024 17:57:48'!
+browseSelectedMorphHierarchy
+	"Create and schedule a class list browser on the receiver's hierarchy."
+
+	HierarchyBrowserWindow
+		onClass: model selectedMorph class
+		selector: nil! !
+
+!MorphExplorerWindow methodsFor: 'menu commands' stamp: 'jmv 8/10/2024 17:59:05'!
+browseSelectedMorphProtocol
+	"Spawn a window showing full protocol for the receiver's selection"
+
+	ProtocolBrowserWindow openFullProtocolForClass: model selectedMorph class! !
+
+!MorphExplorerWindow methodsFor: 'menu commands' stamp: 'jmv 8/10/2024 18:04:23'!
+browseSelectedVarFull
+	"Create and schedule a full Browser and then select the current class and message."
+
+	|  myClass |
+	(myClass := inspector selection class) ifNotNil: [
+		BrowserWindow fullOnClass: myClass selector: nil]! !
+
+!MorphExplorerWindow methodsFor: 'menu commands' stamp: 'jmv 8/10/2024 18:04:40'!
+browseSelectedVarHierarchy
+	"Create and schedule a class list browser on the receiver's hierarchy."
+
+	HierarchyBrowserWindow
+		onClass: inspector selection class
+		selector: nil! !
+
+!MorphExplorerWindow methodsFor: 'menu commands' stamp: 'jmv 8/10/2024 18:05:08'!
+browseSelectedVarProtocol
+	"Spawn a window showing full protocol for the receiver's selection"
+
+	ProtocolBrowserWindow openFullProtocolForClass: inspector selection class! !
+
+!MorphExplorerWindow methodsFor: 'menu commands' stamp: 'jmv 8/10/2024 17:40:46'!
+copySelectionToClipboard
+	self model selectedMorph copyToClipboard! !
+
+!MorphExplorerWindow methodsFor: 'menu commands' stamp: 'jmv 8/10/2024 17:55:28'!
+exploreSelectedMorph
+	self model exploreSelectedMorph! !
+
+!MorphExplorerWindow methodsFor: 'menu commands' stamp: 'jmv 8/10/2024 18:03:23'!
+exploreSelectedVar
+	inspector selection explore! !
+
+!MorphExplorerWindow methodsFor: 'menu commands' stamp: 'jmv 6/16/2024 17:08:40'!
+inspectSelectedMorph
+	self model inspectSelectedMorph! !
+
+!MorphExplorerWindow methodsFor: 'menu commands' stamp: 'jmv 8/10/2024 18:03:38'!
+inspectSelectedVar
+	inspector selection inspect! !
 
 !MorphExplorerWrapper methodsFor: 'as yet unclassified' stamp: 'MM 6/5/2023 16:13:08'!
 contents

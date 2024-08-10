@@ -1,4 +1,4 @@
-'From Cuis7.1 [latest update: #6378] on 18 May 2024 at 4:25:44 pm'!
+'From Cuis7.1 [latest update: #6578] on 10 August 2024 at 6:18:13 pm'!
 'Description Assessments is a replacement / reimplementation of the SUnit evaluation machinery, published under the MIT license (see below), with the following characteristics.
 
 * It provides all the functionality and features of SUnit and SUnit VM (including SUnit Based Validation and SUnit Benchmarks) natively.
@@ -143,7 +143,7 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '!
-!provides: 'Assessments' 2 39!
+!provides: 'Assessments' 2 40!
 SystemOrganization addCategory: #'Assessments-Framework-Exceptions'!
 SystemOrganization addCategory: #'Assessments-Tools'!
 SystemOrganization addCategory: #'Assessments-Tools-Support'!
@@ -160,404 +160,164 @@ SystemOrganization addCategory: #'Assessments-Framework-Portability'!
 SystemOrganization addCategory: #'Assessments-Framework-ProtectedMessageSends'!
 
 
-!classDefinition: #AssessmentNotification category: #'Assessments-Framework-Exceptions'!
-Notification subclass: #AssessmentNotification
-	instanceVariableNames: ''
+!classDefinition: #AbstractResult category: #'Assessments-Framework-AtomicResults'!
+Object subclass: #AbstractResult
+	instanceVariableNames: 'prettyPrint'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Assessments-Framework-Exceptions'!
-!classDefinition: 'AssessmentNotification class' category: #'Assessments-Framework-Exceptions'!
-AssessmentNotification class
+	category: 'Assessments-Framework-AtomicResults'!
+!classDefinition: 'AbstractResult class' category: #'Assessments-Framework-AtomicResults'!
+AbstractResult class
 	instanceVariableNames: ''!
 
-!classDefinition: #AssessmentMalfunctionNotification category: #'Assessments-Framework-Exceptions'!
-AssessmentNotification subclass: #AssessmentMalfunctionNotification
-	instanceVariableNames: ''
+!classDefinition: #CheckResult category: #'Assessments-Framework-AtomicResults'!
+AbstractResult subclass: #CheckResult
+	instanceVariableNames: 'check'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Assessments-Framework-Exceptions'!
-!classDefinition: 'AssessmentMalfunctionNotification class' category: #'Assessments-Framework-Exceptions'!
-AssessmentMalfunctionNotification class
+	category: 'Assessments-Framework-AtomicResults'!
+!classDefinition: 'CheckResult class' category: #'Assessments-Framework-AtomicResults'!
+CheckResult class
 	instanceVariableNames: ''!
 
-!classDefinition: #CheckAbstractFailureNotification category: #'Assessments-Framework-Exceptions'!
-AssessmentNotification subclass: #CheckAbstractFailureNotification
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-Exceptions'!
-!classDefinition: 'CheckAbstractFailureNotification class' category: #'Assessments-Framework-Exceptions'!
-CheckAbstractFailureNotification class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckFailureNotification category: #'Assessments-Framework-Exceptions'!
-CheckAbstractFailureNotification subclass: #CheckFailureNotification
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-Exceptions'!
-!classDefinition: 'CheckFailureNotification class' category: #'Assessments-Framework-Exceptions'!
-CheckFailureNotification class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckSkipNotification category: #'Assessments-Framework-Exceptions'!
-CheckFailureNotification subclass: #CheckSkipNotification
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-Exceptions'!
-!classDefinition: 'CheckSkipNotification class' category: #'Assessments-Framework-Exceptions'!
-CheckSkipNotification class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckValidationFailureNotification category: #'Assessments-Framework-Exceptions'!
-CheckFailureNotification subclass: #CheckValidationFailureNotification
-	instanceVariableNames: 'object aspect'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-Exceptions'!
-!classDefinition: 'CheckValidationFailureNotification class' category: #'Assessments-Framework-Exceptions'!
-CheckValidationFailureNotification class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckResumableFailureNotification category: #'Assessments-Framework-Exceptions'!
-CheckAbstractFailureNotification subclass: #CheckResumableFailureNotification
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-Exceptions'!
-!classDefinition: 'CheckResumableFailureNotification class' category: #'Assessments-Framework-Exceptions'!
-CheckResumableFailureNotification class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckBenchmarkMeasurementNotification category: #'Assessments-Framework-Exceptions'!
-AssessmentNotification subclass: #CheckBenchmarkMeasurementNotification
-	instanceVariableNames: 'iterationsPerSecond prettyPrintForScenario'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-Exceptions'!
-!classDefinition: 'CheckBenchmarkMeasurementNotification class' category: #'Assessments-Framework-Exceptions'!
-CheckBenchmarkMeasurementNotification class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckBenchmarkAbstractExpectationNotification category: #'Assessments-Framework-Exceptions'!
-CheckBenchmarkMeasurementNotification subclass: #CheckBenchmarkAbstractExpectationNotification
-	instanceVariableNames: 'expectedIterationsPerSecond'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-Exceptions'!
-!classDefinition: 'CheckBenchmarkAbstractExpectationNotification class' category: #'Assessments-Framework-Exceptions'!
-CheckBenchmarkAbstractExpectationNotification class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckBenchmarkExpectationFailedNotification category: #'Assessments-Framework-Exceptions'!
-CheckBenchmarkAbstractExpectationNotification subclass: #CheckBenchmarkExpectationFailedNotification
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-Exceptions'!
-!classDefinition: 'CheckBenchmarkExpectationFailedNotification class' category: #'Assessments-Framework-Exceptions'!
-CheckBenchmarkExpectationFailedNotification class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckBenchmarkExpectationMetNotification category: #'Assessments-Framework-Exceptions'!
-CheckBenchmarkAbstractExpectationNotification subclass: #CheckBenchmarkExpectationMetNotification
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-Exceptions'!
-!classDefinition: 'CheckBenchmarkExpectationMetNotification class' category: #'Assessments-Framework-Exceptions'!
-CheckBenchmarkExpectationMetNotification class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckNoticeNotification category: #'Assessments-Framework-Exceptions'!
-AssessmentNotification subclass: #CheckNoticeNotification
-	instanceVariableNames: 'notice'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-Exceptions'!
-!classDefinition: 'CheckNoticeNotification class' category: #'Assessments-Framework-Exceptions'!
-CheckNoticeNotification class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckPassNotification category: #'Assessments-Framework-Exceptions'!
-AssessmentNotification subclass: #CheckPassNotification
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-Exceptions'!
-!classDefinition: 'CheckPassNotification class' category: #'Assessments-Framework-Exceptions'!
-CheckPassNotification class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckBenchmarkPassNotification category: #'Assessments-Framework-Exceptions'!
-CheckPassNotification subclass: #CheckBenchmarkPassNotification
+!classDefinition: #CheckBenchmarkPass category: #'Assessments-Framework-AtomicResults'!
+CheckResult subclass: #CheckBenchmarkPass
 	instanceVariableNames: 'prettyPrintForScenario'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Assessments-Framework-Exceptions'!
-!classDefinition: 'CheckBenchmarkPassNotification class' category: #'Assessments-Framework-Exceptions'!
-CheckBenchmarkPassNotification class
+	category: 'Assessments-Framework-AtomicResults'!
+!classDefinition: 'CheckBenchmarkPass class' category: #'Assessments-Framework-AtomicResults'!
+CheckBenchmarkPass class
 	instanceVariableNames: ''!
 
-!classDefinition: #PrerequisiteFailureNotification category: #'Assessments-Framework-Exceptions'!
-AssessmentNotification subclass: #PrerequisiteFailureNotification
+!classDefinition: #CheckBenchmarkResult category: #'Assessments-Framework-AtomicResults'!
+CheckResult subclass: #CheckBenchmarkResult
+	instanceVariableNames: 'iterationsPerSecond prettyPrintForScenario'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-AtomicResults'!
+!classDefinition: 'CheckBenchmarkResult class' category: #'Assessments-Framework-AtomicResults'!
+CheckBenchmarkResult class
+	instanceVariableNames: ''!
+
+!classDefinition: #CheckBenchmarkAbstractExpectationNotice category: #'Assessments-Framework-AtomicResults'!
+CheckBenchmarkResult subclass: #CheckBenchmarkAbstractExpectationNotice
+	instanceVariableNames: 'expectedIterationsPerSecond'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-AtomicResults'!
+!classDefinition: 'CheckBenchmarkAbstractExpectationNotice class' category: #'Assessments-Framework-AtomicResults'!
+CheckBenchmarkAbstractExpectationNotice class
+	instanceVariableNames: ''!
+
+!classDefinition: #CheckBenchmarkExpectationFailure category: #'Assessments-Framework-AtomicResults'!
+CheckBenchmarkAbstractExpectationNotice subclass: #CheckBenchmarkExpectationFailure
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Assessments-Framework-Exceptions'!
-!classDefinition: 'PrerequisiteFailureNotification class' category: #'Assessments-Framework-Exceptions'!
-PrerequisiteFailureNotification class
+	category: 'Assessments-Framework-AtomicResults'!
+!classDefinition: 'CheckBenchmarkExpectationFailure class' category: #'Assessments-Framework-AtomicResults'!
+CheckBenchmarkExpectationFailure class
 	instanceVariableNames: ''!
 
-!classDefinition: #ResultAdoptionNotification category: #'Assessments-Framework-Exceptions'!
-AssessmentNotification subclass: #ResultAdoptionNotification
-	instanceVariableNames: 'assessmentResult'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-Exceptions'!
-!classDefinition: 'ResultAdoptionNotification class' category: #'Assessments-Framework-Exceptions'!
-ResultAdoptionNotification class
-	instanceVariableNames: ''!
-
-!classDefinition: #AssessmentsWindow category: #'Assessments-Tools'!
-SystemWindow subclass: #AssessmentsWindow
+!classDefinition: #CheckBenchmarkExpectationPass category: #'Assessments-Framework-AtomicResults'!
+CheckBenchmarkAbstractExpectationNotice subclass: #CheckBenchmarkExpectationPass
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Assessments-Tools'!
-!classDefinition: 'AssessmentsWindow class' category: #'Assessments-Tools'!
-AssessmentsWindow class
+	category: 'Assessments-Framework-AtomicResults'!
+!classDefinition: 'CheckBenchmarkExpectationPass class' category: #'Assessments-Framework-AtomicResults'!
+CheckBenchmarkExpectationPass class
 	instanceVariableNames: ''!
 
-!classDefinition: #AssessmentsChecklistEvaluatorWindow category: #'Assessments-Tools'!
-AssessmentsWindow subclass: #AssessmentsChecklistEvaluatorWindow
+!classDefinition: #CheckError category: #'Assessments-Framework-AtomicResults'!
+CheckResult subclass: #CheckError
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Assessments-Tools'!
-!classDefinition: 'AssessmentsChecklistEvaluatorWindow class' category: #'Assessments-Tools'!
-AssessmentsChecklistEvaluatorWindow class
+	category: 'Assessments-Framework-AtomicResults'!
+!classDefinition: 'CheckError class' category: #'Assessments-Framework-AtomicResults'!
+CheckError class
 	instanceVariableNames: ''!
 
-!classDefinition: #AssessmentsResultsEvaluatorWindow category: #'Assessments-Tools'!
-AssessmentsWindow subclass: #AssessmentsResultsEvaluatorWindow
-	instanceVariableNames: 'resultTree'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Tools'!
-!classDefinition: 'AssessmentsResultsEvaluatorWindow class' category: #'Assessments-Tools'!
-AssessmentsResultsEvaluatorWindow class
-	instanceVariableNames: ''!
-
-!classDefinition: #AssessmentsListItemWrapper category: #'Assessments-Tools-Support'!
-ListItemWrapper subclass: #AssessmentsListItemWrapper
-	instanceVariableNames: 'displayString contents'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Tools-Support'!
-!classDefinition: 'AssessmentsListItemWrapper class' category: #'Assessments-Tools-Support'!
-AssessmentsListItemWrapper class
-	instanceVariableNames: ''!
-
-!classDefinition: #AssessmentAbstractResultUIListItem category: #'Assessments-Tools-Support'!
-AssessmentsListItemWrapper subclass: #AssessmentAbstractResultUIListItem
+!classDefinition: #CheckFailure category: #'Assessments-Framework-AtomicResults'!
+CheckResult subclass: #CheckFailure
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Assessments-Tools-Support'!
-!classDefinition: 'AssessmentAbstractResultUIListItem class' category: #'Assessments-Tools-Support'!
-AssessmentAbstractResultUIListItem class
+	category: 'Assessments-Framework-AtomicResults'!
+!classDefinition: 'CheckFailure class' category: #'Assessments-Framework-AtomicResults'!
+CheckFailure class
 	instanceVariableNames: ''!
 
-!classDefinition: #AssessmentResultUICheckResultListItem category: #'Assessments-Tools-Support'!
-AssessmentAbstractResultUIListItem subclass: #AssessmentResultUICheckResultListItem
+!classDefinition: #CheckValidationFailure category: #'Assessments-Framework-AtomicResults'!
+CheckFailure subclass: #CheckValidationFailure
+	instanceVariableNames: 'object aspect'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-AtomicResults'!
+!classDefinition: 'CheckValidationFailure class' category: #'Assessments-Framework-AtomicResults'!
+CheckValidationFailure class
+	instanceVariableNames: ''!
+
+!classDefinition: #CheckNotice category: #'Assessments-Framework-AtomicResults'!
+CheckResult subclass: #CheckNotice
+	instanceVariableNames: 'notice'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-AtomicResults'!
+!classDefinition: 'CheckNotice class' category: #'Assessments-Framework-AtomicResults'!
+CheckNotice class
+	instanceVariableNames: ''!
+
+!classDefinition: #CheckPass category: #'Assessments-Framework-AtomicResults'!
+CheckResult subclass: #CheckPass
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Assessments-Tools-Support'!
-!classDefinition: 'AssessmentResultUICheckResultListItem class' category: #'Assessments-Tools-Support'!
-AssessmentResultUICheckResultListItem class
+	category: 'Assessments-Framework-AtomicResults'!
+!classDefinition: 'CheckPass class' category: #'Assessments-Framework-AtomicResults'!
+CheckPass class
 	instanceVariableNames: ''!
 
-!classDefinition: #AssessmentResultUICheckResult category: #'Assessments-Tools-Support'!
-AssessmentResultUICheckResultListItem subclass: #AssessmentResultUICheckResult
-	instanceVariableNames: 'checkResult'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Tools-Support'!
-!classDefinition: 'AssessmentResultUICheckResult class' category: #'Assessments-Tools-Support'!
-AssessmentResultUICheckResult class
-	instanceVariableNames: ''!
-
-!classDefinition: #AssessmentResultUICompositeResult category: #'Assessments-Tools-Support'!
-AssessmentResultUICheckResultListItem subclass: #AssessmentResultUICompositeResult
+!classDefinition: #CheckSkip category: #'Assessments-Framework-AtomicResults'!
+CheckResult subclass: #CheckSkip
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Assessments-Tools-Support'!
-!classDefinition: 'AssessmentResultUICompositeResult class' category: #'Assessments-Tools-Support'!
-AssessmentResultUICompositeResult class
+	category: 'Assessments-Framework-AtomicResults'!
+!classDefinition: 'CheckSkip class' category: #'Assessments-Framework-AtomicResults'!
+CheckSkip class
 	instanceVariableNames: ''!
 
-!classDefinition: #AssessmentResultUIResultFilterNode category: #'Assessments-Tools-Support'!
-AssessmentResultUICompositeResult subclass: #AssessmentResultUIResultFilterNode
+!classDefinition: #PrerequisiteResult category: #'Assessments-Framework-AtomicResults'!
+AbstractResult subclass: #PrerequisiteResult
+	instanceVariableNames: 'prerequisite'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-AtomicResults'!
+!classDefinition: 'PrerequisiteResult class' category: #'Assessments-Framework-AtomicResults'!
+PrerequisiteResult class
+	instanceVariableNames: ''!
+
+!classDefinition: #PrerequisiteStartFailure category: #'Assessments-Framework-AtomicResults'!
+PrerequisiteResult subclass: #PrerequisiteStartFailure
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Assessments-Tools-Support'!
-!classDefinition: 'AssessmentResultUIResultFilterNode class' category: #'Assessments-Tools-Support'!
-AssessmentResultUIResultFilterNode class
+	category: 'Assessments-Framework-AtomicResults'!
+!classDefinition: 'PrerequisiteStartFailure class' category: #'Assessments-Framework-AtomicResults'!
+PrerequisiteStartFailure class
 	instanceVariableNames: ''!
 
-!classDefinition: #AssessmentResultUIResultFilter category: #'Assessments-Tools-Support'!
-AssessmentResultUIResultFilterNode subclass: #AssessmentResultUIResultFilter
-	instanceVariableNames: 'result'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Tools-Support'!
-!classDefinition: 'AssessmentResultUIResultFilter class' category: #'Assessments-Tools-Support'!
-AssessmentResultUIResultFilter class
-	instanceVariableNames: ''!
-
-!classDefinition: #AssessmentResultUIResultFilterOthers category: #'Assessments-Tools-Support'!
-AssessmentResultUIResultFilter subclass: #AssessmentResultUIResultFilterOthers
-	instanceVariableNames: 'classificationTag'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Tools-Support'!
-!classDefinition: 'AssessmentResultUIResultFilterOthers class' category: #'Assessments-Tools-Support'!
-AssessmentResultUIResultFilterOthers class
-	instanceVariableNames: ''!
-
-!classDefinition: #AssessmentResultUIResultFilterPreset category: #'Assessments-Tools-Support'!
-AssessmentResultUIResultFilter subclass: #AssessmentResultUIResultFilterPreset
+!classDefinition: #PrerequisiteStopFailure category: #'Assessments-Framework-AtomicResults'!
+PrerequisiteResult subclass: #PrerequisiteStopFailure
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Assessments-Tools-Support'!
-!classDefinition: 'AssessmentResultUIResultFilterPreset class' category: #'Assessments-Tools-Support'!
-AssessmentResultUIResultFilterPreset class
-	instanceVariableNames: ''!
-
-!classDefinition: #AssessmentResultUIResultFilterErrors category: #'Assessments-Tools-Support'!
-AssessmentResultUIResultFilterPreset subclass: #AssessmentResultUIResultFilterErrors
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Tools-Support'!
-!classDefinition: 'AssessmentResultUIResultFilterErrors class' category: #'Assessments-Tools-Support'!
-AssessmentResultUIResultFilterErrors class
-	instanceVariableNames: ''!
-
-!classDefinition: #AssessmentResultUIResultFilterFailures category: #'Assessments-Tools-Support'!
-AssessmentResultUIResultFilterPreset subclass: #AssessmentResultUIResultFilterFailures
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Tools-Support'!
-!classDefinition: 'AssessmentResultUIResultFilterFailures class' category: #'Assessments-Tools-Support'!
-AssessmentResultUIResultFilterFailures class
-	instanceVariableNames: ''!
-
-!classDefinition: #AssessmentResultUIResultFilterPasses category: #'Assessments-Tools-Support'!
-AssessmentResultUIResultFilterPreset subclass: #AssessmentResultUIResultFilterPasses
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Tools-Support'!
-!classDefinition: 'AssessmentResultUIResultFilterPasses class' category: #'Assessments-Tools-Support'!
-AssessmentResultUIResultFilterPasses class
-	instanceVariableNames: ''!
-
-!classDefinition: #AssessmentResultUIResultFilterBenchmarkPasses category: #'Assessments-Tools-Support'!
-AssessmentResultUIResultFilterPasses subclass: #AssessmentResultUIResultFilterBenchmarkPasses
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Tools-Support'!
-!classDefinition: 'AssessmentResultUIResultFilterBenchmarkPasses class' category: #'Assessments-Tools-Support'!
-AssessmentResultUIResultFilterBenchmarkPasses class
-	instanceVariableNames: ''!
-
-!classDefinition: #AssessmentResultUIResultFilterRoot category: #'Assessments-Tools-Support'!
-AssessmentResultUIResultFilterNode subclass: #AssessmentResultUIResultFilterRoot
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Tools-Support'!
-!classDefinition: 'AssessmentResultUIResultFilterRoot class' category: #'Assessments-Tools-Support'!
-AssessmentResultUIResultFilterRoot class
-	instanceVariableNames: ''!
-
-!classDefinition: #AssessmentResultUIResultPerClassification category: #'Assessments-Tools-Support'!
-AssessmentResultUICompositeResult subclass: #AssessmentResultUIResultPerClassification
-	instanceVariableNames: 'classification'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Tools-Support'!
-!classDefinition: 'AssessmentResultUIResultPerClassification class' category: #'Assessments-Tools-Support'!
-AssessmentResultUIResultPerClassification class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckBenchmarkResultUIListItem category: #'Assessments-Tools-Support'!
-AssessmentAbstractResultUIListItem subclass: #CheckBenchmarkResultUIListItem
-	instanceVariableNames: 'result'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Tools-Support'!
-!classDefinition: 'CheckBenchmarkResultUIListItem class' category: #'Assessments-Tools-Support'!
-CheckBenchmarkResultUIListItem class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckBenchmarkExpectationUIListItem category: #'Assessments-Tools-Support'!
-CheckBenchmarkResultUIListItem subclass: #CheckBenchmarkExpectationUIListItem
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Tools-Support'!
-!classDefinition: 'CheckBenchmarkExpectationUIListItem class' category: #'Assessments-Tools-Support'!
-CheckBenchmarkExpectationUIListItem class
-	instanceVariableNames: ''!
-
-!classDefinition: #AssessmentsChecklistWrapper category: #'Assessments-Tools-Support'!
-AssessmentsListItemWrapper subclass: #AssessmentsChecklistWrapper
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Tools-Support'!
-!classDefinition: 'AssessmentsChecklistWrapper class' category: #'Assessments-Tools-Support'!
-AssessmentsChecklistWrapper class
-	instanceVariableNames: ''!
-
-!classDefinition: #AssessmentsEvaluator category: #'Assessments-Tools'!
-Object subclass: #AssessmentsEvaluator
-	instanceVariableNames: 'statusBarText'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Tools'!
-!classDefinition: 'AssessmentsEvaluator class' category: #'Assessments-Tools'!
-AssessmentsEvaluator class
-	instanceVariableNames: ''!
-
-!classDefinition: #AssessmentsChecklistEvaluator category: #'Assessments-Tools'!
-AssessmentsEvaluator subclass: #AssessmentsChecklistEvaluator
-	instanceVariableNames: 'checklists selectedChecklist checkRepositoryRoot'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Tools'!
-!classDefinition: 'AssessmentsChecklistEvaluator class' category: #'Assessments-Tools'!
-AssessmentsChecklistEvaluator class
-	instanceVariableNames: ''!
-
-!classDefinition: #AssessmentsResultsEvaluator category: #'Assessments-Tools'!
-AssessmentsEvaluator subclass: #AssessmentsResultsEvaluator
-	instanceVariableNames: 'assessment result results selectedResult'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Tools'!
-!classDefinition: 'AssessmentsResultsEvaluator class' category: #'Assessments-Tools'!
-AssessmentsResultsEvaluator class
+	category: 'Assessments-Framework-AtomicResults'!
+!classDefinition: 'PrerequisiteStopFailure class' category: #'Assessments-Framework-AtomicResults'!
+PrerequisiteStopFailure class
 	instanceVariableNames: ''!
 
 !classDefinition: #AbstractCustomChecklist category: #'Assessments-Framework-CustomChecklists'!
@@ -1370,266 +1130,6 @@ SUnitVMAbstractTestCase subclass: #SUnitVMValidatorTestCase
 SUnitVMValidatorTestCase class
 	instanceVariableNames: ''!
 
-!classDefinition: #CheckRepositoryMetaclass category: #'Assessments-Framework-TestBridge'!
-Object subclass: #CheckRepositoryMetaclass
-	instanceVariableNames: 'classToImpersonate superclass subclasses'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-TestBridge'!
-!classDefinition: 'CheckRepositoryMetaclass class' category: #'Assessments-Framework-TestBridge'!
-CheckRepositoryMetaclass class
-	instanceVariableNames: ''!
-
-!classDefinition: #AbstractSUnitCheckRepositoryMetaclass category: #'Assessments-Framework-TestBridge'!
-CheckRepositoryMetaclass subclass: #AbstractSUnitCheckRepositoryMetaclass
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-TestBridge'!
-!classDefinition: 'AbstractSUnitCheckRepositoryMetaclass class' category: #'Assessments-Framework-TestBridge'!
-AbstractSUnitCheckRepositoryMetaclass class
-	instanceVariableNames: ''!
-
-!classDefinition: #SUnitCheckRepositoryMetaclass category: #'Assessments-Framework-TestBridge'!
-AbstractSUnitCheckRepositoryMetaclass subclass: #SUnitCheckRepositoryMetaclass
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-TestBridge'!
-!classDefinition: 'SUnitCheckRepositoryMetaclass class' category: #'Assessments-Framework-TestBridge'!
-SUnitCheckRepositoryMetaclass class
-	instanceVariableNames: ''!
-
-!classDefinition: #SUnitCheckRepositoryRootMetaclass category: #'Assessments-Framework-TestBridge'!
-SUnitCheckRepositoryMetaclass subclass: #SUnitCheckRepositoryRootMetaclass
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-TestBridge'!
-!classDefinition: 'SUnitCheckRepositoryRootMetaclass class' category: #'Assessments-Framework-TestBridge'!
-SUnitCheckRepositoryRootMetaclass class
-	instanceVariableNames: ''!
-
-!classDefinition: #SUnitVMAbstractCheckRepositoryMetaclass category: #'Assessments-Framework-TestBridge'!
-SUnitCheckRepositoryMetaclass subclass: #SUnitVMAbstractCheckRepositoryMetaclass
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-TestBridge'!
-!classDefinition: 'SUnitVMAbstractCheckRepositoryMetaclass class' category: #'Assessments-Framework-TestBridge'!
-SUnitVMAbstractCheckRepositoryMetaclass class
-	instanceVariableNames: ''!
-
-!classDefinition: #SUnitVMBenchmarkCheckRepositoryMetaclass category: #'Assessments-Framework-TestBridge'!
-SUnitVMAbstractCheckRepositoryMetaclass subclass: #SUnitVMBenchmarkCheckRepositoryMetaclass
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-TestBridge'!
-!classDefinition: 'SUnitVMBenchmarkCheckRepositoryMetaclass class' category: #'Assessments-Framework-TestBridge'!
-SUnitVMBenchmarkCheckRepositoryMetaclass class
-	instanceVariableNames: ''!
-
-!classDefinition: #SUnitVMCheckRepositoryMetaclass category: #'Assessments-Framework-TestBridge'!
-SUnitVMAbstractCheckRepositoryMetaclass subclass: #SUnitVMCheckRepositoryMetaclass
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-TestBridge'!
-!classDefinition: 'SUnitVMCheckRepositoryMetaclass class' category: #'Assessments-Framework-TestBridge'!
-SUnitVMCheckRepositoryMetaclass class
-	instanceVariableNames: ''!
-
-!classDefinition: #SUnitVMValidatorCheckRepositoryMetaclass category: #'Assessments-Framework-TestBridge'!
-SUnitVMAbstractCheckRepositoryMetaclass subclass: #SUnitVMValidatorCheckRepositoryMetaclass
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-TestBridge'!
-!classDefinition: 'SUnitVMValidatorCheckRepositoryMetaclass class' category: #'Assessments-Framework-TestBridge'!
-SUnitVMValidatorCheckRepositoryMetaclass class
-	instanceVariableNames: ''!
-
-!classDefinition: #SUnitTooCheckRepositoryMetaclass category: #'Assessments-Framework-TestBridge'!
-AbstractSUnitCheckRepositoryMetaclass subclass: #SUnitTooCheckRepositoryMetaclass
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-TestBridge'!
-!classDefinition: 'SUnitTooCheckRepositoryMetaclass class' category: #'Assessments-Framework-TestBridge'!
-SUnitTooCheckRepositoryMetaclass class
-	instanceVariableNames: ''!
-
-!classDefinition: #SUnitTooCheckRepositoryRootMetaclass category: #'Assessments-Framework-TestBridge'!
-SUnitTooCheckRepositoryMetaclass subclass: #SUnitTooCheckRepositoryRootMetaclass
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-TestBridge'!
-!classDefinition: 'SUnitTooCheckRepositoryRootMetaclass class' category: #'Assessments-Framework-TestBridge'!
-SUnitTooCheckRepositoryRootMetaclass class
-	instanceVariableNames: ''!
-
-!classDefinition: #AbstractResult category: #'Assessments-Framework-AtomicResults'!
-Object subclass: #AbstractResult
-	instanceVariableNames: 'prettyPrint'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-AtomicResults'!
-!classDefinition: 'AbstractResult class' category: #'Assessments-Framework-AtomicResults'!
-AbstractResult class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckResult category: #'Assessments-Framework-AtomicResults'!
-AbstractResult subclass: #CheckResult
-	instanceVariableNames: 'check'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-AtomicResults'!
-!classDefinition: 'CheckResult class' category: #'Assessments-Framework-AtomicResults'!
-CheckResult class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckBenchmarkPass category: #'Assessments-Framework-AtomicResults'!
-CheckResult subclass: #CheckBenchmarkPass
-	instanceVariableNames: 'prettyPrintForScenario'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-AtomicResults'!
-!classDefinition: 'CheckBenchmarkPass class' category: #'Assessments-Framework-AtomicResults'!
-CheckBenchmarkPass class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckBenchmarkResult category: #'Assessments-Framework-AtomicResults'!
-CheckResult subclass: #CheckBenchmarkResult
-	instanceVariableNames: 'iterationsPerSecond prettyPrintForScenario'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-AtomicResults'!
-!classDefinition: 'CheckBenchmarkResult class' category: #'Assessments-Framework-AtomicResults'!
-CheckBenchmarkResult class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckBenchmarkAbstractExpectationNotice category: #'Assessments-Framework-AtomicResults'!
-CheckBenchmarkResult subclass: #CheckBenchmarkAbstractExpectationNotice
-	instanceVariableNames: 'expectedIterationsPerSecond'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-AtomicResults'!
-!classDefinition: 'CheckBenchmarkAbstractExpectationNotice class' category: #'Assessments-Framework-AtomicResults'!
-CheckBenchmarkAbstractExpectationNotice class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckBenchmarkExpectationFailure category: #'Assessments-Framework-AtomicResults'!
-CheckBenchmarkAbstractExpectationNotice subclass: #CheckBenchmarkExpectationFailure
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-AtomicResults'!
-!classDefinition: 'CheckBenchmarkExpectationFailure class' category: #'Assessments-Framework-AtomicResults'!
-CheckBenchmarkExpectationFailure class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckBenchmarkExpectationPass category: #'Assessments-Framework-AtomicResults'!
-CheckBenchmarkAbstractExpectationNotice subclass: #CheckBenchmarkExpectationPass
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-AtomicResults'!
-!classDefinition: 'CheckBenchmarkExpectationPass class' category: #'Assessments-Framework-AtomicResults'!
-CheckBenchmarkExpectationPass class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckError category: #'Assessments-Framework-AtomicResults'!
-CheckResult subclass: #CheckError
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-AtomicResults'!
-!classDefinition: 'CheckError class' category: #'Assessments-Framework-AtomicResults'!
-CheckError class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckFailure category: #'Assessments-Framework-AtomicResults'!
-CheckResult subclass: #CheckFailure
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-AtomicResults'!
-!classDefinition: 'CheckFailure class' category: #'Assessments-Framework-AtomicResults'!
-CheckFailure class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckValidationFailure category: #'Assessments-Framework-AtomicResults'!
-CheckFailure subclass: #CheckValidationFailure
-	instanceVariableNames: 'object aspect'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-AtomicResults'!
-!classDefinition: 'CheckValidationFailure class' category: #'Assessments-Framework-AtomicResults'!
-CheckValidationFailure class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckNotice category: #'Assessments-Framework-AtomicResults'!
-CheckResult subclass: #CheckNotice
-	instanceVariableNames: 'notice'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-AtomicResults'!
-!classDefinition: 'CheckNotice class' category: #'Assessments-Framework-AtomicResults'!
-CheckNotice class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckPass category: #'Assessments-Framework-AtomicResults'!
-CheckResult subclass: #CheckPass
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-AtomicResults'!
-!classDefinition: 'CheckPass class' category: #'Assessments-Framework-AtomicResults'!
-CheckPass class
-	instanceVariableNames: ''!
-
-!classDefinition: #CheckSkip category: #'Assessments-Framework-AtomicResults'!
-CheckResult subclass: #CheckSkip
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-AtomicResults'!
-!classDefinition: 'CheckSkip class' category: #'Assessments-Framework-AtomicResults'!
-CheckSkip class
-	instanceVariableNames: ''!
-
-!classDefinition: #PrerequisiteResult category: #'Assessments-Framework-AtomicResults'!
-AbstractResult subclass: #PrerequisiteResult
-	instanceVariableNames: 'prerequisite'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-AtomicResults'!
-!classDefinition: 'PrerequisiteResult class' category: #'Assessments-Framework-AtomicResults'!
-PrerequisiteResult class
-	instanceVariableNames: ''!
-
-!classDefinition: #PrerequisiteStartFailure category: #'Assessments-Framework-AtomicResults'!
-PrerequisiteResult subclass: #PrerequisiteStartFailure
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-AtomicResults'!
-!classDefinition: 'PrerequisiteStartFailure class' category: #'Assessments-Framework-AtomicResults'!
-PrerequisiteStartFailure class
-	instanceVariableNames: ''!
-
-!classDefinition: #PrerequisiteStopFailure category: #'Assessments-Framework-AtomicResults'!
-PrerequisiteResult subclass: #PrerequisiteStopFailure
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Assessments-Framework-AtomicResults'!
-!classDefinition: 'PrerequisiteStopFailure class' category: #'Assessments-Framework-AtomicResults'!
-PrerequisiteStopFailure class
-	instanceVariableNames: ''!
-
 !classDefinition: #AssessmentsPortabilityService category: #'Assessments-Framework-Portability'!
 Object subclass: #AssessmentsPortabilityService
 	instanceVariableNames: ''
@@ -1900,125 +1400,553 @@ Check subclass: #SingleThreadRunToFailureCheck
 SingleThreadRunToFailureCheck class
 	instanceVariableNames: ''!
 
+!classDefinition: #CheckRepositoryMetaclass category: #'Assessments-Framework-TestBridge'!
+Object subclass: #CheckRepositoryMetaclass
+	instanceVariableNames: 'classToImpersonate superclass subclasses'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-TestBridge'!
+!classDefinition: 'CheckRepositoryMetaclass class' category: #'Assessments-Framework-TestBridge'!
+CheckRepositoryMetaclass class
+	instanceVariableNames: ''!
 
-!AssessmentNotification commentStamp: '<historical>' prior: 0!
+!classDefinition: #AbstractSUnitCheckRepositoryMetaclass category: #'Assessments-Framework-TestBridge'!
+CheckRepositoryMetaclass subclass: #AbstractSUnitCheckRepositoryMetaclass
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-TestBridge'!
+!classDefinition: 'AbstractSUnitCheckRepositoryMetaclass class' category: #'Assessments-Framework-TestBridge'!
+AbstractSUnitCheckRepositoryMetaclass class
+	instanceVariableNames: ''!
+
+!classDefinition: #SUnitCheckRepositoryMetaclass category: #'Assessments-Framework-TestBridge'!
+AbstractSUnitCheckRepositoryMetaclass subclass: #SUnitCheckRepositoryMetaclass
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-TestBridge'!
+!classDefinition: 'SUnitCheckRepositoryMetaclass class' category: #'Assessments-Framework-TestBridge'!
+SUnitCheckRepositoryMetaclass class
+	instanceVariableNames: ''!
+
+!classDefinition: #SUnitCheckRepositoryRootMetaclass category: #'Assessments-Framework-TestBridge'!
+SUnitCheckRepositoryMetaclass subclass: #SUnitCheckRepositoryRootMetaclass
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-TestBridge'!
+!classDefinition: 'SUnitCheckRepositoryRootMetaclass class' category: #'Assessments-Framework-TestBridge'!
+SUnitCheckRepositoryRootMetaclass class
+	instanceVariableNames: ''!
+
+!classDefinition: #SUnitVMAbstractCheckRepositoryMetaclass category: #'Assessments-Framework-TestBridge'!
+SUnitCheckRepositoryMetaclass subclass: #SUnitVMAbstractCheckRepositoryMetaclass
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-TestBridge'!
+!classDefinition: 'SUnitVMAbstractCheckRepositoryMetaclass class' category: #'Assessments-Framework-TestBridge'!
+SUnitVMAbstractCheckRepositoryMetaclass class
+	instanceVariableNames: ''!
+
+!classDefinition: #SUnitVMBenchmarkCheckRepositoryMetaclass category: #'Assessments-Framework-TestBridge'!
+SUnitVMAbstractCheckRepositoryMetaclass subclass: #SUnitVMBenchmarkCheckRepositoryMetaclass
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-TestBridge'!
+!classDefinition: 'SUnitVMBenchmarkCheckRepositoryMetaclass class' category: #'Assessments-Framework-TestBridge'!
+SUnitVMBenchmarkCheckRepositoryMetaclass class
+	instanceVariableNames: ''!
+
+!classDefinition: #SUnitVMCheckRepositoryMetaclass category: #'Assessments-Framework-TestBridge'!
+SUnitVMAbstractCheckRepositoryMetaclass subclass: #SUnitVMCheckRepositoryMetaclass
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-TestBridge'!
+!classDefinition: 'SUnitVMCheckRepositoryMetaclass class' category: #'Assessments-Framework-TestBridge'!
+SUnitVMCheckRepositoryMetaclass class
+	instanceVariableNames: ''!
+
+!classDefinition: #SUnitVMValidatorCheckRepositoryMetaclass category: #'Assessments-Framework-TestBridge'!
+SUnitVMAbstractCheckRepositoryMetaclass subclass: #SUnitVMValidatorCheckRepositoryMetaclass
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-TestBridge'!
+!classDefinition: 'SUnitVMValidatorCheckRepositoryMetaclass class' category: #'Assessments-Framework-TestBridge'!
+SUnitVMValidatorCheckRepositoryMetaclass class
+	instanceVariableNames: ''!
+
+!classDefinition: #SUnitTooCheckRepositoryMetaclass category: #'Assessments-Framework-TestBridge'!
+AbstractSUnitCheckRepositoryMetaclass subclass: #SUnitTooCheckRepositoryMetaclass
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-TestBridge'!
+!classDefinition: 'SUnitTooCheckRepositoryMetaclass class' category: #'Assessments-Framework-TestBridge'!
+SUnitTooCheckRepositoryMetaclass class
+	instanceVariableNames: ''!
+
+!classDefinition: #SUnitTooCheckRepositoryRootMetaclass category: #'Assessments-Framework-TestBridge'!
+SUnitTooCheckRepositoryMetaclass subclass: #SUnitTooCheckRepositoryRootMetaclass
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-TestBridge'!
+!classDefinition: 'SUnitTooCheckRepositoryRootMetaclass class' category: #'Assessments-Framework-TestBridge'!
+SUnitTooCheckRepositoryRootMetaclass class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentsEvaluator category: #'Assessments-Tools'!
+Object subclass: #AssessmentsEvaluator
+	instanceVariableNames: 'statusBarText'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools'!
+!classDefinition: 'AssessmentsEvaluator class' category: #'Assessments-Tools'!
+AssessmentsEvaluator class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentsChecklistEvaluator category: #'Assessments-Tools'!
+AssessmentsEvaluator subclass: #AssessmentsChecklistEvaluator
+	instanceVariableNames: 'checklists selectedChecklist checkRepositoryRoot'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools'!
+!classDefinition: 'AssessmentsChecklistEvaluator class' category: #'Assessments-Tools'!
+AssessmentsChecklistEvaluator class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentsResultsEvaluator category: #'Assessments-Tools'!
+AssessmentsEvaluator subclass: #AssessmentsResultsEvaluator
+	instanceVariableNames: 'assessment result results selectedResult'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools'!
+!classDefinition: 'AssessmentsResultsEvaluator class' category: #'Assessments-Tools'!
+AssessmentsResultsEvaluator class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentNotification category: #'Assessments-Framework-Exceptions'!
+Notification subclass: #AssessmentNotification
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-Exceptions'!
+!classDefinition: 'AssessmentNotification class' category: #'Assessments-Framework-Exceptions'!
+AssessmentNotification class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentMalfunctionNotification category: #'Assessments-Framework-Exceptions'!
+AssessmentNotification subclass: #AssessmentMalfunctionNotification
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-Exceptions'!
+!classDefinition: 'AssessmentMalfunctionNotification class' category: #'Assessments-Framework-Exceptions'!
+AssessmentMalfunctionNotification class
+	instanceVariableNames: ''!
+
+!classDefinition: #CheckAbstractFailureNotification category: #'Assessments-Framework-Exceptions'!
+AssessmentNotification subclass: #CheckAbstractFailureNotification
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-Exceptions'!
+!classDefinition: 'CheckAbstractFailureNotification class' category: #'Assessments-Framework-Exceptions'!
+CheckAbstractFailureNotification class
+	instanceVariableNames: ''!
+
+!classDefinition: #CheckFailureNotification category: #'Assessments-Framework-Exceptions'!
+CheckAbstractFailureNotification subclass: #CheckFailureNotification
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-Exceptions'!
+!classDefinition: 'CheckFailureNotification class' category: #'Assessments-Framework-Exceptions'!
+CheckFailureNotification class
+	instanceVariableNames: ''!
+
+!classDefinition: #CheckSkipNotification category: #'Assessments-Framework-Exceptions'!
+CheckFailureNotification subclass: #CheckSkipNotification
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-Exceptions'!
+!classDefinition: 'CheckSkipNotification class' category: #'Assessments-Framework-Exceptions'!
+CheckSkipNotification class
+	instanceVariableNames: ''!
+
+!classDefinition: #CheckValidationFailureNotification category: #'Assessments-Framework-Exceptions'!
+CheckFailureNotification subclass: #CheckValidationFailureNotification
+	instanceVariableNames: 'object aspect'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-Exceptions'!
+!classDefinition: 'CheckValidationFailureNotification class' category: #'Assessments-Framework-Exceptions'!
+CheckValidationFailureNotification class
+	instanceVariableNames: ''!
+
+!classDefinition: #CheckResumableFailureNotification category: #'Assessments-Framework-Exceptions'!
+CheckAbstractFailureNotification subclass: #CheckResumableFailureNotification
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-Exceptions'!
+!classDefinition: 'CheckResumableFailureNotification class' category: #'Assessments-Framework-Exceptions'!
+CheckResumableFailureNotification class
+	instanceVariableNames: ''!
+
+!classDefinition: #CheckBenchmarkMeasurementNotification category: #'Assessments-Framework-Exceptions'!
+AssessmentNotification subclass: #CheckBenchmarkMeasurementNotification
+	instanceVariableNames: 'iterationsPerSecond prettyPrintForScenario'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-Exceptions'!
+!classDefinition: 'CheckBenchmarkMeasurementNotification class' category: #'Assessments-Framework-Exceptions'!
+CheckBenchmarkMeasurementNotification class
+	instanceVariableNames: ''!
+
+!classDefinition: #CheckBenchmarkAbstractExpectationNotification category: #'Assessments-Framework-Exceptions'!
+CheckBenchmarkMeasurementNotification subclass: #CheckBenchmarkAbstractExpectationNotification
+	instanceVariableNames: 'expectedIterationsPerSecond'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-Exceptions'!
+!classDefinition: 'CheckBenchmarkAbstractExpectationNotification class' category: #'Assessments-Framework-Exceptions'!
+CheckBenchmarkAbstractExpectationNotification class
+	instanceVariableNames: ''!
+
+!classDefinition: #CheckBenchmarkExpectationFailedNotification category: #'Assessments-Framework-Exceptions'!
+CheckBenchmarkAbstractExpectationNotification subclass: #CheckBenchmarkExpectationFailedNotification
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-Exceptions'!
+!classDefinition: 'CheckBenchmarkExpectationFailedNotification class' category: #'Assessments-Framework-Exceptions'!
+CheckBenchmarkExpectationFailedNotification class
+	instanceVariableNames: ''!
+
+!classDefinition: #CheckBenchmarkExpectationMetNotification category: #'Assessments-Framework-Exceptions'!
+CheckBenchmarkAbstractExpectationNotification subclass: #CheckBenchmarkExpectationMetNotification
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-Exceptions'!
+!classDefinition: 'CheckBenchmarkExpectationMetNotification class' category: #'Assessments-Framework-Exceptions'!
+CheckBenchmarkExpectationMetNotification class
+	instanceVariableNames: ''!
+
+!classDefinition: #CheckNoticeNotification category: #'Assessments-Framework-Exceptions'!
+AssessmentNotification subclass: #CheckNoticeNotification
+	instanceVariableNames: 'notice'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-Exceptions'!
+!classDefinition: 'CheckNoticeNotification class' category: #'Assessments-Framework-Exceptions'!
+CheckNoticeNotification class
+	instanceVariableNames: ''!
+
+!classDefinition: #CheckPassNotification category: #'Assessments-Framework-Exceptions'!
+AssessmentNotification subclass: #CheckPassNotification
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-Exceptions'!
+!classDefinition: 'CheckPassNotification class' category: #'Assessments-Framework-Exceptions'!
+CheckPassNotification class
+	instanceVariableNames: ''!
+
+!classDefinition: #CheckBenchmarkPassNotification category: #'Assessments-Framework-Exceptions'!
+CheckPassNotification subclass: #CheckBenchmarkPassNotification
+	instanceVariableNames: 'prettyPrintForScenario'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-Exceptions'!
+!classDefinition: 'CheckBenchmarkPassNotification class' category: #'Assessments-Framework-Exceptions'!
+CheckBenchmarkPassNotification class
+	instanceVariableNames: ''!
+
+!classDefinition: #PrerequisiteFailureNotification category: #'Assessments-Framework-Exceptions'!
+AssessmentNotification subclass: #PrerequisiteFailureNotification
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-Exceptions'!
+!classDefinition: 'PrerequisiteFailureNotification class' category: #'Assessments-Framework-Exceptions'!
+PrerequisiteFailureNotification class
+	instanceVariableNames: ''!
+
+!classDefinition: #ResultAdoptionNotification category: #'Assessments-Framework-Exceptions'!
+AssessmentNotification subclass: #ResultAdoptionNotification
+	instanceVariableNames: 'assessmentResult'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Framework-Exceptions'!
+!classDefinition: 'ResultAdoptionNotification class' category: #'Assessments-Framework-Exceptions'!
+ResultAdoptionNotification class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentsWindow category: #'Assessments-Tools'!
+SystemWindow subclass: #AssessmentsWindow
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools'!
+!classDefinition: 'AssessmentsWindow class' category: #'Assessments-Tools'!
+AssessmentsWindow class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentsChecklistEvaluatorWindow category: #'Assessments-Tools'!
+AssessmentsWindow subclass: #AssessmentsChecklistEvaluatorWindow
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools'!
+!classDefinition: 'AssessmentsChecklistEvaluatorWindow class' category: #'Assessments-Tools'!
+AssessmentsChecklistEvaluatorWindow class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentsResultsEvaluatorWindow category: #'Assessments-Tools'!
+AssessmentsWindow subclass: #AssessmentsResultsEvaluatorWindow
+	instanceVariableNames: 'resultTree'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools'!
+!classDefinition: 'AssessmentsResultsEvaluatorWindow class' category: #'Assessments-Tools'!
+AssessmentsResultsEvaluatorWindow class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentsListItemWrapper category: #'Assessments-Tools-Support'!
+ListItemWrapper subclass: #AssessmentsListItemWrapper
+	instanceVariableNames: 'displayString contents'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools-Support'!
+!classDefinition: 'AssessmentsListItemWrapper class' category: #'Assessments-Tools-Support'!
+AssessmentsListItemWrapper class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentAbstractResultUIListItem category: #'Assessments-Tools-Support'!
+AssessmentsListItemWrapper subclass: #AssessmentAbstractResultUIListItem
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools-Support'!
+!classDefinition: 'AssessmentAbstractResultUIListItem class' category: #'Assessments-Tools-Support'!
+AssessmentAbstractResultUIListItem class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentResultUICheckResultListItem category: #'Assessments-Tools-Support'!
+AssessmentAbstractResultUIListItem subclass: #AssessmentResultUICheckResultListItem
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools-Support'!
+!classDefinition: 'AssessmentResultUICheckResultListItem class' category: #'Assessments-Tools-Support'!
+AssessmentResultUICheckResultListItem class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentResultUICheckResult category: #'Assessments-Tools-Support'!
+AssessmentResultUICheckResultListItem subclass: #AssessmentResultUICheckResult
+	instanceVariableNames: 'checkResult'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools-Support'!
+!classDefinition: 'AssessmentResultUICheckResult class' category: #'Assessments-Tools-Support'!
+AssessmentResultUICheckResult class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentResultUICompositeResult category: #'Assessments-Tools-Support'!
+AssessmentResultUICheckResultListItem subclass: #AssessmentResultUICompositeResult
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools-Support'!
+!classDefinition: 'AssessmentResultUICompositeResult class' category: #'Assessments-Tools-Support'!
+AssessmentResultUICompositeResult class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentResultUIResultFilterNode category: #'Assessments-Tools-Support'!
+AssessmentResultUICompositeResult subclass: #AssessmentResultUIResultFilterNode
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools-Support'!
+!classDefinition: 'AssessmentResultUIResultFilterNode class' category: #'Assessments-Tools-Support'!
+AssessmentResultUIResultFilterNode class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentResultUIResultFilter category: #'Assessments-Tools-Support'!
+AssessmentResultUIResultFilterNode subclass: #AssessmentResultUIResultFilter
+	instanceVariableNames: 'result'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools-Support'!
+!classDefinition: 'AssessmentResultUIResultFilter class' category: #'Assessments-Tools-Support'!
+AssessmentResultUIResultFilter class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentResultUIResultFilterOthers category: #'Assessments-Tools-Support'!
+AssessmentResultUIResultFilter subclass: #AssessmentResultUIResultFilterOthers
+	instanceVariableNames: 'classificationTag'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools-Support'!
+!classDefinition: 'AssessmentResultUIResultFilterOthers class' category: #'Assessments-Tools-Support'!
+AssessmentResultUIResultFilterOthers class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentResultUIResultFilterPreset category: #'Assessments-Tools-Support'!
+AssessmentResultUIResultFilter subclass: #AssessmentResultUIResultFilterPreset
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools-Support'!
+!classDefinition: 'AssessmentResultUIResultFilterPreset class' category: #'Assessments-Tools-Support'!
+AssessmentResultUIResultFilterPreset class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentResultUIResultFilterErrors category: #'Assessments-Tools-Support'!
+AssessmentResultUIResultFilterPreset subclass: #AssessmentResultUIResultFilterErrors
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools-Support'!
+!classDefinition: 'AssessmentResultUIResultFilterErrors class' category: #'Assessments-Tools-Support'!
+AssessmentResultUIResultFilterErrors class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentResultUIResultFilterFailures category: #'Assessments-Tools-Support'!
+AssessmentResultUIResultFilterPreset subclass: #AssessmentResultUIResultFilterFailures
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools-Support'!
+!classDefinition: 'AssessmentResultUIResultFilterFailures class' category: #'Assessments-Tools-Support'!
+AssessmentResultUIResultFilterFailures class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentResultUIResultFilterPasses category: #'Assessments-Tools-Support'!
+AssessmentResultUIResultFilterPreset subclass: #AssessmentResultUIResultFilterPasses
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools-Support'!
+!classDefinition: 'AssessmentResultUIResultFilterPasses class' category: #'Assessments-Tools-Support'!
+AssessmentResultUIResultFilterPasses class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentResultUIResultFilterBenchmarkPasses category: #'Assessments-Tools-Support'!
+AssessmentResultUIResultFilterPasses subclass: #AssessmentResultUIResultFilterBenchmarkPasses
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools-Support'!
+!classDefinition: 'AssessmentResultUIResultFilterBenchmarkPasses class' category: #'Assessments-Tools-Support'!
+AssessmentResultUIResultFilterBenchmarkPasses class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentResultUIResultFilterRoot category: #'Assessments-Tools-Support'!
+AssessmentResultUIResultFilterNode subclass: #AssessmentResultUIResultFilterRoot
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools-Support'!
+!classDefinition: 'AssessmentResultUIResultFilterRoot class' category: #'Assessments-Tools-Support'!
+AssessmentResultUIResultFilterRoot class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentResultUIResultPerClassification category: #'Assessments-Tools-Support'!
+AssessmentResultUICompositeResult subclass: #AssessmentResultUIResultPerClassification
+	instanceVariableNames: 'classification'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools-Support'!
+!classDefinition: 'AssessmentResultUIResultPerClassification class' category: #'Assessments-Tools-Support'!
+AssessmentResultUIResultPerClassification class
+	instanceVariableNames: ''!
+
+!classDefinition: #CheckBenchmarkResultUIListItem category: #'Assessments-Tools-Support'!
+AssessmentAbstractResultUIListItem subclass: #CheckBenchmarkResultUIListItem
+	instanceVariableNames: 'result'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools-Support'!
+!classDefinition: 'CheckBenchmarkResultUIListItem class' category: #'Assessments-Tools-Support'!
+CheckBenchmarkResultUIListItem class
+	instanceVariableNames: ''!
+
+!classDefinition: #CheckBenchmarkExpectationUIListItem category: #'Assessments-Tools-Support'!
+CheckBenchmarkResultUIListItem subclass: #CheckBenchmarkExpectationUIListItem
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools-Support'!
+!classDefinition: 'CheckBenchmarkExpectationUIListItem class' category: #'Assessments-Tools-Support'!
+CheckBenchmarkExpectationUIListItem class
+	instanceVariableNames: ''!
+
+!classDefinition: #AssessmentsChecklistWrapper category: #'Assessments-Tools-Support'!
+AssessmentsListItemWrapper subclass: #AssessmentsChecklistWrapper
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Assessments-Tools-Support'!
+!classDefinition: 'AssessmentsChecklistWrapper class' category: #'Assessments-Tools-Support'!
+AssessmentsChecklistWrapper class
+	instanceVariableNames: ''!
+
+
+!AbstractResult commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
-!AssessmentMalfunctionNotification commentStamp: '<historical>' prior: 0!
+!CheckResult commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
-!CheckAbstractFailureNotification commentStamp: '<historical>' prior: 0!
+!CheckBenchmarkPass commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
-!CheckFailureNotification commentStamp: '<historical>' prior: 0!
+!CheckBenchmarkResult commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
-!CheckSkipNotification commentStamp: '<historical>' prior: 0!
+!CheckBenchmarkAbstractExpectationNotice commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
-!CheckValidationFailureNotification commentStamp: '<historical>' prior: 0!
+!CheckBenchmarkExpectationFailure commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
-!CheckResumableFailureNotification commentStamp: '<historical>' prior: 0!
+!CheckBenchmarkExpectationPass commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
-!CheckBenchmarkMeasurementNotification commentStamp: '<historical>' prior: 0!
+!CheckError commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
-!CheckBenchmarkAbstractExpectationNotification commentStamp: '<historical>' prior: 0!
+!CheckFailure commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
-!CheckBenchmarkExpectationFailedNotification commentStamp: '<historical>' prior: 0!
+!CheckValidationFailure commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
-!CheckBenchmarkExpectationMetNotification commentStamp: '<historical>' prior: 0!
+!CheckNotice commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
-!CheckNoticeNotification commentStamp: '<historical>' prior: 0!
+!CheckPass commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
-!CheckPassNotification commentStamp: '<historical>' prior: 0!
+!CheckSkip commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
-!CheckBenchmarkPassNotification commentStamp: '<historical>' prior: 0!
+!PrerequisiteResult commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
-!PrerequisiteFailureNotification commentStamp: '<historical>' prior: 0!
+!PrerequisiteStartFailure commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
-!ResultAdoptionNotification commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentsWindow commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentsChecklistEvaluatorWindow commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentsResultsEvaluatorWindow commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentsListItemWrapper commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentAbstractResultUIListItem commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentResultUICheckResultListItem commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentResultUICheckResult commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentResultUICompositeResult commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentResultUIResultFilterNode commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentResultUIResultFilter commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentResultUIResultFilterOthers commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentResultUIResultFilterPreset commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentResultUIResultFilterErrors commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentResultUIResultFilterFailures commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentResultUIResultFilterPasses commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentResultUIResultFilterBenchmarkPasses commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentResultUIResultFilterRoot commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentResultUIResultPerClassification commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!CheckBenchmarkResultUIListItem commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!CheckBenchmarkExpectationUIListItem commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentsChecklistWrapper commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentsEvaluator commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentsChecklistEvaluator commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AssessmentsResultsEvaluator commentStamp: '<historical>' prior: 0!
+!PrerequisiteStopFailure commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
 !AbstractCustomChecklist commentStamp: '<historical>' prior: 0!
@@ -2264,84 +2192,6 @@ See package comments for more information.!
 !SUnitVMValidatorTestCase commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
-!CheckRepositoryMetaclass commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AbstractSUnitCheckRepositoryMetaclass commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!SUnitCheckRepositoryMetaclass commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!SUnitCheckRepositoryRootMetaclass commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!SUnitVMAbstractCheckRepositoryMetaclass commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!SUnitVMBenchmarkCheckRepositoryMetaclass commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!SUnitVMCheckRepositoryMetaclass commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!SUnitVMValidatorCheckRepositoryMetaclass commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!SUnitTooCheckRepositoryMetaclass commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!SUnitTooCheckRepositoryRootMetaclass commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!AbstractResult commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!CheckResult commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!CheckBenchmarkPass commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!CheckBenchmarkResult commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!CheckBenchmarkAbstractExpectationNotice commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!CheckBenchmarkExpectationFailure commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!CheckBenchmarkExpectationPass commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!CheckError commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!CheckFailure commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!CheckValidationFailure commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!CheckNotice commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!CheckPass commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!CheckSkip commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!PrerequisiteResult commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!PrerequisiteStartFailure commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
-!PrerequisiteStopFailure commentStamp: '<historical>' prior: 0!
-See package comments for more information.!
-
 !AssessmentsPortabilityService commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
@@ -2408,1484 +2258,534 @@ See package comments for more information.!
 !SingleThreadRunToFailureCheck commentStamp: '<historical>' prior: 0!
 See package comments for more information.!
 
-!AssessmentNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-handlerActionForEvaluation
+!CheckRepositoryMetaclass commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	self resume! !
+!AbstractSUnitCheckRepositoryMetaclass commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!AssessmentNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-handlerActionForPrerequisiteEvaluation
+!SUnitCheckRepositoryMetaclass commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	self return: false! !
+!SUnitCheckRepositoryRootMetaclass commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!AssessmentNotification methodsFor: 'assessments' stamp: 'SqR 2/22/2015 18:58'!
-messageTextForHandling
+!SUnitVMAbstractCheckRepositoryMetaclass commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	^self messageText! !
+!SUnitVMBenchmarkCheckRepositoryMetaclass commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!AssessmentMalfunctionNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-defaultAction
+!SUnitVMCheckRepositoryMetaclass commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	^self noHandler! !
+!SUnitVMValidatorCheckRepositoryMetaclass commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!AssessmentMalfunctionNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-handlerActionForEvaluation
+!SUnitTooCheckRepositoryMetaclass commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	self pass! !
+!SUnitTooCheckRepositoryRootMetaclass commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!AssessmentMalfunctionNotification methodsFor: 'assessments' stamp: 'SqR 3/24/2015 19:02'!
-preventsCheckSuccess
+!AssessmentsEvaluator commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	^true! !
+!AssessmentsChecklistEvaluator commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!AssessmentMalfunctionNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-resignalAsAssessmentMalfunctionNotification
+!AssessmentsResultsEvaluator commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	self pass! !
+!AssessmentNotification commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!CheckAbstractFailureNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-defaultAction
+!AssessmentMalfunctionNotification commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	^self noHandler! !
+!CheckAbstractFailureNotification commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!CheckAbstractFailureNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-occurredWhileEvaluating: aCheck
-inTheContextOf: anEvaluationContext
+!CheckFailureNotification commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	| failure |
-	failure := self resultFor: aCheck.
-	anEvaluationContext addResult: failure.
-	super
-		occurredWhileEvaluating: aCheck
-		inTheContextOf: anEvaluationContext! !
+!CheckSkipNotification commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!CheckAbstractFailureNotification methodsFor: 'assessments' stamp: 'SqR 3/24/2015 19:02'!
-preventsCheckSuccess
+!CheckValidationFailureNotification commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	^true! !
+!CheckResumableFailureNotification commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!CheckAbstractFailureNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-resultFor: aCheck
+!CheckBenchmarkMeasurementNotification commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	| failure |
-	failure := aCheck newCheckFailure.
-	failure prettyPrint: self messageTextForHandling.
-	^failure! !
+!CheckBenchmarkAbstractExpectationNotification commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!CheckFailureNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-handlerActionForEvaluation
+!CheckBenchmarkExpectationFailedNotification commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	self return! !
+!CheckBenchmarkExpectationMetNotification commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!CheckSkipNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-resultFor: aCheck
+!CheckNoticeNotification commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	| failure |
-	failure := aCheck newCheckSkip.
-	failure prettyPrint: self messageTextForHandling.
-	^failure! !
+!CheckPassNotification commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!CheckValidationFailureNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-aspect
+!CheckBenchmarkPassNotification commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	^aspect! !
+!PrerequisiteFailureNotification commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!CheckValidationFailureNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-object
+!ResultAdoptionNotification commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	^object! !
+!AssessmentsWindow commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!CheckValidationFailureNotification methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-aspect: anObject
+!AssessmentsChecklistEvaluatorWindow commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	aspect := anObject! !
+!AssessmentsResultsEvaluatorWindow commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!CheckValidationFailureNotification methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-object: anObject
+!AssessmentsListItemWrapper commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	object := anObject! !
+!AssessmentAbstractResultUIListItem commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!CheckValidationFailureNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-resultFor: aCheck
+!AssessmentResultUICheckResultListItem commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	| failure |
-	failure := aCheck newCheckValidationFailure.
-	failure prettyPrint: self messageTextForHandling.
-	failure object: self object.
-	failure aspect: self aspect.
-	^failure! !
+!AssessmentResultUICheckResult commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!CheckBenchmarkMeasurementNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-iterationsPerSecond
+!AssessmentResultUICompositeResult commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	^iterationsPerSecond! !
+!AssessmentResultUIResultFilterNode commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!CheckBenchmarkMeasurementNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-prettyPrintForScenario
+!AssessmentResultUIResultFilter commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	^prettyPrintForScenario! !
+!AssessmentResultUIResultFilterOthers commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!CheckBenchmarkMeasurementNotification methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-iterationsPerSecond: anObject
+!AssessmentResultUIResultFilterPreset commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	iterationsPerSecond := anObject! !
+!AssessmentResultUIResultFilterErrors commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!CheckBenchmarkMeasurementNotification methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-prettyPrintForScenario: anObject
+!AssessmentResultUIResultFilterFailures commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	prettyPrintForScenario := anObject! !
+!AssessmentResultUIResultFilterPasses commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!CheckBenchmarkMeasurementNotification methodsFor: 'private - assessments' stamp: 'SqR 3/8/2015 18:10'!
-newResultFor: aCheck
+!AssessmentResultUIResultFilterBenchmarkPasses commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	^aCheck newCheckBenchmarkResult! !
+!AssessmentResultUIResultFilterRoot commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!CheckBenchmarkMeasurementNotification methodsFor: 'private - assessments' stamp: 'SqR 3/8/2015 18:10'!
-resultFor: aCheck
+!AssessmentResultUIResultPerClassification commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	| newResult |
-	newResult := self newResultFor: aCheck.
-	newResult prettyPrint: self messageTextForHandling.
-	newResult prettyPrintForScenario: self prettyPrintForScenario.
-	newResult iterationsPerSecond: self iterationsPerSecond.
-	^newResult! !
+!CheckBenchmarkResultUIListItem commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!CheckBenchmarkMeasurementNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-occurredWhileEvaluating: aCheck
-inTheContextOf: anEvaluationContext
+!CheckBenchmarkExpectationUIListItem commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-	| newResult |
-	newResult := self resultFor: aCheck.
-	anEvaluationContext addResult: newResult.
-	super
-		occurredWhileEvaluating: aCheck
-		inTheContextOf: anEvaluationContext! !
+!AssessmentsChecklistWrapper commentStamp: '<historical>' prior: 0!
+See package comments for more information.!
 
-!CheckBenchmarkAbstractExpectationNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-expectedIterationsPerSecond
-
-	^expectedIterationsPerSecond! !
-
-!CheckBenchmarkAbstractExpectationNotification methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-expectedIterationsPerSecond: anObject
-
-	expectedIterationsPerSecond := anObject! !
-
-!CheckBenchmarkAbstractExpectationNotification methodsFor: 'private - assessments' stamp: 'SqR 3/8/2015 18:10'!
-resultFor: aCheck
-
-	| newResult |
-	newResult := super resultFor: aCheck.
-	newResult expectedIterationsPerSecond: self expectedIterationsPerSecond.
-	^newResult! !
-
-!CheckBenchmarkExpectationFailedNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-newResultFor: aCheck
-
-	^aCheck newCheckBenchmarkExpectationFailed! !
-
-!CheckBenchmarkExpectationMetNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-newResultFor: aCheck
-
-	^aCheck newCheckBenchmarkExpectationMet! !
-
-!CheckNoticeNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-notice
-
-	^notice! !
-
-!CheckNoticeNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-notice: anObject
-
-	notice := anObject! !
-
-!CheckNoticeNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-noticeFor: aCheck
-
-	^aCheck newCheckNotice! !
-
-!CheckNoticeNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-occurredWhileEvaluating: aCheck
-inTheContextOf: anEvaluationContext
-
-	| newNotice |
-	newNotice := self noticeFor: aCheck.
-	newNotice notice: self notice.
-	newNotice prettyPrint: self messageTextForHandling.
-	anEvaluationContext addResult: newNotice.
-	super
-		occurredWhileEvaluating: aCheck
-		inTheContextOf: anEvaluationContext! !
-
-!CheckPassNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-occurredWhileEvaluating: aCheck
-inTheContextOf: anEvaluationContext
-
-	self recordPassFor: aCheck in: anEvaluationContext.
-	super
-		occurredWhileEvaluating: aCheck
-		inTheContextOf: anEvaluationContext! !
-
-!CheckPassNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-recordPassFor: aCheck in: anEvaluationContext
-
-	| pass |
-	pass := aCheck newCheckPass.
-	pass prettyPrint: self messageTextForHandling.
-	anEvaluationContext addResult: pass! !
-
-!CheckBenchmarkPassNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-prettyPrintForScenario
-
-	^prettyPrintForScenario! !
-
-!CheckBenchmarkPassNotification methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-prettyPrintForScenario: anObject
-
-	prettyPrintForScenario := anObject! !
-
-!CheckBenchmarkPassNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-recordPassFor: aCheck in: anEvaluationContext
-
-	| pass |
-	pass := aCheck newCheckBenchmarkPass.
-	pass prettyPrint: self messageTextForHandling.
-	pass prettyPrintForScenario: self prettyPrintForScenario.
-	anEvaluationContext addResult: pass! !
-
-!PrerequisiteFailureNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-handlerActionForPrerequisiteEvaluation
-
-	self return: false! !
-
-!PrerequisiteFailureNotification methodsFor: 'assessments' stamp: 'SqR 3/24/2015 19:02'!
-preventsCheckSuccess
-
-	^true! !
-
-!ResultAdoptionNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-assessmentResult
-
-	^assessmentResult! !
-
-!ResultAdoptionNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-assessmentResult: anObject
-
-	assessmentResult := anObject! !
-
-!ResultAdoptionNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-occurredWhileEvaluating: aCheck
-inTheContextOf: anEvaluationContext
-
-	anEvaluationContext adoptResult: self assessmentResult.
-	super
-		occurredWhileEvaluating: aCheck
-		inTheContextOf: anEvaluationContext! !
-
-!AssessmentsWindow methodsFor: 'GUI building' stamp: 'SqR 9/12/2015 11:27'!
-buildLayoutMorph
-
-	^LayoutMorph newColumn! !
-
-!AssessmentsWindow methodsFor: 'GUI building' stamp: 'sqr 5/25/2016 14:19'!
-buildMorphicWindow
-
-	| layout |
-	layout := self buildLayoutMorph.
-	self layoutMorph addMorph: layout! !
-
-!AssessmentsWindow methodsFor: 'GUI building' stamp: 'SqR 9/7/2015 16:57'!
-defaultStripeHeight
-
-	^40! !
-
-!AssessmentsWindow methodsFor: 'GUI building' stamp: 'sqr 5/25/2016 14:12'!
-minimumExtent
-
-	^400 @ 400! !
-
-!AssessmentsWindow methodsFor: 'GUI building' stamp: 'sqr 1/13/2016 21:56'!
-separatorHeight
-
-	^1! !
-
-!AssessmentsWindow methodsFor: 'GUI building' stamp: 'SqR 9/12/2015 11:37'!
-windowColor
-
-	| red green blue |
-	red := (self windowColorBaseRGB at: 1) raisedTo: (self windowColorPowers at: 1).
-	green := (self windowColorBaseRGB at: 2) raisedTo: (self windowColorPowers at: 2).
-	blue := (self windowColorBaseRGB at: 3) raisedTo: (self windowColorPowers at: 3).
-	^Color r: red g: green b: blue! !
-
-!AssessmentsWindow methodsFor: 'GUI building' stamp: 'SqR 9/12/2015 11:35'!
-windowColorBaseRGB
-
-	^#(0.2 0.9 0.2)! !
-
-!AssessmentsWindow methodsFor: 'GUI building' stamp: 'SqR 9/12/2015 11:34'!
-windowColorPowers
-
-	^#(1.0 1.0 1.0)! !
-
-!AssessmentsWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/7/2015 16:58'!
-buildMorphicButtonAction: anAction label: aLabel
-
-	^PluggableButtonMorph 
-		model: self
-		stateGetter: nil
-		action: anAction
-		label: aLabel! !
-
-!AssessmentsWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/7/2015 16:59'!
-buildMorphicSeparator
-
-	^BoxedMorph new
-		color: Color black;
-		yourself! !
-
-!AssessmentsWindow methodsFor: 'GUI building - widgets' stamp: 'jmv 9/6/2017 10:01:25'!
-buildMorphicStatusBar
-
-	| answer |
-	answer := TextModelMorph
-		textProvider: self model
-		textGetter: #statusBarText.
-	answer hideScrollBarsIndefinitely.
-	answer disableEditing.
-	^answer! !
-
-!AssessmentsWindow methodsFor: 'actions' stamp: 'sqr 11/2/2019 19:43:22'!
-cursorWaitWhile: aBlock
-
-	Cursor waitCursor showWhile: [aBlock value]! !
-
-!AssessmentsWindow methodsFor: 'actions' stamp: 'SqR 9/7/2015 16:59'!
-refresh
-
-	self model refresh! !
-
-!AssessmentsWindow class methodsFor: 'subclass responsibility' stamp: 'SqR 9/7/2015 17:02'!
-newEvaluator
-
-	self subclassResponsibility! !
-
-!AssessmentsWindow class methodsFor: 'subclass responsibility' stamp: 'SqR 9/7/2015 17:10'!
-windowLabel
-
-	self subclassResponsibility! !
-
-!AssessmentsWindow class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:03'!
-openEvaluator
-
-	self openEvaluator: self newEvaluator! !
-
-!AssessmentsWindow class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:03'!
-openEvaluator: anEvaluator
-
-	self open: anEvaluator label: self windowLabel! !
-
-!AssessmentsChecklistEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/7/2015 15:30'!
-browse
-
-	self model selectedChecklistDo:
-		[:checklist |
-			checklist classAndSelectorForBrowsingDo:
-				[:class :selector | BrowserWindow fullOnClass: class selector: selector].
-		]! !
-
-!AssessmentsChecklistEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/7/2015 15:31'!
-browseHierarchy
-
-	self model selectedChecklistDo:
-		[:checklist |
-			checklist classAndSelectorForBrowsingDo:
-				[:class :selector | HierarchyBrowserWindow onClass: class selector: selector].
-		]! !
-
-!AssessmentsChecklistEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/7/2015 14:33'!
-evaluate
-
-	self cursorWaitWhile: [self model evaluate]! !
-
-!AssessmentsChecklistEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/7/2015 14:34'!
-evaluateAll
-
-	self cursorWaitWhile: [self model evaluateAll]! !
-
-!AssessmentsChecklistEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/7/2015 14:34'!
-evaluateHierarchy
-
-	self cursorWaitWhile: [self model evaluateHierarchy]! !
-
-!AssessmentsChecklistEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/7/2015 17:03'!
-spawn
-
-	self model selectedChecklistDo: [:checklist | self class openEvaluatorRootedAt: checklist]! !
-
-!AssessmentsChecklistEvaluatorWindow methodsFor: 'GUI building' stamp: 'sqr 5/25/2016 14:08'!
-buildLayoutMorph
-
-	^super buildLayoutMorph
-		addMorph: self buildMorphicChecklistTree proportionalWidth: 1.0;
-		addMorph: self buildMorphicSeparator fixedHeight: self separatorHeight;
-		addMorph: self buildMorphicStatusBar fixedHeight: self defaultStripeHeight;
-		addMorph: self buildMorphicSeparator fixedHeight: self separatorHeight;
-		addMorph: self buildMorphicButtons fixedHeight: self defaultStripeHeight;
-		yourself! !
-
-!AssessmentsChecklistEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/6/2015 01:33'!
-buildMorphicButtons
-
-	^LayoutMorph newRow
-		addMorph: self buildMorphicEvaluateButton proportionalWidth: 0.25;
-		addMorph: self buildMorphicEvaluateHierarchyButton proportionalWidth: 0.25;
-		addMorph: self buildMorphicEvaluateAllButton proportionalWidth: 0.25;
-		addMorph: self buildMorphicRefreshButton proportionalWidth: 0.25;
-		yourself! !
-
-!AssessmentsChecklistEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'jmv 5/17/2024 17:57:18'!
-buildMorphicChecklistTree
-
-	| answer |
-	answer := (HierarchicalListMorph
-		withModel: self model
-		listGetter: #checklists
-		indexGetter: #selectedChecklist
-		indexSetter: #selectedChecklist:)
-			mainView: self
-			menuGetter: #checklistMenu
-			keystrokeAction: nil.
-	answer autoDeselect: false.
-	answer autoExpand: true.
-	answer expandAll.
-	^answer! !
-
-!AssessmentsChecklistEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/6/2015 02:07'!
-buildMorphicEvaluateAllButton
-
-	^self buildMorphicButtonAction: #evaluateAll label: 'Evaluate All'! !
-
-!AssessmentsChecklistEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/6/2015 02:07'!
-buildMorphicEvaluateButton
-
-	^self buildMorphicButtonAction: #evaluate label: 'Evaluate'! !
-
-!AssessmentsChecklistEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/6/2015 02:07'!
-buildMorphicEvaluateHierarchyButton
-
-	^self buildMorphicButtonAction: #evaluateHierarchy label: 'Evaluate Hierarchy'! !
-
-!AssessmentsChecklistEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/6/2015 02:07'!
-buildMorphicRefreshButton
-
-	^self buildMorphicButtonAction: #refresh label: 'Refresh'! !
-
-!AssessmentsChecklistEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'jmv 5/14/2018 12:01:59'!
-checklistMenu
-
-	^MenuMorph new
-		defaultTarget: self;
-		addTitle: 'Checklist';
-		add: 'Browse...' action: #browse icon: #editFindReplaceIcon;
-		add: 'Hierarchy...' action: #browseHierarchy icon: #editFindReplaceIcon;
-		addLine;
-		add: 'Spawn...' action: #spawn icon: #goTopIcon;
-		yourself! !
-
-!AssessmentsChecklistEvaluatorWindow class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:01'!
-newEvaluator
-
-	^AssessmentsChecklistEvaluator new! !
-
-!AssessmentsChecklistEvaluatorWindow class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:03'!
-openEvaluatorRootedAt: aChecklist
-
-	| evaluator |
-	evaluator := self newEvaluator.
-	evaluator checkRepositoryRoot: aChecklist.
-	self openEvaluator: evaluator! !
-
-!AssessmentsChecklistEvaluatorWindow class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:02'!
-windowLabel
-
-	^'Checklist Evaluator'! !
-
-!AssessmentsResultsEvaluatorWindow methodsFor: 'actions' stamp: 'sqr 1/25/2016 15:43'!
-browse
-
-	self model selectedResultDo:
-		[:result |
-			result classAndSelectorForBrowsingDo:
-				[:class :selector | BrowserWindow fullOnClass: class selector: selector]
-		]! !
-
-!AssessmentsResultsEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/17/2015 02:44'!
-copyAllToClipboard
-
-	self privateCopyAsTextToClipboard: self model resultRoot! !
-
-!AssessmentsResultsEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/17/2015 02:42'!
-copyHierarchyToClipboard
-
-	self model selectedResultDo:
-		[:result | self privateCopyAsTextToClipboard: result]! !
-
-!AssessmentsResultsEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/17/2015 02:26'!
-debug
-
-	self model selectedResultDo:
-		[:result | [result debugResult] fork]! !
-
-!AssessmentsResultsEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/17/2015 03:18'!
-reEvaluate
-
-	self model reEvaluate.
-	self reExpandResultTree! !
-
-!AssessmentsResultsEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/17/2015 02:55'!
-runToFailure
-
-	self model selectedResultDo:
-		[:result |
-			[
-				| newResult |
-				newResult := result runResultToFailure.
-				newResult isEmpty not
-					:: and: [newResult allChecksPassed]
-					:: ifTrue: [self inform: 'No error occurred']
-			] fork
-		]! !
-
-!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building' stamp: 'sqr 5/25/2016 14:09'!
-buildLayoutMorph
-
-	| newResultTree |
-	newResultTree := self buildMorphicResultTree.
-	self resultTree: newResultTree.
-	^super buildLayoutMorph
-		addMorph: newResultTree proportionalWidth: 1.0;
-		addMorph: self buildMorphicSeparator fixedHeight: self separatorHeight;
-		addMorph: self buildMorphicStatusBar fixedHeight: self defaultStripeHeight;
-		addMorph: self buildMorphicSeparator fixedHeight: self separatorHeight;
-		addMorph: self buildMorphicButtons fixedHeight: self defaultStripeHeight;
-		yourself! !
-
-!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building' stamp: 'SqR 9/17/2015 03:11'!
-buildMorphicWindow
-
-	super buildMorphicWindow.
-	self reExpandResultTree! !
-
-!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building' stamp: 'SqR 9/12/2015 11:37'!
-windowColorPowers
-
-	^#(0.2 1.3 0.5)! !
-
-!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/12/2015 11:41'!
-buildMorphicButtons
-
-	^LayoutMorph newRow
-		addMorph: self buildMorphicDebugButton proportionalWidth: 0.33;
-		addMorph: self buildMorphicRunToFailureButton proportionalWidth: 0.33;
-		addMorph: self buildMorphicReEvaluateButton proportionalWidth: 0.33;
-		yourself! !
-
-!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/12/2015 11:41'!
-buildMorphicDebugButton
-
-	^self buildMorphicButtonAction: #debug label: 'Debug'! !
-
-!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/12/2015 11:41'!
-buildMorphicReEvaluateButton
-
-	^self buildMorphicButtonAction: #reEvaluate label: 'Reevaluate Assessment'! !
-
-!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'jmv 5/17/2024 17:57:33'!
-buildMorphicResultTree
-
-	| answer |
-	answer := (HierarchicalListMorph
-		withModel: self model
-		listGetter: #results
-		indexGetter: #selectedResult
-		indexSetter: #selectedResult:)
-			mainView: self
-			menuGetter: #resultMenu
-			keystrokeAction: nil.
-	answer autoDeselect: false.
-	answer autoExpand: false.
-	^answer! !
-
-!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/12/2015 11:41'!
-buildMorphicRunToFailureButton
-
-	^self buildMorphicButtonAction: #runToFailure label: 'Run to Failure'! !
-
-!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'jmv 5/14/2018 12:00:51'!
-resultMenu
-
-	^MenuMorph new
-		defaultTarget: self;
-		addTitle: 'Result';
-		add: 'Debug...' action: #debug icon: #debugIcon;
-		add: 'Run to Failure...' action: #runToFailure icon: #mediaPlaybackStartIcon;
-		addLine;
-		add: 'Browse...' action: #browse icon: #editFindReplaceIcon;
-		addLine;
-		add: 'Copy hierarchy as text to clipboard...' action: #copyHierarchyToClipboard icon: #copyIcon;
-		add: 'Copy all as text to clipboard...' action: #copyAllToClipboard icon: #copyIcon;
-		yourself! !
-
-!AssessmentsResultsEvaluatorWindow methodsFor: 'private - actions' stamp: 'SqR 9/17/2015 02:41'!
-privateCopyAsTextToClipboard: aCheckResult
-
-	| textBuffer |
-	textBuffer := String new writeStream.
-	aCheckResult printClipboardTextOn: textBuffer.
-	Clipboard storeObject: textBuffer contents! !
-
-!AssessmentsResultsEvaluatorWindow methodsFor: 'private - actions' stamp: 'SqR 9/17/2015 03:11'!
-reExpandResultTree
-
-	self resultTree expandAllAsPer:
-		[:each | each complexContents shouldExpandAutomaticallyWhenViewed]! !
-
-!AssessmentsResultsEvaluatorWindow methodsFor: 'private - accessing' stamp: 'SqR 9/17/2015 03:08'!
-resultTree
-
-	^resultTree! !
-
-!AssessmentsResultsEvaluatorWindow methodsFor: 'private - accessing' stamp: 'SqR 9/17/2015 03:09'!
-resultTree: aMorph
-
-	resultTree := aMorph! !
-
-!AssessmentsResultsEvaluatorWindow class methodsFor: 'instance creation' stamp: 'SqR 9/12/2015 11:27'!
-windowLabel
-
-	^'Results Evaluator'! !
-
-!AssessmentsListItemWrapper methodsFor: 'printing' stamp: 'SqR 9/12/2015 11:56'!
-newDisplayString
-
-	^self item printString! !
-
-!AssessmentsListItemWrapper methodsFor: 'printing' stamp: 'SqR 9/7/2015 16:48'!
+!AbstractResult methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
 printOn: aStream
 
-	aStream nextPutAll: self displayString! !
+	aStream nextPutAll: self class name.
+	aStream nextPut: $(.
+	self printResultDetailsOn: aStream.
+	aStream nextPut: $).
+	self printPrettyPrintDetailsOn: aStream! !
 
-!AssessmentsListItemWrapper methodsFor: 'converting' stamp: 'SqR 9/7/2015 16:49'!
-asString
+!AbstractResult methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
+printPrettyPrintDetailsOn: aStream
 
-	^self displayString! !
+	aStream nextPutAll: ': '.
+	aStream nextPutAll: self prettyPrint! !
 
-!AssessmentsListItemWrapper methodsFor: 'private' stamp: 'SqR 9/7/2015 16:48'!
-basicContents
-
-	^Array new! !
-
-!AssessmentsListItemWrapper methodsFor: 'testing' stamp: 'SqR 9/7/2015 16:48'!
-canBeDragged
-
-	^false! !
-
-!AssessmentsListItemWrapper methodsFor: 'testing' stamp: 'SqR 9/7/2015 16:48'!
-hasContents
-
-	^self contents notEmpty! !
-
-!AssessmentsListItemWrapper methodsFor: 'accessing' stamp: 'SqR 9/7/2015 16:49'!
-contents
-
-	contents notNil ifTrue: [^contents].
-	self contents: self basicContents.
-	^contents! !
-
-!AssessmentsListItemWrapper methodsFor: 'accessing' stamp: 'SqR 9/12/2015 11:56'!
-displayString
-
-	displayString notNil ifTrue: [^displayString].
-	self displayString: self newDisplayString.
-	^displayString! !
-
-!AssessmentsListItemWrapper methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 16:47'!
-contents: aCollection
-
-	contents := aCollection! !
-
-!AssessmentsListItemWrapper methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 16:47'!
-displayString: aString
-
-	displayString := aString! !
-
-!AssessmentAbstractResultUIListItem methodsFor: 'comparing' stamp: 'SqR 9/12/2015 11:54'!
-<= aListItem
-
-	^self displayString <= aListItem displayString! !
-
-!AssessmentAbstractResultUIListItem methodsFor: 'private' stamp: 'SqR 9/12/2015 12:05'!
-basicContents
-
-	^OrderedCollection new! !
-
-!AssessmentAbstractResultUIListItem methodsFor: 'private' stamp: 'SqR 9/7/2015 17:50'!
-newRunToFailureChecklist
-
-	^CustomRunToFailureChecklist new! !
-
-!AssessmentAbstractResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/12/2015 11:59'!
-classAndSelectorForBrowsingDo: aBlock
-
-	aBlock value: self checkResult classForBrowsing value: nil! !
-
-!AssessmentAbstractResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 17:48'!
-debugChecklist
+!AbstractResult methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
+printResultDetailsOn: aStream
 
 	^self! !
 
-!AssessmentAbstractResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 17:48'!
-debugResult
+!AbstractResult methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
+summaryPrintOn: aStream
 
-	self evaluateChecklist: self debugChecklist! !
+	self printResultDetailsOn: aStream.
+	self printPrettyPrintDetailsOn: aStream! !
 
-!AssessmentAbstractResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 17:48'!
-evaluateChecklist: aChecklist
-
-	^aChecklist assessment evaluationResult! !
-
-!AssessmentAbstractResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 17:49'!
-newDebugChecklist
-
-	^CustomDebugChecklist new! !
-
-!AssessmentAbstractResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 17:49'!
-runResultToFailure
-
-	^self evaluateChecklist: self runToFailureChecklist! !
-
-!AssessmentAbstractResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 17:49'!
-runToFailureChecklist
+!AbstractResult methodsFor: 'enumeration' stamp: 'SqR 3/8/2015 18:10'!
+checkDo: aBlock
 
 	^self! !
 
-!AssessmentAbstractResultUIListItem methodsFor: 'printing' stamp: 'SqR 9/12/2015 11:57'!
-newDisplayString
+!AbstractResult methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+checkExecutionCount
 
-	^self class name! !
+	^0! !
 
-!AssessmentAbstractResultUIListItem methodsFor: 'printing - clipboard' stamp: 'SqR 9/7/2015 17:50'!
-printClipboardTextOn: aStream
+!AbstractResult methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+prettyPrint
 
-	self
-		printClipboardTextOn: aStream
-		withIndentation:0! !
+	^prettyPrint ifNil: [String new]! !
 
-!AssessmentAbstractResultUIListItem methodsFor: 'printing - clipboard' stamp: 'SqR 9/7/2015 17:50'!
-printClipboardTextOn: aStream
-withIndentation: anInteger
-
-	anInteger timesRepeat: [aStream tab].
-	self printOn: aStream.
-	aStream newLine! !
-
-!AssessmentAbstractResultUIListItem class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:47'!
-new
-	"Become independent of whether super new sends initialize"
-
-	^self basicNew! !
-
-!AssessmentResultUICheckResultListItem methodsFor: 'checklists' stamp: 'SqR 9/7/2015 17:52'!
-collectAllChecksInto: aChecklist
-
-	^self
-		privateCollectAllChecksExcept: Set new
-		into: aChecklist! !
-
-!AssessmentResultUICheckResultListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 17:53'!
-debugChecklist
-
-	^self collectAllChecksInto: self newDebugChecklist! !
-
-!AssessmentResultUICheckResultListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 17:53'!
-runToFailureChecklist
-
-	^self collectAllChecksInto: self newRunToFailureChecklist! !
-
-!AssessmentResultUICheckResultListItem methodsFor: 'printing - clipboard' stamp: 'SqR 9/12/2015 12:04'!
-printClipboardTextOn: aStream
-withIndentation: anInteger
-
-	super
-		printClipboardTextOn: aStream
-		withIndentation: anInteger.
-	self contents do:
-		[:each |
-			each
-				printClipboardTextOn: aStream
-				withIndentation: anInteger + 1
-		]! !
-
-!AssessmentResultUICheckResultListItem methodsFor: 'private - checklists' stamp: 'SqR 9/12/2015 12:04'!
-privateCollectAllChecksExcept: duplicates
-into: aChecklist
-
-	self contents do:
-		[:each |
-			each
-				privateCollectAllChecksExcept: duplicates
-				into: aChecklist
-		].
-	^aChecklist! !
-
-!AssessmentResultUICheckResult methodsFor: 'accessing' stamp: 'SqR 9/7/2015 17:54'!
-checkResult
-
-	^checkResult! !
-
-!AssessmentResultUICheckResult methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 17:56'!
-checkResult: anObject
-
-	checkResult := anObject! !
-
-!AssessmentResultUICheckResult methodsFor: 'evaluation' stamp: 'sqr 1/13/2016 22:23'!
+!AbstractResult methodsFor: 'browsing' stamp: 'SqR 9/7/2015 15:26'!
 classAndSelectorForBrowsingDo: aBlock
 
-	self checkResult classAndSelectorForBrowsingDo: aBlock! !
+	^self! !
 
-!AssessmentResultUICheckResult methodsFor: 'printing' stamp: 'SqR 9/12/2015 11:57'!
-newDisplayString
-
-	| answer |
-	answer := String new writeStream.
-	self checkResult summaryPrintOn: answer.
-	^answer contents! !
-
-!AssessmentResultUICheckResult methodsFor: 'private - checklists' stamp: 'SqR 9/7/2015 17:56'!
-privateCollectAllChecksExcept: duplicates
-into: aChecklist
-
-	self checkResult checkDo:
-		[:check |
-			(duplicates includes: check) ifFalse:
-				[
-					aChecklist addCheck: check.
-					duplicates add: check
-				]
-		].
-	^super
-		privateCollectAllChecksExcept: duplicates
-		into: aChecklist! !
-
-!AssessmentResultUICheckResult class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:57'!
-forCheckResult: aCheckResult
-
-	^self new
-		checkResult: aCheckResult;
-		yourself! !
-
-!AssessmentResultUICompositeResult methodsFor: 'private' stamp: 'SqR 9/12/2015 12:06'!
-basicContents
-
-	^SortedCollection new! !
-
-!AssessmentResultUIResultFilter methodsFor: 'comparing' stamp: 'SqR 9/7/2015 18:00'!
-<= aFilter
-
-	self majorSortKey > aFilter majorSortKey ifTrue: [^false].
-	self majorSortKey < aFilter majorSortKey ifTrue: [^true].
-	^self minorSortKey <= aFilter minorSortKey! !
-
-!AssessmentResultUIResultFilter methodsFor: 'private' stamp: 'SqR 9/12/2015 12:08'!
-basicContents
-
-	| answer |
-	answer := Dictionary new.
-	self results do:
-		[:each |
-			| classification composite |
-			classification := each displayClassificationTag.
-			composite := answer
-				at: classification
-				ifAbsentPut: [AssessmentResultUIResultPerClassification forClassification: classification].
-			composite addChild: (self checkResultHolderFor: each)
-		].
-	^answer asSortedCollection! !
-
-!AssessmentResultUIResultFilter methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 18:01'!
-checkResultHolderFor: aCheckResult
-
-	^AssessmentResultUICheckResult forCheckResult: aCheckResult! !
-
-!AssessmentResultUIResultFilter methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 18:01'!
-result: anObject
-
-	result := anObject! !
-
-!AssessmentResultUIResultFilter methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:00'!
+!AbstractResult methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
 classificationTag
 
 	^self class! !
 
-!AssessmentResultUIResultFilter methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:00'!
-majorSortKey
+!AbstractResult methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
+displayClassificationTag
 
-	^String new! !
+	^self class! !
 
-!AssessmentResultUIResultFilter methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:00'!
-minorSortKey
+!AbstractResult methodsFor: 'classification' stamp: 'SqR 3/6/2015 20:47'!
+preventsAssessmentSuccess
 
-	^String new! !
+	^self class preventsAssessmentSuccess! !
 
-!AssessmentResultUIResultFilter methodsFor: 'printing' stamp: 'SqR 9/12/2015 11:57'!
-newDisplayString
+!AbstractResult methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
+initialize
 
-	^self classificationTag name! !
+	self prettyPrint: String new! !
 
-!AssessmentResultUIResultFilter methodsFor: 'accessing' stamp: 'SqR 9/7/2015 17:59'!
-result
+!AbstractResult methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+prettyPrint: anObject
 
-	^result! !
+	prettyPrint := anObject! !
 
-!AssessmentResultUIResultFilter methodsFor: 'accessing' stamp: 'SqR 9/7/2015 18:00'!
-results
-
-	^self result checkResultsClassifiedAs: self classificationTag! !
-
-!AssessmentResultUIResultFilter methodsFor: 'testing' stamp: 'SqR 9/7/2015 18:02'!
-shouldExpandAutomaticallyWhenViewed
-
-	^false! !
-
-!AssessmentResultUIResultFilter class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 18:03'!
-forResult: aResult
-
-	^self new
-		result: aResult;
-		yourself! !
-
-!AssessmentResultUIResultFilter class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 18:04'!
-forResult: aResult andClassificationTag: aClassificationTag
-
-	| genericAnswer |
-	AssessmentResultUIResultFilterPreset subclasses do:
-		[:one |
-			| preset |
-			preset := one forResult: aResult.
-			preset classificationTag = aClassificationTag ifTrue: [^preset].
-		].
-	genericAnswer := AssessmentResultUIResultFilterOthers forResult: aResult.
-	genericAnswer classificationTag: aClassificationTag.
-	^genericAnswer! !
-
-!AssessmentResultUIResultFilterOthers methodsFor: 'accessing' stamp: 'SqR 9/7/2015 18:05'!
-classificationTag
-
-	^classificationTag! !
-
-!AssessmentResultUIResultFilterOthers methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 18:05'!
-classificationTag: anObject
-
-	classificationTag := anObject! !
-
-!AssessmentResultUIResultFilterOthers methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:05'!
-majorSortKey
-
-	^self classificationTag preventsAssessmentSuccess
-		ifTrue: ['2'] ifFalse: ['3']! !
-
-!AssessmentResultUIResultFilterOthers methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:05'!
-minorSortKey
-
-	^self classificationTag name! !
-
-!AssessmentResultUIResultFilterOthers methodsFor: 'testing' stamp: 'SqR 9/7/2015 18:05'!
-shouldExpandAutomaticallyWhenViewed
-
-	^self classificationTag preventsAssessmentSuccess! !
-
-!AssessmentResultUIResultFilterPreset methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:06'!
-majorSortKey
-
-	^'1'! !
-
-!AssessmentResultUIResultFilterErrors methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:06'!
-classificationTag
-
-	^self result errorTag! !
-
-!AssessmentResultUIResultFilterErrors methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:07'!
-minorSortKey
-
-	^'1'! !
-
-!AssessmentResultUIResultFilterErrors methodsFor: 'testing' stamp: 'SqR 9/7/2015 18:06'!
-shouldExpandAutomaticallyWhenViewed
-
-	^true! !
-
-!AssessmentResultUIResultFilterFailures methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:07'!
-classificationTag
-
-	^self result failureTag! !
-
-!AssessmentResultUIResultFilterFailures methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:07'!
-minorSortKey
-
-	^'2'! !
-
-!AssessmentResultUIResultFilterFailures methodsFor: 'testing' stamp: 'SqR 9/7/2015 18:07'!
-shouldExpandAutomaticallyWhenViewed
-
-	^true! !
-
-!AssessmentResultUIResultFilterPasses methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:08'!
-classificationTag
-
-	^self result benchmarkPassTag! !
-
-!AssessmentResultUIResultFilterPasses methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:08'!
-majorSortKey
-
-	^'4'! !
-
-!AssessmentResultUIResultFilterBenchmarkPasses methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:08'!
-classificationTag
-
-	^self result passTag! !
-
-!AssessmentResultUIResultFilterBenchmarkPasses methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:09'!
-majorSortKey
-
-	^'5'! !
-
-!AssessmentResultUIResultFilterRoot methodsFor: 'accessing' stamp: 'SqR 9/12/2015 12:04'!
-adoptResult: aResult
-
-	aResult tagsAndResultsDo:
-		[:eachTag :someResults |
-			| newChild |
-			newChild := AssessmentResultUIResultFilter
-				forResult: aResult
-				andClassificationTag: eachTag.
-			self contents add: newChild
-		]! !
-
-!AssessmentResultUIResultFilterRoot methodsFor: 'printing' stamp: 'SqR 9/12/2015 11:57'!
-newDisplayString
-
-	^'Assessment Results'! !
-
-!AssessmentResultUIResultFilterRoot methodsFor: 'testing' stamp: 'SqR 9/12/2015 12:19'!
-shouldExpandAutomaticallyWhenViewed
-
-	^true! !
-
-!AssessmentResultUIResultFilterRoot class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 18:09'!
-forResult: aResult
-
-	^self new
-		adoptResult: aResult;
-		yourself! !
-
-!AssessmentResultUIResultPerClassification methodsFor: 'accessing' stamp: 'SqR 9/12/2015 12:04'!
-addChild: anObject
-
-	self contents add: anObject! !
-
-!AssessmentResultUIResultPerClassification methodsFor: 'evaluation' stamp: 'SqR 9/12/2015 12:00'!
-classAndSelectorForBrowsingDo: aBlock
-
-	aBlock value: self classification value: nil! !
-
-!AssessmentResultUIResultPerClassification methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 18:12'!
-classification
-
-	^classification! !
-
-!AssessmentResultUIResultPerClassification methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 18:12'!
-classification: anObject
-
-	classification := anObject! !
-
-!AssessmentResultUIResultPerClassification methodsFor: 'printing' stamp: 'SqR 9/12/2015 11:57'!
-newDisplayString
-
-	^self classification printString! !
-
-!AssessmentResultUIResultPerClassification methodsFor: 'testing' stamp: 'SqR 9/12/2015 12:24'!
-shouldExpandAutomaticallyWhenViewed
-
-	^true! !
-
-!AssessmentResultUIResultPerClassification class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 18:11'!
-forClassification: aClassification
-
-	^self new
-		classification: aClassification;
-		yourself! !
-
-!CheckBenchmarkResultUIListItem methodsFor: 'display' stamp: 'SqR 9/7/2015 18:14'!
-checklist
-
-	^self result check checklist printString! !
-
-!CheckBenchmarkResultUIListItem methodsFor: 'display' stamp: 'SqR 9/7/2015 18:14'!
-iterationsPerSecond
-
-	^self result iterationsPerSecondPrintString! !
-
-!CheckBenchmarkResultUIListItem methodsFor: 'display' stamp: 'SqR 9/7/2015 18:15'!
-measurement
-
-	^self result prettyPrint! !
-
-!CheckBenchmarkResultUIListItem methodsFor: 'display' stamp: 'SqR 9/7/2015 18:15'!
-scenario
-
-	^self result prettyPrintForScenario! !
-
-!CheckBenchmarkResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/12/2015 12:00'!
-classAndSelectorForBrowsingDo: aBlock
-
-	aBlock value: self result classForBrowsing value: nil! !
-
-!CheckBenchmarkResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 18:15'!
-debugChecklist
-
-	^self newDebugChecklist
-		addCheck: self result check;
-		yourself! !
-
-!CheckBenchmarkResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 18:15'!
-runToFailureChecklist
-
-	^self newRunToFailureChecklist
-		addCheck: self result check;
-		yourself! !
-
-!CheckBenchmarkResultUIListItem methodsFor: 'printing' stamp: 'SqR 9/12/2015 11:57'!
-newDisplayString
-
-	| answer |
-	answer := String new writeStream.
-	self result summaryPrintOn: answer.
-	^answer contents! !
-
-!CheckBenchmarkResultUIListItem methodsFor: 'accessing' stamp: 'SqR 9/7/2015 18:13'!
-result
-
-	^result! !
-
-!CheckBenchmarkResultUIListItem methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 18:15'!
-result: anObject
-
-	result := anObject! !
-
-!CheckBenchmarkResultUIListItem class methodsFor: 'instance creation' stamp: 'SqR 9/12/2015 11:50'!
-forResult: aResult
-
-	^self new
-		result: aResult;
-		yourself! !
-
-!CheckBenchmarkExpectationUIListItem methodsFor: 'display' stamp: 'SqR 9/7/2015 18:16'!
-expectedIterationsPerSecond
-
-	^self result shortActualSpeedPrintString! !
-
-!CheckBenchmarkExpectationUIListItem methodsFor: 'display' stamp: 'sqr 1/14/2016 01:33'!
-passed
-
-	^self result preventsAssessmentSuccess not! !
-
-!AssessmentsChecklistWrapper methodsFor: 'private' stamp: 'SqR 9/5/2015 16:07'!
-basicContents
-
-	| checklistSubclasses visibleSubclasses sortedSubclasses |
-	checklistSubclasses := self checklist checkSelectorLookupSubclasses.
-	visibleSubclasses := checklistSubclasses select: [:any | any shouldBeDisplayedInChecklistEvaluator].
-	sortedSubclasses := visibleSubclasses asSortedCollection: [:x :y | x name < y name].
-	^sortedSubclasses collect: [:each | self class with: each]! !
-
-!AssessmentsChecklistWrapper methodsFor: 'accessing' stamp: 'SqR 9/5/2015 15:47'!
-checklist
-
-	^self item! !
-
-!AssessmentsChecklistWrapper methodsFor: 'private - accessing' stamp: 'SqR 9/12/2015 11:51'!
-checklist: aChecklist
-
-	self setItem: aChecklist! !
-
-!AssessmentsEvaluator methodsFor: 'private - status bar text' stamp: 'SqR 9/7/2015 17:15'!
-printStatusFor: aCollection labeled: aString on: aStream
-
-	aCollection isEmpty ifTrue: [^self].
-	aStream
-		nextPutAll: ', ';
-		print: aCollection size;
-		nextPutAll: aString! !
-
-!AssessmentsEvaluator methodsFor: 'private - status bar text' stamp: 'SqR 9/7/2015 17:15'!
-statusBarTextFor: aResult
-
-	| answer |
-	answer := String new writeStream.
-	answer print: aResult checkExecutionCount; nextPutAll: ' results'.
-	self printStatusFor: aResult skips labeled: ' skipped' on: answer.
-	self printStatusFor: aResult errors labeled: ' errors' on: answer.
-	self printStatusFor: aResult failures labeled: ' failures' on: answer.
-	self printStatusFor: aResult validationFailures labeled: ' validation failures' on: answer.
-	self printStatusFor: aResult benchmarkExpectationsFailed labeled: ' benchmark expectations failed' on: answer.
-	^answer nextPut: $.; contents! !
-
-!AssessmentsEvaluator methodsFor: 'testing' stamp: 'SqR 9/7/2015 17:14'!
-shouldProfileEvaluation
-
-	^AssessmentsProfiler current shouldProfileEvaluation! !
-
-!AssessmentsEvaluator methodsFor: 'accessing' stamp: 'SqR 9/7/2015 17:13'!
-statusBarText
-
-	^statusBarText ifNil: ['...']! !
-
-!AssessmentsEvaluator methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 17:14'!
-statusBarText: aString
-
-	statusBarText := aString.
-	self changed: #acceptedContents! !
-
-!AssessmentsEvaluator methodsFor: 'private - checklists' stamp: 'SqR 9/7/2015 17:15'!
-visibleSortedSubclassesOf: aChecklist
-
-	| visibleSubclasses |
-	visibleSubclasses := self visibleSubclassesOf: aChecklist.
-	^visibleSubclasses asSortedCollection: [:x :y | x name < y name]! !
-
-!AssessmentsEvaluator methodsFor: 'private - checklists' stamp: 'SqR 9/7/2015 17:16'!
-visibleSubclassesOf: aChecklist
-
-	^aChecklist checkSelectorLookupSubclasses
-		select: [:any | any shouldBeDisplayedInChecklistEvaluator]! !
-
-!AssessmentsEvaluator class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:29'!
+!AbstractResult class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:17'!
 new
 	"Become independent of whether super new sends initialize"
 
-	^self basicNew! !
+	^self basicNew initialize! !
 
-!AssessmentsChecklistEvaluator methodsFor: 'private - actions' stamp: 'SqR 9/6/2015 02:42'!
-assessmentForChecklists: aCollection
+!AbstractResult class methodsFor: 'classification'!
+preventsAssessmentSuccess
 
-	| assessment |
-	assessment := aCollection first assessment.
-	2 to: aCollection size do: [:each | assessment addChecklist: (aCollection at: each)].
-	^assessment! !
+	^false! !
 
-!AssessmentsChecklistEvaluator methodsFor: 'private - actions' stamp: 'SqR 9/6/2015 02:48'!
-evaluate: anAssessment
+!CheckResult methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+check
 
-	| evaluationContext |
-	self shouldProfileEvaluation ifFalse: [^anAssessment evaluationResult].
-	evaluationContext := anAssessment defaultEvaluationContext.
-	evaluationContext executionPolicy: TimeProfilerAssessmentExecutionPolicy new.
-	^evaluationContext evaluate: anAssessment! !
+	^check! !
 
-!AssessmentsChecklistEvaluator methodsFor: 'private - actions' stamp: 'SqR 9/6/2015 02:42'!
-evaluateAssessmentForAllVisibleSubclassesOf: aChecklist
+!CheckResult methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+checkExecutionCount
 
-	| checklistsToEvaluate pivotIndex |
-	pivotIndex := 1.
-	checklistsToEvaluate := OrderedCollection with: aChecklist.
-	[pivotIndex > checklistsToEvaluate size] whileFalse:
-		[
-			| thisChecklist |
-			thisChecklist := checklistsToEvaluate at: pivotIndex.
-			checklistsToEvaluate addAll: (self visibleSubclassesOf: thisChecklist).
-			pivotIndex := pivotIndex + 1
-		].
-	self evaluateAssessmentForChecklists: checklistsToEvaluate! !
+	^self check checkExecutionCount! !
 
-!AssessmentsChecklistEvaluator methodsFor: 'private - actions' stamp: 'SqR 9/7/2015 17:25'!
-evaluateAssessmentForChecklists: aCollection
+!CheckResult methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+checkSelector
 
-	| assessment result newStatusBarText |
-	self statusBarText: 'Running...'.
-	assessment := self assessmentForChecklists: aCollection.
-	result := self evaluate: assessment.
-	newStatusBarText := self statusBarTextFor: result.
-	self statusBarText: newStatusBarText.
-	self openAssessment: assessment withResult: result! !
+	^self check checkSelector! !
 
-!AssessmentsChecklistEvaluator methodsFor: 'private - actions' stamp: 'SqR 9/7/2015 17:39'!
-openAssessment: assessment withResult: result
+!CheckResult methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+checklist
 
-	| evaluator |
-	evaluator := AssessmentsResultsEvaluator assessment: assessment result: result.
-	AssessmentsResultsEvaluatorWindow openEvaluator: evaluator! !
+	^self check checklist! !
 
-!AssessmentsChecklistEvaluator methodsFor: 'private' stamp: 'SqR 9/5/2015 16:09'!
-basicChecklists
+!CheckResult methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+check: anObject
 
-	| root |
-	root := AssessmentsChecklistWrapper with: self checkRepositoryRoot.
-	^Array with: root! !
+	check := anObject! !
 
-!AssessmentsChecklistEvaluator methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 14:55'!
-checkRepositoryRoot
+!CheckResult methodsFor: 'enumeration' stamp: 'SqR 3/8/2015 18:10'!
+checkDo: aBlock
 
-	^checkRepositoryRoot ifNil: [CheckRepository]! !
+	aBlock value: self check! !
 
-!AssessmentsChecklistEvaluator methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 14:56'!
-checkRepositoryRoot: aCheckRepository
+!CheckResult methodsFor: 'browsing' stamp: 'SqR 9/7/2015 15:22'!
+classAndSelectorForBrowsingDo: aBlock
 
-	checkRepositoryRoot := aCheckRepository! !
+	self check classAndSelectorForBrowsingDo: aBlock! !
 
-!AssessmentsChecklistEvaluator methodsFor: 'private - accessing' stamp: 'SqR 9/5/2015 16:59'!
-checklists: aCollection
+!CheckResult methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
+displayClassificationTag
 
-	checklists := aCollection.
-	self changed: #checklists! !
+	^self checklist! !
 
-!AssessmentsChecklistEvaluator methodsFor: 'accessing' stamp: 'SqR 9/7/2015 15:02'!
-checklists
+!CheckResult methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
+printResultDetailsOn: aStream
 
-	checklists notNil ifTrue: [^checklists].
-	self refreshChecklists.
-	^checklists! !
+	super printResultDetailsOn: aStream.
+	self check printBrieflyOn: aStream! !
 
-!AssessmentsChecklistEvaluator methodsFor: 'accessing' stamp: 'SqR 9/6/2015 02:38'!
-selectedChecklist
-
-	^selectedChecklist! !
-
-!AssessmentsChecklistEvaluator methodsFor: 'accessing' stamp: 'SqR 9/6/2015 02:39'!
-selectedChecklist: aSelection
-
-	selectedChecklist := aSelection.
-	self changed: #selectedChecklist! !
-
-!AssessmentsChecklistEvaluator methodsFor: 'actions' stamp: 'SqR 9/6/2015 02:40'!
-evaluate
-
-	self selectedChecklistDo: [:checklist | self evaluateAssessmentForChecklists: (Array with: checklist)]! !
-
-!AssessmentsChecklistEvaluator methodsFor: 'actions' stamp: 'SqR 9/6/2015 02:40'!
-evaluateAll
-
-	self refreshChecklists.
-	self evaluateAssessmentForAllVisibleSubclassesOf: self checkRepositoryRoot! !
-
-!AssessmentsChecklistEvaluator methodsFor: 'actions' stamp: 'SqR 9/6/2015 02:40'!
-evaluateHierarchy
-
-	self refreshChecklists.
-	self selectedChecklistDo:
-		[:checklist | self evaluateAssessmentForAllVisibleSubclassesOf: checklist]! !
-
-!AssessmentsChecklistEvaluator methodsFor: 'actions' stamp: 'SqR 9/6/2015 02:50'!
-refresh
-
-	self refreshChecklists! !
-
-!AssessmentsChecklistEvaluator methodsFor: 'actions' stamp: 'SqR 9/6/2015 02:40'!
-refreshChecklists
-
-	self checklists: self basicChecklists! !
-
-!AssessmentsChecklistEvaluator methodsFor: 'actions' stamp: 'SqR 9/12/2015 12:02'!
-selectedChecklistDo: aBlock
-
-	| selection |
-	selection := self selectedChecklist.
-	selection isNil ifTrue: [^self].
-	^aBlock value: selection item! !
-
-!AssessmentsResultsEvaluator methodsFor: 'accessing' stamp: 'SqR 9/7/2015 17:27'!
-assessment
-
-	^assessment! !
-
-!AssessmentsResultsEvaluator methodsFor: 'accessing' stamp: 'SqR 9/7/2015 17:28'!
-result
-
-	^result! !
-
-!AssessmentsResultsEvaluator methodsFor: 'accessing' stamp: 'SqR 9/17/2015 02:44'!
-resultRoot
-
-	^self results first! !
-
-!AssessmentsResultsEvaluator methodsFor: 'accessing' stamp: 'SqR 9/17/2015 03:26'!
-results
-
-	results notNil ifTrue: [^results].
-	self refreshResults.
-	^results! !
-
-!AssessmentsResultsEvaluator methodsFor: 'accessing' stamp: 'SqR 9/12/2015 12:01'!
-selectedResult
-
-	^selectedResult! !
-
-!AssessmentsResultsEvaluator methodsFor: 'accessing' stamp: 'SqR 9/12/2015 12:02'!
-selectedResult: aSelection
-
-	selectedResult := aSelection.
-	self changed: #selectedResult! !
-
-!AssessmentsResultsEvaluator methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 17:28'!
-assessment: anAssessment
-
-	assessment := anAssessment! !
-
-!AssessmentsResultsEvaluator methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 17:28'!
-result: aResult
-
-	result := aResult! !
-
-!AssessmentsResultsEvaluator methodsFor: 'private - accessing' stamp: 'SqR 9/12/2015 11:47'!
-results: aCollection
-
-	results := aCollection.
-	self changed: #results! !
-
-!AssessmentsResultsEvaluator methodsFor: 'private' stamp: 'SqR 9/12/2015 11:49'!
-basicResults
-
-	| root |
-	root := AssessmentResultUIResultFilterRoot forResult: self result.
-	^Array with: root! !
-
-!AssessmentsResultsEvaluator methodsFor: 'actions' stamp: 'SqR 9/17/2015 02:20'!
-reEvaluate
-
-	self result: self assessment evaluationResult.
-	self refreshResults! !
-
-!AssessmentsResultsEvaluator methodsFor: 'actions' stamp: 'SqR 9/17/2015 02:21'!
-refreshResults
-
-	self selectedResult: nil.
-	self results: self basicResults! !
-
-!AssessmentsResultsEvaluator methodsFor: 'actions' stamp: 'SqR 9/16/2015 17:05'!
-selectedResultDo: aBlock
-
-	| selection |
-	selection := self selectedResult.
-	selection isNil ifTrue: [^self].
-	^aBlock value: selection! !
-
-!AssessmentsResultsEvaluator class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:29'!
-assessment: anAssessment result: aResult
+!CheckResult class methodsFor: 'instance creation'!
+for: aCheck
 
 	^self new
-		assessment: anAssessment;
-		result: aResult;
+		check: aCheck;
 		yourself! !
+
+!CheckBenchmarkPass methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+prettyPrintForScenario
+
+	^prettyPrintForScenario ifNil: ['<no scenario>']! !
+
+!CheckBenchmarkPass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+prettyPrintForScenario: anObject
+
+	prettyPrintForScenario := anObject! !
+
+!CheckBenchmarkPass methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
+printPrettyPrintDetailsOn: aStream
+
+	aStream
+		nextPutAll: '@';
+		nextPutAll: self prettyPrintForScenario.
+	super printPrettyPrintDetailsOn: aStream! !
+
+!CheckBenchmarkResult methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+checkExecutionCount
+
+	^0! !
+
+!CheckBenchmarkResult methodsFor: 'accessing' stamp: 'SqR 2/22/2015 19:26'!
+iterationsPerSecond
+
+	^iterationsPerSecond ifNil: [0.0]! !
+
+!CheckBenchmarkResult methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+prettyPrintForScenario
+
+	^prettyPrintForScenario! !
+
+!CheckBenchmarkResult methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+iterationsPerSecond: anObject
+
+	iterationsPerSecond := anObject! !
+
+!CheckBenchmarkResult methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+prettyPrintForScenario: anObject
+
+	prettyPrintForScenario := anObject! !
+
+!CheckBenchmarkResult methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
+iterationsPerSecondPrintString
+
+	^self printStringForDouble: self iterationsPerSecond! !
+
+!CheckBenchmarkResult methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
+printPrettyPrintDetailsOn: aStream
+
+	aStream
+		nextPutAll: '@';
+		nextPutAll: self prettyPrintForScenario;
+		nextPutAll: ': '.
+	self prettyPrint notEmpty ifTrue:
+		[
+			aStream
+				nextPutAll: self prettyPrint;
+				nextPutAll: ' ran at '.
+		].
+	aStream
+		nextPutAll: self iterationsPerSecondPrintString;
+		nextPutAll: ' iterations / second'! !
+
+!CheckBenchmarkResult methodsFor: 'printing - doubles' stamp: 'sqr 1/14/2016 01:23'!
+printStringForDouble: aNumber
+
+	^AssessmentsNumberPrinter current printStringForDouble: aNumber! !
+
+!CheckBenchmarkResult methodsFor: 'printing - doubles' stamp: 'sqr 1/14/2016 01:27'!
+usesNormalPrintPolicyFor: aNumber
+
+	^AssessmentsNumberPrinter current usesNormalPrintPolicyFor: aNumber! !
+
+!CheckBenchmarkAbstractExpectationNotice methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+actualSpeed
+
+	^self iterationsPerSecond / self expectedIterationsPerSecond! !
+
+!CheckBenchmarkAbstractExpectationNotice methodsFor: 'accessing' stamp: 'SqR 2/22/2015 19:26'!
+expectedIterationsPerSecond
+
+	^expectedIterationsPerSecond ifNil: [1.0]! !
+
+!CheckBenchmarkAbstractExpectationNotice methodsFor: 'printing' stamp: 'SqR 2/22/2015 19:26'!
+actualSpeedPrintString
+
+	| actualSpeed |
+	actualSpeed := self actualSpeed.
+	^actualSpeed < 1.0
+		ifTrue: [self suffixForSlowerBy: actualSpeed reciprocal]
+		ifFalse: [self suffixForFasterBy: actualSpeed]! !
+
+!CheckBenchmarkAbstractExpectationNotice methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
+printPrettyPrintDetailsOn: aStream
+
+	super printPrettyPrintDetailsOn: aStream.
+	aStream
+		nextPutAll: ', ';
+		nextPutAll: self actualSpeedPrintString! !
+
+!CheckBenchmarkAbstractExpectationNotice methodsFor: 'printing' stamp: 'SqR 2/22/2015 19:26'!
+shortActualSpeedPrintString
+
+	| actualSpeed |
+	actualSpeed := self actualSpeed.
+	^actualSpeed < 1.0
+		ifTrue: [self shortSuffixForSlowerBy: actualSpeed reciprocal]
+		ifFalse: [self shortSuffixForFasterBy: actualSpeed]! !
+
+!CheckBenchmarkAbstractExpectationNotice methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+expectedIterationsPerSecond: anObject
+
+	expectedIterationsPerSecond := anObject! !
+
+!CheckBenchmarkAbstractExpectationNotice methodsFor: 'printing - suffixes' stamp: 'SqR 3/8/2015 18:10'!
+shortSuffixForFasterBy: aDouble
+
+	^self suffixFor: 'faster' by: aDouble suffixedBy: String new! !
+
+!CheckBenchmarkAbstractExpectationNotice methodsFor: 'printing - suffixes' stamp: 'SqR 3/8/2015 18:10'!
+shortSuffixForSlowerBy: aDouble
+
+	^self suffixFor: 'slower' by: aDouble suffixedBy: String new! !
+
+!CheckBenchmarkAbstractExpectationNotice methodsFor: 'printing - suffixes' stamp: 'sqr 1/14/2016 01:27'!
+suffixFor: description by: aDouble suffixedBy: aSuffix
+
+	| doublePrintString usesNormalPolicy multiplierString |
+	doublePrintString := self printStringForDouble: aDouble.
+	usesNormalPolicy := self usesNormalPrintPolicyFor: aDouble.
+	multiplierString := usesNormalPolicy ifTrue: ['x'] ifFalse: [' times'].
+	^doublePrintString, multiplierString, ' ', description, aSuffix! !
+
+!CheckBenchmarkAbstractExpectationNotice methodsFor: 'printing - suffixes' stamp: 'SqR 3/8/2015 18:10'!
+suffixForFasterBy: aDouble
+
+	^self suffixFor: 'faster' by: aDouble suffixedBy: ' than expected'! !
+
+!CheckBenchmarkAbstractExpectationNotice methodsFor: 'printing - suffixes' stamp: 'SqR 3/8/2015 18:10'!
+suffixForSlowerBy: aDouble
+
+	^self suffixFor: 'slower' by: aDouble suffixedBy: ' than expected'! !
+
+!CheckBenchmarkExpectationFailure methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+checkExecutionCount
+
+	^1! !
+
+!CheckBenchmarkExpectationFailure class methodsFor: 'classification'!
+preventsAssessmentSuccess
+
+	^true! !
+
+!CheckError class methodsFor: 'classification'!
+preventsAssessmentSuccess
+
+	^true! !
+
+!CheckFailure class methodsFor: 'classification'!
+preventsAssessmentSuccess
+
+	^true! !
+
+!CheckValidationFailure methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+aspect
+
+	^aspect! !
+
+!CheckValidationFailure methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+object
+
+	^object! !
+
+!CheckValidationFailure methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+aspect: anObject
+
+	aspect := anObject! !
+
+!CheckValidationFailure methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+object: anObject
+
+	object := anObject! !
+
+!CheckNotice methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+checkExecutionCount
+
+	^0! !
+
+!CheckNotice methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+notice
+
+	^notice! !
+
+!CheckNotice methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+notice: anObject
+
+	notice := anObject! !
+
+!CheckNotice methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
+printPrettyPrintDetailsOn: aStream
+
+	aStream nextPutAll: ': '.
+	aStream nextPutAll: self notice! !
+
+!PrerequisiteResult methodsFor: 'browsing' stamp: 'SqR 9/7/2015 15:22'!
+classAndSelectorForBrowsingDo: aBlock
+
+	self prerequisite classAndSelectorForBrowsingDo: aBlock! !
+
+!PrerequisiteResult methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
+displayClassificationTag
+
+	^self prerequisite! !
+
+!PrerequisiteResult methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+prerequisite
+
+	^prerequisite! !
+
+!PrerequisiteResult methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+prerequisite: anObject
+
+	prerequisite := anObject! !
+
+!PrerequisiteResult methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
+printResultDetailsOn: aStream
+
+	super printResultDetailsOn: aStream.
+	aStream print: self prerequisite! !
+
+!PrerequisiteResult class methodsFor: 'instance creation'!
+for: aPrerequisite
+
+	^self new
+		prerequisite: aPrerequisite;
+		yourself! !
+
+!PrerequisiteResult class methodsFor: 'classification'!
+preventsAssessmentSuccess
+
+	^true! !
 
 !AbstractCustomChecklist methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
 checkSelectorLookupRoot
@@ -7831,940 +6731,6 @@ testCaseRoot
 
 	^AssessmentsClassResolver current sunitVMValidationTestCaseRoot! !
 
-!CheckRepositoryMetaclass methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-atSelector: aSelector
-
-	^self classToImpersonate methodDictionary
-		at: aSelector
-		ifAbsent: [nil]! !
-
-!CheckRepositoryMetaclass methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-name
-
-	self classToImpersonate isNil ifTrue: [^self class name].
-	^self classToImpersonate name! !
-
-!CheckRepositoryMetaclass methodsFor: 'browsing' stamp: 'SqR 9/7/2015 15:15'!
-classAndSelectorForBrowsingDo: aBlock
-
-	aBlock value: self classForBrowsing value: nil! !
-
-!CheckRepositoryMetaclass methodsFor: 'browsing' stamp: 'SqR 3/8/2015 18:10'!
-classForBrowsing
-
-	^self classToImpersonate! !
-
-!CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-classToImpersonate
-
-	^classToImpersonate! !
-
-!CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-classToImpersonate: anObject
-
-	classToImpersonate := anObject! !
-
-!CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-subclasses
-
-	^subclasses! !
-
-!CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-subclasses: anObject
-
-	subclasses := anObject! !
-
-!CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-superclass
-
-	^superclass! !
-
-!CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-superclass: anObject
-
-	superclass := anObject! !
-
-!CheckRepositoryMetaclass methodsFor: 'classification' stamp: 'sqr 6/26/2019 09:35:13'!
-category
-
-	^self classToImpersonate category! !
-
-!CheckRepositoryMetaclass methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
-isAbstract
-
-	^self classToImpersonate isAbstract! !
-
-!CheckRepositoryMetaclass methodsFor: 'classification' stamp: 'sqr 6/26/2019 09:34:42'!
-isMeta
-
-	^self classToImpersonate isMeta! !
-
-!CheckRepositoryMetaclass methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
-shouldInheritChecks
-
-	^self classToImpersonate shouldInheritChecks! !
-
-!CheckRepositoryMetaclass methodsFor: 'selector lookup' stamp: 'SqR 3/8/2015 18:10'!
-isKeywordSelector: aSelector
-
-	^aSelector notEmpty and: [aSelector last = $:]! !
-
-!CheckRepositoryMetaclass methodsFor: 'selector lookup' stamp: 'SqR 3/8/2015 18:10'!
-isNotKeywordSelector: aSelector
-
-	^(self isKeywordSelector: aSelector) not! !
-
-!CheckRepositoryMetaclass methodsFor: 'selector lookup' stamp: 'SqR 3/8/2015 18:10'!
-selector: aSelector beginsWith: aPrefix
-	"This should be SequenceableCollection>>beginsWith:"
-
-	aSelector size < aPrefix size ifTrue: [^false].
-	1 to: aPrefix size do:
-		[:eachIndex |
-			(aSelector at: eachIndex) = (aPrefix at: eachIndex)
-				ifFalse: [^false]
-		].
-	^true! !
-
-!CheckRepositoryMetaclass methodsFor: 'selector lookup' stamp: 'SqR 3/8/2015 18:10'!
-selectorsDo: aBlock
-	"This is ~3x faster than self selectors do:"
-
-	self classToImpersonate selectorsAndMethodsDo:
-		[:eachSelector :eachMethod | aBlock value: eachSelector]! !
-
-!CheckRepositoryMetaclass methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
-printOn: aStream
-
-	self classToImpersonate printOn: aStream.
-	aStream nextPut: $*! !
-
-!CheckRepositoryMetaclass methodsFor: 'comparing' stamp: 'SqR 3/8/2015 18:10'!
-= anotherMetaclass
-
-	^self class = anotherMetaclass class
-		and: [self classToImpersonate = anotherMetaclass classToImpersonate]! !
-
-!CheckRepositoryMetaclass methodsFor: 'comparing' stamp: 'SqR 3/8/2015 18:10'!
-hash
-
-	^self classToImpersonate hash! !
-
-!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
-allCheckSelectors
-
-	| answer pivotClass |
-	answer := self checkSelectors.
-	self shouldInheritChecks ifFalse: [^answer].
-	pivotClass := self.
-	[pivotClass isCheckSelectorLookupRoot] whileFalse:
-		[
-			pivotClass := pivotClass checkSelectorLookupSuperclass.
-			pivotClass checkSelectorsDo: [:each | answer add: each]
-		].
-	^answer! !
-
-!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
-checkSelectorDefinitionClass
-
-	^self classToImpersonate! !
-
-!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
-checkSelectorLookupRoot
-
-	^self classToImpersonate checkSelectorLookupRoot! !
-
-!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
-checkSelectorLookupSubclasses
-
-	^self subclasses! !
-
-!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
-checkSelectorLookupSuperclass
-
-	^self superclass! !
-
-!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
-checkSelectorPrefix
-
-	^self classToImpersonate checkSelectorPrefix! !
-
-!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
-checkSelectors
-
-	| answer |
-	answer := Set new.
-	self checkSelectorsDo: [:each | answer add: each].
-	^answer! !
-
-!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
-checkSelectorsDo: aBlock
-
-	self selectorsDo:
-		[:each |
-			(self isCheckSelector: each)
-				ifTrue: [aBlock value: each]
-		]! !
-
-!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
-isCheckSelector: aSelector
-
-	^(self isNotKeywordSelector: aSelector)
-		and: [self selector: aSelector beginsWith: self checkSelectorPrefix]! !
-
-!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
-isCheckSelectorLookupRoot
-
-	^self = self checkSelectorLookupRoot! !
-
-!CheckRepositoryMetaclass methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-assessment
-
-	^self assessmentClass forChecklist: self! !
-
-!CheckRepositoryMetaclass methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-evaluationResult
-
-	^self assessment evaluationResult! !
-
-!CheckRepositoryMetaclass methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
-installContextForCheck: aCheck
-
-	aCheck checklist: self! !
-
-!CheckRepositoryMetaclass methodsFor: 'constants' stamp: 'SqR 3/8/2015 18:10'!
-assessmentClass
-
-	^self classToImpersonate assessmentClass! !
-
-!CheckRepositoryMetaclass methodsFor: 'constants' stamp: 'SqR 3/8/2015 18:10'!
-checkClass
-
-	^self classToImpersonate checkClass! !
-
-!CheckRepositoryMetaclass methodsFor: 'check services' stamp: 'SqR 3/8/2015 18:10'!
-checklistForClass: aClass
-
-	self classToImpersonate == aClass ifTrue: [^self].
-	self checkSelectorLookupSubclasses do:
-		[:one |
-			| checklistForClass |
-			checklistForClass := one checklistForClass: aClass.
-			checklistForClass notNil ifTrue: [^checklistForClass]
-		].
-	^nil! !
-
-!CheckRepositoryMetaclass methodsFor: 'check services' stamp: 'SqR 3/8/2015 18:10'!
-checklistWithCheckSelectorsNamed: checkSelectors
-toBePerformedWith: someArguments
-
-	| answer |
-	answer := self checklistWithCheckSelectorsNamed: checkSelectors.
-	answer checksDo: [:each | each arguments: someArguments].
-	^answer! !
-
-!CheckRepositoryMetaclass methodsFor: 'custom checklists' stamp: 'SqR 3/8/2015 18:10'!
-checklistWithCheckSelectorsNamed: checkSelectors
-
-	| answer |
-	answer := CustomChecklist new.
-	checkSelectors do:
-		[:each |
-			| newCheck |
-			newCheck := self newCheckWithCheckSelector: each.
-			answer addCheck: newCheck
-		].
-	^answer! !
-
-!CheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
-checks
-
-	| answer |
-	answer := OrderedCollection new.
-	self checksDo: [:each | answer add: each].
-	^answer! !
-
-!CheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
-checksDo: aBlock
-
-	self checkSelectorsDo:
-		[:each |
-			| newCheck |
-			newCheck := self newCheckWithCheckSelector: each.
-			aBlock value: newCheck
-		]! !
-
-!CheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
-newCheckWithCheckSelector: aSelector
-
-	^self checkClass
-		checklist: self
-		checkSelector: aSelector! !
-
-!CheckRepositoryMetaclass methodsFor: 'instance creation' stamp: 'SqR 3/8/2015 18:10'!
-new
-
-	^self classToImpersonate new! !
-
-!CheckRepositoryMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
-newSubclasses
-
-	^self classToImpersonate subclasses collect:
-		[:each |
-			self subclassClass
-				pretendToBe: each
-				subclassedFrom: self
-		]! !
-
-!CheckRepositoryMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
-pretendToBe: aClass
-subclassedFrom: aSuperclass
-
-	self classToImpersonate: aClass.
-	self superclass: aSuperclass.
-	self subclasses: self newSubclasses! !
-
-!CheckRepositoryMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
-subclassClass
-
-	^self class! !
-
-!CheckRepositoryMetaclass methodsFor: 'prerequisites' stamp: 'SqR 3/8/2015 18:10'!
-prerequisites
-
-	^self classToImpersonate prerequisites! !
-
-!CheckRepositoryMetaclass methodsFor: 'prerequisites' stamp: 'SqR 3/8/2015 18:10'!
-usesClassBasedPrerequisites
-
-	^true! !
-
-!CheckRepositoryMetaclass methodsFor: 'testing' stamp: 'SqR 3/8/2015 18:10'!
-shouldBeDisplayedInChecklistEvaluator
-
-	^self classToImpersonate shouldBeDisplayedInChecklistEvaluator! !
-
-!CheckRepositoryMetaclass methodsFor: 'lookup' stamp: 'SqR 3/8/2015 18:10'!
-withAllLookupSubclasses
-
-	| answer pivotIndex |
-	answer := OrderedCollection with: self.
-	pivotIndex := 1.
-	[pivotIndex <= answer size] whileTrue:
-		[
-			| pivot |
-			pivot := answer at: pivotIndex.
-			answer addAll: pivot checkSelectorLookupSubclasses.
-			pivotIndex := pivotIndex + 1
-		].
-	^answer! !
-
-!CheckRepositoryMetaclass class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:33'!
-new
-	"Become independent of whether super new sends initialize"
-
-	^self basicNew! !
-
-!CheckRepositoryMetaclass class methodsFor: 'instance creation'!
-pretendToBe: aClass
-subclassedFrom: aSuperclass
-
-	^self new
-		pretendToBe: aClass subclassedFrom: aSuperclass;
-		yourself! !
-
-!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'constants' stamp: 'SqR 3/8/2015 18:10'!
-assessmentClass
-
-	^self impersonationRoot assessmentClass! !
-
-!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'constants' stamp: 'SqR 3/8/2015 18:10'!
-checkClass
-
-	^self impersonationRoot checkClass! !
-
-!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'prerequisites' stamp: 'SqR 3/8/2015 18:10'!
-basicPrerequisites
-
-	^self classToImpersonate resources! !
-
-!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'prerequisites' stamp: 'SqR 3/8/2015 18:10'!
-prerequisites
-
-	^self prerequisitesForResources: self basicPrerequisites! !
-
-!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'prerequisites' stamp: 'SqR 3/8/2015 18:10'!
-prerequisitesForResources: aCollection
-
-	^aCollection collect: [:each | self sunitPrerequisiteFor: each]! !
-
-!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'prerequisites' stamp: 'SqR 3/8/2015 18:10'!
-sunitPrerequisiteFor: aTestResource
-
-	^SUnitPrerequisite for: aTestResource! !
-
-!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
-checkSelectorLookupRoot
-
-	^self impersonationRoot! !
-
-!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
-checkSelectorPrefix
-
-	^self impersonationRoot checkSelectorPrefix! !
-
-!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
-impersonationRoot
-
-	self subclassResponsibility! !
-
-!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
-installCheckExecutionPolicyOn: aCheck
-
-	self subclassResponsibility! !
-
-!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
-newCheckWithCheckSelector: aSelector
-
-	| answer |
-	answer := super newCheckWithCheckSelector: aSelector.
-	self installCheckExecutionPolicyOn: answer.
-	^answer! !
-
-!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'testing' stamp: 'SqR 3/8/2015 18:10'!
-shouldBeDisplayedInChecklistEvaluator
-
-	^true! !
-
-!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
-shouldInheritChecks
-
-	^self classToImpersonate shouldInheritSelectors! !
-
-!SUnitCheckRepositoryMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
-impersonationRoot
-
-	^SUnitTestCase! !
-
-!SUnitCheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
-installCheckExecutionPolicyOn: aCheck
-
-	aCheck useSUnitExecutionPolicy! !
-
-!SUnitCheckRepositoryRootMetaclass methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
-shouldInheritChecks
-	"In SUnit, TestCase fails when sent shouldInheritSelectors.
-	Since the answer should be false, then make it so here"
-
-	^false! !
-
-!SUnitCheckRepositoryRootMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
-subclassClass
-
-	^SUnitCheckRepositoryMetaclass! !
-
-!SUnitVMAbstractCheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
-checkSelectorPrefix
-
-	^self classToImpersonate selectorPrefix! !
-
-!SUnitVMAbstractCheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
-installCheckExecutionPolicyOn: aCheck
-
-	aCheck useSUnitVMExecutionPolicy! !
-
-!SUnitVMBenchmarkCheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
-allScenarioSelectors
-
-	^self classToImpersonate allSetUpSelectors! !
-
-!SUnitVMBenchmarkCheckRepositoryMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
-impersonationRoot
-
-	^SUnitVMBenchmarkTestCase! !
-
-!SUnitVMBenchmarkCheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
-installCheckExecutionPolicyOn: aCheck
-
-	aCheck useSUnitVMBenchmarkExecutionPolicy! !
-
-!SUnitVMCheckRepositoryMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
-impersonationRoot
-
-	^SUnitVMTestCase! !
-
-!SUnitVMValidatorCheckRepositoryMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
-impersonationRoot
-
-	^SUnitVMValidatorTestCase! !
-
-!SUnitVMValidatorCheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
-installCheckExecutionPolicyOn: aCheck
-
-	aCheck useSUnitVMValidationExecutionPolicy! !
-
-!SUnitVMValidatorCheckRepositoryMetaclass methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
-isAbstract
-	"AbstractValidator and all its subclasses are abstract by default.
-	However, that does not make sense from the point of view of
-	Assessments.  Therefore, pretend all validators are not abstract"
-
-	^false! !
-
-!SUnitVMValidatorCheckRepositoryMetaclass methodsFor: 'testing' stamp: 'SqR 3/8/2015 18:10'!
-shouldBeDisplayedInChecklistEvaluator
-
-	^false! !
-
-!SUnitTooCheckRepositoryMetaclass methodsFor: 'prerequisites' stamp: 'SqR 3/8/2015 18:10'!
-basicPrerequisites
-	"Dive through nested prerequisites"
-
-	| toScan answer inclusionSet |
-	toScan := super basicPrerequisites reverse.
-	answer := OrderedCollection new.
-	inclusionSet := Set new.
-	[toScan isEmpty] whileFalse:
-		[
-			| next |
-			next := toScan removeLast.
-			(inclusionSet includes: next) ifFalse:
-				[
-					next resources reverseDo: [:each | toScan add: each].
-					inclusionSet add: next.
-					answer add: next
-				]
-		].
-	^answer! !
-
-!SUnitTooCheckRepositoryMetaclass methodsFor: 'prerequisites' stamp: 'SqR 3/8/2015 18:10'!
-usesClassBasedPrerequisites
-
-	^false! !
-
-!SUnitTooCheckRepositoryMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
-impersonationRoot
-
-	^SUnitTooTestCase! !
-
-!SUnitTooCheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
-installCheckExecutionPolicyOn: aCheck
-
-	aCheck useSUnitTooExecutionPolicy! !
-
-!SUnitTooCheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
-isCheckSelector: aSelector
-
-	^(super isCheckSelector: aSelector) or:
-		[
-			| compiledMethod attributes |
-			compiledMethod := self atSelector: aSelector.
-			attributes := compiledMethod attributeMessages.
-			attributes notNil and:
-				[attributes anySatisfy: [:any | any selector = self pragmatizedSelectorTag]]
-		]! !
-
-!SUnitTooCheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
-pragmatizedSelectorTag
-
-	^#test! !
-
-!SUnitTooCheckRepositoryMetaclass methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
-shouldInheritChecks
-	"In SUnitToo, all test cases inherit selectors except the test case root"
-
-	^true! !
-
-!SUnitTooCheckRepositoryRootMetaclass methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
-shouldInheritChecks
-	"In SUnitToo, all test cases inherit selectors except the test case root"
-
-	^false! !
-
-!SUnitTooCheckRepositoryRootMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
-subclassClass
-
-	^SUnitTooCheckRepositoryMetaclass! !
-
-!AbstractResult methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
-printOn: aStream
-
-	aStream nextPutAll: self class name.
-	aStream nextPut: $(.
-	self printResultDetailsOn: aStream.
-	aStream nextPut: $).
-	self printPrettyPrintDetailsOn: aStream! !
-
-!AbstractResult methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
-printPrettyPrintDetailsOn: aStream
-
-	aStream nextPutAll: ': '.
-	aStream nextPutAll: self prettyPrint! !
-
-!AbstractResult methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
-printResultDetailsOn: aStream
-
-	^self! !
-
-!AbstractResult methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
-summaryPrintOn: aStream
-
-	self printResultDetailsOn: aStream.
-	self printPrettyPrintDetailsOn: aStream! !
-
-!AbstractResult methodsFor: 'enumeration' stamp: 'SqR 3/8/2015 18:10'!
-checkDo: aBlock
-
-	^self! !
-
-!AbstractResult methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-checkExecutionCount
-
-	^0! !
-
-!AbstractResult methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-prettyPrint
-
-	^prettyPrint ifNil: [String new]! !
-
-!AbstractResult methodsFor: 'browsing' stamp: 'SqR 9/7/2015 15:26'!
-classAndSelectorForBrowsingDo: aBlock
-
-	^self! !
-
-!AbstractResult methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
-classificationTag
-
-	^self class! !
-
-!AbstractResult methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
-displayClassificationTag
-
-	^self class! !
-
-!AbstractResult methodsFor: 'classification' stamp: 'SqR 3/6/2015 20:47'!
-preventsAssessmentSuccess
-
-	^self class preventsAssessmentSuccess! !
-
-!AbstractResult methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
-initialize
-
-	self prettyPrint: String new! !
-
-!AbstractResult methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-prettyPrint: anObject
-
-	prettyPrint := anObject! !
-
-!AbstractResult class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:17'!
-new
-	"Become independent of whether super new sends initialize"
-
-	^self basicNew initialize! !
-
-!AbstractResult class methodsFor: 'classification'!
-preventsAssessmentSuccess
-
-	^false! !
-
-!CheckResult methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-check
-
-	^check! !
-
-!CheckResult methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-checkExecutionCount
-
-	^self check checkExecutionCount! !
-
-!CheckResult methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-checkSelector
-
-	^self check checkSelector! !
-
-!CheckResult methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-checklist
-
-	^self check checklist! !
-
-!CheckResult methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-check: anObject
-
-	check := anObject! !
-
-!CheckResult methodsFor: 'enumeration' stamp: 'SqR 3/8/2015 18:10'!
-checkDo: aBlock
-
-	aBlock value: self check! !
-
-!CheckResult methodsFor: 'browsing' stamp: 'SqR 9/7/2015 15:22'!
-classAndSelectorForBrowsingDo: aBlock
-
-	self check classAndSelectorForBrowsingDo: aBlock! !
-
-!CheckResult methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
-displayClassificationTag
-
-	^self checklist! !
-
-!CheckResult methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
-printResultDetailsOn: aStream
-
-	super printResultDetailsOn: aStream.
-	self check printBrieflyOn: aStream! !
-
-!CheckResult class methodsFor: 'instance creation'!
-for: aCheck
-
-	^self new
-		check: aCheck;
-		yourself! !
-
-!CheckBenchmarkPass methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-prettyPrintForScenario
-
-	^prettyPrintForScenario ifNil: ['<no scenario>']! !
-
-!CheckBenchmarkPass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-prettyPrintForScenario: anObject
-
-	prettyPrintForScenario := anObject! !
-
-!CheckBenchmarkPass methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
-printPrettyPrintDetailsOn: aStream
-
-	aStream
-		nextPutAll: '@';
-		nextPutAll: self prettyPrintForScenario.
-	super printPrettyPrintDetailsOn: aStream! !
-
-!CheckBenchmarkResult methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-checkExecutionCount
-
-	^0! !
-
-!CheckBenchmarkResult methodsFor: 'accessing' stamp: 'SqR 2/22/2015 19:26'!
-iterationsPerSecond
-
-	^iterationsPerSecond ifNil: [0.0]! !
-
-!CheckBenchmarkResult methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-prettyPrintForScenario
-
-	^prettyPrintForScenario! !
-
-!CheckBenchmarkResult methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-iterationsPerSecond: anObject
-
-	iterationsPerSecond := anObject! !
-
-!CheckBenchmarkResult methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-prettyPrintForScenario: anObject
-
-	prettyPrintForScenario := anObject! !
-
-!CheckBenchmarkResult methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
-iterationsPerSecondPrintString
-
-	^self printStringForDouble: self iterationsPerSecond! !
-
-!CheckBenchmarkResult methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
-printPrettyPrintDetailsOn: aStream
-
-	aStream
-		nextPutAll: '@';
-		nextPutAll: self prettyPrintForScenario;
-		nextPutAll: ': '.
-	self prettyPrint notEmpty ifTrue:
-		[
-			aStream
-				nextPutAll: self prettyPrint;
-				nextPutAll: ' ran at '.
-		].
-	aStream
-		nextPutAll: self iterationsPerSecondPrintString;
-		nextPutAll: ' iterations / second'! !
-
-!CheckBenchmarkResult methodsFor: 'printing - doubles' stamp: 'sqr 1/14/2016 01:23'!
-printStringForDouble: aNumber
-
-	^AssessmentsNumberPrinter current printStringForDouble: aNumber! !
-
-!CheckBenchmarkResult methodsFor: 'printing - doubles' stamp: 'sqr 1/14/2016 01:27'!
-usesNormalPrintPolicyFor: aNumber
-
-	^AssessmentsNumberPrinter current usesNormalPrintPolicyFor: aNumber! !
-
-!CheckBenchmarkAbstractExpectationNotice methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-actualSpeed
-
-	^self iterationsPerSecond / self expectedIterationsPerSecond! !
-
-!CheckBenchmarkAbstractExpectationNotice methodsFor: 'accessing' stamp: 'SqR 2/22/2015 19:26'!
-expectedIterationsPerSecond
-
-	^expectedIterationsPerSecond ifNil: [1.0]! !
-
-!CheckBenchmarkAbstractExpectationNotice methodsFor: 'printing' stamp: 'SqR 2/22/2015 19:26'!
-actualSpeedPrintString
-
-	| actualSpeed |
-	actualSpeed := self actualSpeed.
-	^actualSpeed < 1.0
-		ifTrue: [self suffixForSlowerBy: actualSpeed reciprocal]
-		ifFalse: [self suffixForFasterBy: actualSpeed]! !
-
-!CheckBenchmarkAbstractExpectationNotice methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
-printPrettyPrintDetailsOn: aStream
-
-	super printPrettyPrintDetailsOn: aStream.
-	aStream
-		nextPutAll: ', ';
-		nextPutAll: self actualSpeedPrintString! !
-
-!CheckBenchmarkAbstractExpectationNotice methodsFor: 'printing' stamp: 'SqR 2/22/2015 19:26'!
-shortActualSpeedPrintString
-
-	| actualSpeed |
-	actualSpeed := self actualSpeed.
-	^actualSpeed < 1.0
-		ifTrue: [self shortSuffixForSlowerBy: actualSpeed reciprocal]
-		ifFalse: [self shortSuffixForFasterBy: actualSpeed]! !
-
-!CheckBenchmarkAbstractExpectationNotice methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-expectedIterationsPerSecond: anObject
-
-	expectedIterationsPerSecond := anObject! !
-
-!CheckBenchmarkAbstractExpectationNotice methodsFor: 'printing - suffixes' stamp: 'SqR 3/8/2015 18:10'!
-shortSuffixForFasterBy: aDouble
-
-	^self suffixFor: 'faster' by: aDouble suffixedBy: String new! !
-
-!CheckBenchmarkAbstractExpectationNotice methodsFor: 'printing - suffixes' stamp: 'SqR 3/8/2015 18:10'!
-shortSuffixForSlowerBy: aDouble
-
-	^self suffixFor: 'slower' by: aDouble suffixedBy: String new! !
-
-!CheckBenchmarkAbstractExpectationNotice methodsFor: 'printing - suffixes' stamp: 'sqr 1/14/2016 01:27'!
-suffixFor: description by: aDouble suffixedBy: aSuffix
-
-	| doublePrintString usesNormalPolicy multiplierString |
-	doublePrintString := self printStringForDouble: aDouble.
-	usesNormalPolicy := self usesNormalPrintPolicyFor: aDouble.
-	multiplierString := usesNormalPolicy ifTrue: ['x'] ifFalse: [' times'].
-	^doublePrintString, multiplierString, ' ', description, aSuffix! !
-
-!CheckBenchmarkAbstractExpectationNotice methodsFor: 'printing - suffixes' stamp: 'SqR 3/8/2015 18:10'!
-suffixForFasterBy: aDouble
-
-	^self suffixFor: 'faster' by: aDouble suffixedBy: ' than expected'! !
-
-!CheckBenchmarkAbstractExpectationNotice methodsFor: 'printing - suffixes' stamp: 'SqR 3/8/2015 18:10'!
-suffixForSlowerBy: aDouble
-
-	^self suffixFor: 'slower' by: aDouble suffixedBy: ' than expected'! !
-
-!CheckBenchmarkExpectationFailure methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-checkExecutionCount
-
-	^1! !
-
-!CheckBenchmarkExpectationFailure class methodsFor: 'classification'!
-preventsAssessmentSuccess
-
-	^true! !
-
-!CheckError class methodsFor: 'classification'!
-preventsAssessmentSuccess
-
-	^true! !
-
-!CheckFailure class methodsFor: 'classification'!
-preventsAssessmentSuccess
-
-	^true! !
-
-!CheckValidationFailure methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-aspect
-
-	^aspect! !
-
-!CheckValidationFailure methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-object
-
-	^object! !
-
-!CheckValidationFailure methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-aspect: anObject
-
-	aspect := anObject! !
-
-!CheckValidationFailure methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-object: anObject
-
-	object := anObject! !
-
-!CheckNotice methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-checkExecutionCount
-
-	^0! !
-
-!CheckNotice methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-notice
-
-	^notice! !
-
-!CheckNotice methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-notice: anObject
-
-	notice := anObject! !
-
-!CheckNotice methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
-printPrettyPrintDetailsOn: aStream
-
-	aStream nextPutAll: ': '.
-	aStream nextPutAll: self notice! !
-
-!PrerequisiteResult methodsFor: 'browsing' stamp: 'SqR 9/7/2015 15:22'!
-classAndSelectorForBrowsingDo: aBlock
-
-	self prerequisite classAndSelectorForBrowsingDo: aBlock! !
-
-!PrerequisiteResult methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
-displayClassificationTag
-
-	^self prerequisite! !
-
-!PrerequisiteResult methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
-prerequisite
-
-	^prerequisite! !
-
-!PrerequisiteResult methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
-prerequisite: anObject
-
-	prerequisite := anObject! !
-
-!PrerequisiteResult methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
-printResultDetailsOn: aStream
-
-	super printResultDetailsOn: aStream.
-	aStream print: self prerequisite! !
-
-!PrerequisiteResult class methodsFor: 'instance creation'!
-for: aPrerequisite
-
-	^self new
-		prerequisite: aPrerequisite;
-		yourself! !
-
-!PrerequisiteResult class methodsFor: 'classification'!
-preventsAssessmentSuccess
-
-	^true! !
-
 !AssessmentsPortabilityService methodsFor: 'private - compiling' stamp: 'sqr 1/14/2016 21:54'!
 compile: aString in: aClass
 	"Generally, these blocks should not reference their context.
@@ -8796,12 +6762,12 @@ visualWorksCompile: aString in: aClass
 		ifFail: [AssessmentMalfunctionNotification signal].
 	^methodNode generate! !
 
-!AssessmentsPortabilityService methodsFor: 'private - dialect testing' stamp: 'SqR 3/24/2015 19:46'!
+!AssessmentsPortabilityService methodsFor: 'private - dialect testing' stamp: 'jmv 8/10/2024 18:17:02'!
 isCuis
 
 	^[
 		| versionCuisIndex |
-		versionCuisIndex := Smalltalk version indexOfSubCollection: 'Cuis' startingAt: 1.
+		versionCuisIndex := Smalltalk versionString indexOfSubCollection: 'Cuis' startingAt: 1.
 		versionCuisIndex > 0
 	]
 		on: Error
@@ -11093,15 +9059,2033 @@ handle: anException inTheContextOf: anEvaluationContext
 		occurredWhileRunning: self
 		toFailureInTheContextOf: anEvaluationContext! !
 
-!UndefinedObject methodsFor: '*Assessments' stamp: 'SqR 2/21/2015 21:19'!
-validationAspectPrettyPrint
+!CheckRepositoryMetaclass methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+atSelector: aSelector
 
-	^'<no aspect>'! !
+	^self classToImpersonate methodDictionary
+		at: aSelector
+		ifAbsent: [nil]! !
 
-!Behavior methodsFor: '*Assessments' stamp: 'SqR 2/21/2015 21:18'!
+!CheckRepositoryMetaclass methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+name
+
+	self classToImpersonate isNil ifTrue: [^self class name].
+	^self classToImpersonate name! !
+
+!CheckRepositoryMetaclass methodsFor: 'browsing' stamp: 'SqR 9/7/2015 15:15'!
+classAndSelectorForBrowsingDo: aBlock
+
+	aBlock value: self classForBrowsing value: nil! !
+
+!CheckRepositoryMetaclass methodsFor: 'browsing' stamp: 'SqR 3/8/2015 18:10'!
 classForBrowsing
 
+	^self classToImpersonate! !
+
+!CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+classToImpersonate
+
+	^classToImpersonate! !
+
+!CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+classToImpersonate: anObject
+
+	classToImpersonate := anObject! !
+
+!CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+subclasses
+
+	^subclasses! !
+
+!CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+subclasses: anObject
+
+	subclasses := anObject! !
+
+!CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+superclass
+
+	^superclass! !
+
+!CheckRepositoryMetaclass methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+superclass: anObject
+
+	superclass := anObject! !
+
+!CheckRepositoryMetaclass methodsFor: 'classification' stamp: 'sqr 6/26/2019 09:35:13'!
+category
+
+	^self classToImpersonate category! !
+
+!CheckRepositoryMetaclass methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
+isAbstract
+
+	^self classToImpersonate isAbstract! !
+
+!CheckRepositoryMetaclass methodsFor: 'classification' stamp: 'sqr 6/26/2019 09:34:42'!
+isMeta
+
+	^self classToImpersonate isMeta! !
+
+!CheckRepositoryMetaclass methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
+shouldInheritChecks
+
+	^self classToImpersonate shouldInheritChecks! !
+
+!CheckRepositoryMetaclass methodsFor: 'selector lookup' stamp: 'SqR 3/8/2015 18:10'!
+isKeywordSelector: aSelector
+
+	^aSelector notEmpty and: [aSelector last = $:]! !
+
+!CheckRepositoryMetaclass methodsFor: 'selector lookup' stamp: 'SqR 3/8/2015 18:10'!
+isNotKeywordSelector: aSelector
+
+	^(self isKeywordSelector: aSelector) not! !
+
+!CheckRepositoryMetaclass methodsFor: 'selector lookup' stamp: 'SqR 3/8/2015 18:10'!
+selector: aSelector beginsWith: aPrefix
+	"This should be SequenceableCollection>>beginsWith:"
+
+	aSelector size < aPrefix size ifTrue: [^false].
+	1 to: aPrefix size do:
+		[:eachIndex |
+			(aSelector at: eachIndex) = (aPrefix at: eachIndex)
+				ifFalse: [^false]
+		].
+	^true! !
+
+!CheckRepositoryMetaclass methodsFor: 'selector lookup' stamp: 'SqR 3/8/2015 18:10'!
+selectorsDo: aBlock
+	"This is ~3x faster than self selectors do:"
+
+	self classToImpersonate selectorsAndMethodsDo:
+		[:eachSelector :eachMethod | aBlock value: eachSelector]! !
+
+!CheckRepositoryMetaclass methodsFor: 'printing' stamp: 'SqR 3/8/2015 18:10'!
+printOn: aStream
+
+	self classToImpersonate printOn: aStream.
+	aStream nextPut: $*! !
+
+!CheckRepositoryMetaclass methodsFor: 'comparing' stamp: 'SqR 3/8/2015 18:10'!
+= anotherMetaclass
+
+	^self class = anotherMetaclass class
+		and: [self classToImpersonate = anotherMetaclass classToImpersonate]! !
+
+!CheckRepositoryMetaclass methodsFor: 'comparing' stamp: 'SqR 3/8/2015 18:10'!
+hash
+
+	^self classToImpersonate hash! !
+
+!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
+allCheckSelectors
+
+	| answer pivotClass |
+	answer := self checkSelectors.
+	self shouldInheritChecks ifFalse: [^answer].
+	pivotClass := self.
+	[pivotClass isCheckSelectorLookupRoot] whileFalse:
+		[
+			pivotClass := pivotClass checkSelectorLookupSuperclass.
+			pivotClass checkSelectorsDo: [:each | answer add: each]
+		].
+	^answer! !
+
+!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
+checkSelectorDefinitionClass
+
+	^self classToImpersonate! !
+
+!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
+checkSelectorLookupRoot
+
+	^self classToImpersonate checkSelectorLookupRoot! !
+
+!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
+checkSelectorLookupSubclasses
+
+	^self subclasses! !
+
+!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
+checkSelectorLookupSuperclass
+
+	^self superclass! !
+
+!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
+checkSelectorPrefix
+
+	^self classToImpersonate checkSelectorPrefix! !
+
+!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
+checkSelectors
+
+	| answer |
+	answer := Set new.
+	self checkSelectorsDo: [:each | answer add: each].
+	^answer! !
+
+!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
+checkSelectorsDo: aBlock
+
+	self selectorsDo:
+		[:each |
+			(self isCheckSelector: each)
+				ifTrue: [aBlock value: each]
+		]! !
+
+!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
+isCheckSelector: aSelector
+
+	^(self isNotKeywordSelector: aSelector)
+		and: [self selector: aSelector beginsWith: self checkSelectorPrefix]! !
+
+!CheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
+isCheckSelectorLookupRoot
+
+	^self = self checkSelectorLookupRoot! !
+
+!CheckRepositoryMetaclass methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+assessment
+
+	^self assessmentClass forChecklist: self! !
+
+!CheckRepositoryMetaclass methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+evaluationResult
+
+	^self assessment evaluationResult! !
+
+!CheckRepositoryMetaclass methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+installContextForCheck: aCheck
+
+	aCheck checklist: self! !
+
+!CheckRepositoryMetaclass methodsFor: 'constants' stamp: 'SqR 3/8/2015 18:10'!
+assessmentClass
+
+	^self classToImpersonate assessmentClass! !
+
+!CheckRepositoryMetaclass methodsFor: 'constants' stamp: 'SqR 3/8/2015 18:10'!
+checkClass
+
+	^self classToImpersonate checkClass! !
+
+!CheckRepositoryMetaclass methodsFor: 'check services' stamp: 'SqR 3/8/2015 18:10'!
+checklistForClass: aClass
+
+	self classToImpersonate == aClass ifTrue: [^self].
+	self checkSelectorLookupSubclasses do:
+		[:one |
+			| checklistForClass |
+			checklistForClass := one checklistForClass: aClass.
+			checklistForClass notNil ifTrue: [^checklistForClass]
+		].
+	^nil! !
+
+!CheckRepositoryMetaclass methodsFor: 'check services' stamp: 'SqR 3/8/2015 18:10'!
+checklistWithCheckSelectorsNamed: checkSelectors
+toBePerformedWith: someArguments
+
+	| answer |
+	answer := self checklistWithCheckSelectorsNamed: checkSelectors.
+	answer checksDo: [:each | each arguments: someArguments].
+	^answer! !
+
+!CheckRepositoryMetaclass methodsFor: 'custom checklists' stamp: 'SqR 3/8/2015 18:10'!
+checklistWithCheckSelectorsNamed: checkSelectors
+
+	| answer |
+	answer := CustomChecklist new.
+	checkSelectors do:
+		[:each |
+			| newCheck |
+			newCheck := self newCheckWithCheckSelector: each.
+			answer addCheck: newCheck
+		].
+	^answer! !
+
+!CheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
+checks
+
+	| answer |
+	answer := OrderedCollection new.
+	self checksDo: [:each | answer add: each].
+	^answer! !
+
+!CheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
+checksDo: aBlock
+
+	self checkSelectorsDo:
+		[:each |
+			| newCheck |
+			newCheck := self newCheckWithCheckSelector: each.
+			aBlock value: newCheck
+		]! !
+
+!CheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
+newCheckWithCheckSelector: aSelector
+
+	^self checkClass
+		checklist: self
+		checkSelector: aSelector! !
+
+!CheckRepositoryMetaclass methodsFor: 'instance creation' stamp: 'SqR 3/8/2015 18:10'!
+new
+
+	^self classToImpersonate new! !
+
+!CheckRepositoryMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
+newSubclasses
+
+	^self classToImpersonate subclasses collect:
+		[:each |
+			self subclassClass
+				pretendToBe: each
+				subclassedFrom: self
+		]! !
+
+!CheckRepositoryMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
+pretendToBe: aClass
+subclassedFrom: aSuperclass
+
+	self classToImpersonate: aClass.
+	self superclass: aSuperclass.
+	self subclasses: self newSubclasses! !
+
+!CheckRepositoryMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
+subclassClass
+
+	^self class! !
+
+!CheckRepositoryMetaclass methodsFor: 'prerequisites' stamp: 'SqR 3/8/2015 18:10'!
+prerequisites
+
+	^self classToImpersonate prerequisites! !
+
+!CheckRepositoryMetaclass methodsFor: 'prerequisites' stamp: 'SqR 3/8/2015 18:10'!
+usesClassBasedPrerequisites
+
+	^true! !
+
+!CheckRepositoryMetaclass methodsFor: 'testing' stamp: 'SqR 3/8/2015 18:10'!
+shouldBeDisplayedInChecklistEvaluator
+
+	^self classToImpersonate shouldBeDisplayedInChecklistEvaluator! !
+
+!CheckRepositoryMetaclass methodsFor: 'lookup' stamp: 'SqR 3/8/2015 18:10'!
+withAllLookupSubclasses
+
+	| answer pivotIndex |
+	answer := OrderedCollection with: self.
+	pivotIndex := 1.
+	[pivotIndex <= answer size] whileTrue:
+		[
+			| pivot |
+			pivot := answer at: pivotIndex.
+			answer addAll: pivot checkSelectorLookupSubclasses.
+			pivotIndex := pivotIndex + 1
+		].
+	^answer! !
+
+!CheckRepositoryMetaclass class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:33'!
+new
+	"Become independent of whether super new sends initialize"
+
+	^self basicNew! !
+
+!CheckRepositoryMetaclass class methodsFor: 'instance creation'!
+pretendToBe: aClass
+subclassedFrom: aSuperclass
+
+	^self new
+		pretendToBe: aClass subclassedFrom: aSuperclass;
+		yourself! !
+
+!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'constants' stamp: 'SqR 3/8/2015 18:10'!
+assessmentClass
+
+	^self impersonationRoot assessmentClass! !
+
+!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'constants' stamp: 'SqR 3/8/2015 18:10'!
+checkClass
+
+	^self impersonationRoot checkClass! !
+
+!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'prerequisites' stamp: 'SqR 3/8/2015 18:10'!
+basicPrerequisites
+
+	^self classToImpersonate resources! !
+
+!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'prerequisites' stamp: 'SqR 3/8/2015 18:10'!
+prerequisites
+
+	^self prerequisitesForResources: self basicPrerequisites! !
+
+!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'prerequisites' stamp: 'SqR 3/8/2015 18:10'!
+prerequisitesForResources: aCollection
+
+	^aCollection collect: [:each | self sunitPrerequisiteFor: each]! !
+
+!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'prerequisites' stamp: 'SqR 3/8/2015 18:10'!
+sunitPrerequisiteFor: aTestResource
+
+	^SUnitPrerequisite for: aTestResource! !
+
+!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
+checkSelectorLookupRoot
+
+	^self impersonationRoot! !
+
+!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
+checkSelectorPrefix
+
+	^self impersonationRoot checkSelectorPrefix! !
+
+!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
+impersonationRoot
+
+	self subclassResponsibility! !
+
+!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
+installCheckExecutionPolicyOn: aCheck
+
+	self subclassResponsibility! !
+
+!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
+newCheckWithCheckSelector: aSelector
+
+	| answer |
+	answer := super newCheckWithCheckSelector: aSelector.
+	self installCheckExecutionPolicyOn: answer.
+	^answer! !
+
+!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'testing' stamp: 'SqR 3/8/2015 18:10'!
+shouldBeDisplayedInChecklistEvaluator
+
+	^true! !
+
+!AbstractSUnitCheckRepositoryMetaclass methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
+shouldInheritChecks
+
+	^self classToImpersonate shouldInheritSelectors! !
+
+!SUnitCheckRepositoryMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
+impersonationRoot
+
+	^SUnitTestCase! !
+
+!SUnitCheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
+installCheckExecutionPolicyOn: aCheck
+
+	aCheck useSUnitExecutionPolicy! !
+
+!SUnitCheckRepositoryRootMetaclass methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
+shouldInheritChecks
+	"In SUnit, TestCase fails when sent shouldInheritSelectors.
+	Since the answer should be false, then make it so here"
+
+	^false! !
+
+!SUnitCheckRepositoryRootMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
+subclassClass
+
+	^SUnitCheckRepositoryMetaclass! !
+
+!SUnitVMAbstractCheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
+checkSelectorPrefix
+
+	^self classToImpersonate selectorPrefix! !
+
+!SUnitVMAbstractCheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
+installCheckExecutionPolicyOn: aCheck
+
+	aCheck useSUnitVMExecutionPolicy! !
+
+!SUnitVMBenchmarkCheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
+allScenarioSelectors
+
+	^self classToImpersonate allSetUpSelectors! !
+
+!SUnitVMBenchmarkCheckRepositoryMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
+impersonationRoot
+
+	^SUnitVMBenchmarkTestCase! !
+
+!SUnitVMBenchmarkCheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
+installCheckExecutionPolicyOn: aCheck
+
+	aCheck useSUnitVMBenchmarkExecutionPolicy! !
+
+!SUnitVMCheckRepositoryMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
+impersonationRoot
+
+	^SUnitVMTestCase! !
+
+!SUnitVMValidatorCheckRepositoryMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
+impersonationRoot
+
+	^SUnitVMValidatorTestCase! !
+
+!SUnitVMValidatorCheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
+installCheckExecutionPolicyOn: aCheck
+
+	aCheck useSUnitVMValidationExecutionPolicy! !
+
+!SUnitVMValidatorCheckRepositoryMetaclass methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
+isAbstract
+	"AbstractValidator and all its subclasses are abstract by default.
+	However, that does not make sense from the point of view of
+	Assessments.  Therefore, pretend all validators are not abstract"
+
+	^false! !
+
+!SUnitVMValidatorCheckRepositoryMetaclass methodsFor: 'testing' stamp: 'SqR 3/8/2015 18:10'!
+shouldBeDisplayedInChecklistEvaluator
+
+	^false! !
+
+!SUnitTooCheckRepositoryMetaclass methodsFor: 'prerequisites' stamp: 'SqR 3/8/2015 18:10'!
+basicPrerequisites
+	"Dive through nested prerequisites"
+
+	| toScan answer inclusionSet |
+	toScan := super basicPrerequisites reverse.
+	answer := OrderedCollection new.
+	inclusionSet := Set new.
+	[toScan isEmpty] whileFalse:
+		[
+			| next |
+			next := toScan removeLast.
+			(inclusionSet includes: next) ifFalse:
+				[
+					next resources reverseDo: [:each | toScan add: each].
+					inclusionSet add: next.
+					answer add: next
+				]
+		].
+	^answer! !
+
+!SUnitTooCheckRepositoryMetaclass methodsFor: 'prerequisites' stamp: 'SqR 3/8/2015 18:10'!
+usesClassBasedPrerequisites
+
+	^false! !
+
+!SUnitTooCheckRepositoryMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
+impersonationRoot
+
+	^SUnitTooTestCase! !
+
+!SUnitTooCheckRepositoryMetaclass methodsFor: 'checks' stamp: 'SqR 3/8/2015 18:10'!
+installCheckExecutionPolicyOn: aCheck
+
+	aCheck useSUnitTooExecutionPolicy! !
+
+!SUnitTooCheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
+isCheckSelector: aSelector
+
+	^(super isCheckSelector: aSelector) or:
+		[
+			| compiledMethod attributes |
+			compiledMethod := self atSelector: aSelector.
+			attributes := compiledMethod attributeMessages.
+			attributes notNil and:
+				[attributes anySatisfy: [:any | any selector = self pragmatizedSelectorTag]]
+		]! !
+
+!SUnitTooCheckRepositoryMetaclass methodsFor: 'check lookup' stamp: 'SqR 3/8/2015 18:10'!
+pragmatizedSelectorTag
+
+	^#test! !
+
+!SUnitTooCheckRepositoryMetaclass methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
+shouldInheritChecks
+	"In SUnitToo, all test cases inherit selectors except the test case root"
+
+	^true! !
+
+!SUnitTooCheckRepositoryRootMetaclass methodsFor: 'classification' stamp: 'SqR 3/8/2015 18:10'!
+shouldInheritChecks
+	"In SUnitToo, all test cases inherit selectors except the test case root"
+
+	^false! !
+
+!SUnitTooCheckRepositoryRootMetaclass methodsFor: 'private' stamp: 'SqR 3/8/2015 18:10'!
+subclassClass
+
+	^SUnitTooCheckRepositoryMetaclass! !
+
+!AssessmentsEvaluator methodsFor: 'private - status bar text' stamp: 'SqR 9/7/2015 17:15'!
+printStatusFor: aCollection labeled: aString on: aStream
+
+	aCollection isEmpty ifTrue: [^self].
+	aStream
+		nextPutAll: ', ';
+		print: aCollection size;
+		nextPutAll: aString! !
+
+!AssessmentsEvaluator methodsFor: 'private - status bar text' stamp: 'SqR 9/7/2015 17:15'!
+statusBarTextFor: aResult
+
+	| answer |
+	answer := String new writeStream.
+	answer print: aResult checkExecutionCount; nextPutAll: ' results'.
+	self printStatusFor: aResult skips labeled: ' skipped' on: answer.
+	self printStatusFor: aResult errors labeled: ' errors' on: answer.
+	self printStatusFor: aResult failures labeled: ' failures' on: answer.
+	self printStatusFor: aResult validationFailures labeled: ' validation failures' on: answer.
+	self printStatusFor: aResult benchmarkExpectationsFailed labeled: ' benchmark expectations failed' on: answer.
+	^answer nextPut: $.; contents! !
+
+!AssessmentsEvaluator methodsFor: 'testing' stamp: 'SqR 9/7/2015 17:14'!
+shouldProfileEvaluation
+
+	^AssessmentsProfiler current shouldProfileEvaluation! !
+
+!AssessmentsEvaluator methodsFor: 'accessing' stamp: 'SqR 9/7/2015 17:13'!
+statusBarText
+
+	^statusBarText ifNil: ['...']! !
+
+!AssessmentsEvaluator methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 17:14'!
+statusBarText: aString
+
+	statusBarText := aString.
+	self changed: #acceptedContents! !
+
+!AssessmentsEvaluator methodsFor: 'private - checklists' stamp: 'SqR 9/7/2015 17:15'!
+visibleSortedSubclassesOf: aChecklist
+
+	| visibleSubclasses |
+	visibleSubclasses := self visibleSubclassesOf: aChecklist.
+	^visibleSubclasses asSortedCollection: [:x :y | x name < y name]! !
+
+!AssessmentsEvaluator methodsFor: 'private - checklists' stamp: 'SqR 9/7/2015 17:16'!
+visibleSubclassesOf: aChecklist
+
+	^aChecklist checkSelectorLookupSubclasses
+		select: [:any | any shouldBeDisplayedInChecklistEvaluator]! !
+
+!AssessmentsEvaluator class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:29'!
+new
+	"Become independent of whether super new sends initialize"
+
+	^self basicNew! !
+
+!AssessmentsChecklistEvaluator methodsFor: 'private - actions' stamp: 'SqR 9/6/2015 02:42'!
+assessmentForChecklists: aCollection
+
+	| assessment |
+	assessment := aCollection first assessment.
+	2 to: aCollection size do: [:each | assessment addChecklist: (aCollection at: each)].
+	^assessment! !
+
+!AssessmentsChecklistEvaluator methodsFor: 'private - actions' stamp: 'SqR 9/6/2015 02:48'!
+evaluate: anAssessment
+
+	| evaluationContext |
+	self shouldProfileEvaluation ifFalse: [^anAssessment evaluationResult].
+	evaluationContext := anAssessment defaultEvaluationContext.
+	evaluationContext executionPolicy: TimeProfilerAssessmentExecutionPolicy new.
+	^evaluationContext evaluate: anAssessment! !
+
+!AssessmentsChecklistEvaluator methodsFor: 'private - actions' stamp: 'SqR 9/6/2015 02:42'!
+evaluateAssessmentForAllVisibleSubclassesOf: aChecklist
+
+	| checklistsToEvaluate pivotIndex |
+	pivotIndex := 1.
+	checklistsToEvaluate := OrderedCollection with: aChecklist.
+	[pivotIndex > checklistsToEvaluate size] whileFalse:
+		[
+			| thisChecklist |
+			thisChecklist := checklistsToEvaluate at: pivotIndex.
+			checklistsToEvaluate addAll: (self visibleSubclassesOf: thisChecklist).
+			pivotIndex := pivotIndex + 1
+		].
+	self evaluateAssessmentForChecklists: checklistsToEvaluate! !
+
+!AssessmentsChecklistEvaluator methodsFor: 'private - actions' stamp: 'SqR 9/7/2015 17:25'!
+evaluateAssessmentForChecklists: aCollection
+
+	| assessment result newStatusBarText |
+	self statusBarText: 'Running...'.
+	assessment := self assessmentForChecklists: aCollection.
+	result := self evaluate: assessment.
+	newStatusBarText := self statusBarTextFor: result.
+	self statusBarText: newStatusBarText.
+	self openAssessment: assessment withResult: result! !
+
+!AssessmentsChecklistEvaluator methodsFor: 'private - actions' stamp: 'SqR 9/7/2015 17:39'!
+openAssessment: assessment withResult: result
+
+	| evaluator |
+	evaluator := AssessmentsResultsEvaluator assessment: assessment result: result.
+	AssessmentsResultsEvaluatorWindow openEvaluator: evaluator! !
+
+!AssessmentsChecklistEvaluator methodsFor: 'private' stamp: 'SqR 9/5/2015 16:09'!
+basicChecklists
+
+	| root |
+	root := AssessmentsChecklistWrapper with: self checkRepositoryRoot.
+	^Array with: root! !
+
+!AssessmentsChecklistEvaluator methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 14:55'!
+checkRepositoryRoot
+
+	^checkRepositoryRoot ifNil: [CheckRepository]! !
+
+!AssessmentsChecklistEvaluator methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 14:56'!
+checkRepositoryRoot: aCheckRepository
+
+	checkRepositoryRoot := aCheckRepository! !
+
+!AssessmentsChecklistEvaluator methodsFor: 'private - accessing' stamp: 'SqR 9/5/2015 16:59'!
+checklists: aCollection
+
+	checklists := aCollection.
+	self changed: #checklists! !
+
+!AssessmentsChecklistEvaluator methodsFor: 'accessing' stamp: 'SqR 9/7/2015 15:02'!
+checklists
+
+	checklists notNil ifTrue: [^checklists].
+	self refreshChecklists.
+	^checklists! !
+
+!AssessmentsChecklistEvaluator methodsFor: 'accessing' stamp: 'SqR 9/6/2015 02:38'!
+selectedChecklist
+
+	^selectedChecklist! !
+
+!AssessmentsChecklistEvaluator methodsFor: 'accessing' stamp: 'SqR 9/6/2015 02:39'!
+selectedChecklist: aSelection
+
+	selectedChecklist := aSelection.
+	self changed: #selectedChecklist! !
+
+!AssessmentsChecklistEvaluator methodsFor: 'actions' stamp: 'SqR 9/6/2015 02:40'!
+evaluate
+
+	self selectedChecklistDo: [:checklist | self evaluateAssessmentForChecklists: (Array with: checklist)]! !
+
+!AssessmentsChecklistEvaluator methodsFor: 'actions' stamp: 'SqR 9/6/2015 02:40'!
+evaluateAll
+
+	self refreshChecklists.
+	self evaluateAssessmentForAllVisibleSubclassesOf: self checkRepositoryRoot! !
+
+!AssessmentsChecklistEvaluator methodsFor: 'actions' stamp: 'SqR 9/6/2015 02:40'!
+evaluateHierarchy
+
+	self refreshChecklists.
+	self selectedChecklistDo:
+		[:checklist | self evaluateAssessmentForAllVisibleSubclassesOf: checklist]! !
+
+!AssessmentsChecklistEvaluator methodsFor: 'actions' stamp: 'SqR 9/6/2015 02:50'!
+refresh
+
+	self refreshChecklists! !
+
+!AssessmentsChecklistEvaluator methodsFor: 'actions' stamp: 'SqR 9/6/2015 02:40'!
+refreshChecklists
+
+	self checklists: self basicChecklists! !
+
+!AssessmentsChecklistEvaluator methodsFor: 'actions' stamp: 'SqR 9/12/2015 12:02'!
+selectedChecklistDo: aBlock
+
+	| selection |
+	selection := self selectedChecklist.
+	selection isNil ifTrue: [^self].
+	^aBlock value: selection item! !
+
+!AssessmentsResultsEvaluator methodsFor: 'accessing' stamp: 'SqR 9/7/2015 17:27'!
+assessment
+
+	^assessment! !
+
+!AssessmentsResultsEvaluator methodsFor: 'accessing' stamp: 'SqR 9/7/2015 17:28'!
+result
+
+	^result! !
+
+!AssessmentsResultsEvaluator methodsFor: 'accessing' stamp: 'SqR 9/17/2015 02:44'!
+resultRoot
+
+	^self results first! !
+
+!AssessmentsResultsEvaluator methodsFor: 'accessing' stamp: 'SqR 9/17/2015 03:26'!
+results
+
+	results notNil ifTrue: [^results].
+	self refreshResults.
+	^results! !
+
+!AssessmentsResultsEvaluator methodsFor: 'accessing' stamp: 'SqR 9/12/2015 12:01'!
+selectedResult
+
+	^selectedResult! !
+
+!AssessmentsResultsEvaluator methodsFor: 'accessing' stamp: 'SqR 9/12/2015 12:02'!
+selectedResult: aSelection
+
+	selectedResult := aSelection.
+	self changed: #selectedResult! !
+
+!AssessmentsResultsEvaluator methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 17:28'!
+assessment: anAssessment
+
+	assessment := anAssessment! !
+
+!AssessmentsResultsEvaluator methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 17:28'!
+result: aResult
+
+	result := aResult! !
+
+!AssessmentsResultsEvaluator methodsFor: 'private - accessing' stamp: 'SqR 9/12/2015 11:47'!
+results: aCollection
+
+	results := aCollection.
+	self changed: #results! !
+
+!AssessmentsResultsEvaluator methodsFor: 'private' stamp: 'SqR 9/12/2015 11:49'!
+basicResults
+
+	| root |
+	root := AssessmentResultUIResultFilterRoot forResult: self result.
+	^Array with: root! !
+
+!AssessmentsResultsEvaluator methodsFor: 'actions' stamp: 'SqR 9/17/2015 02:20'!
+reEvaluate
+
+	self result: self assessment evaluationResult.
+	self refreshResults! !
+
+!AssessmentsResultsEvaluator methodsFor: 'actions' stamp: 'SqR 9/17/2015 02:21'!
+refreshResults
+
+	self selectedResult: nil.
+	self results: self basicResults! !
+
+!AssessmentsResultsEvaluator methodsFor: 'actions' stamp: 'SqR 9/16/2015 17:05'!
+selectedResultDo: aBlock
+
+	| selection |
+	selection := self selectedResult.
+	selection isNil ifTrue: [^self].
+	^aBlock value: selection! !
+
+!AssessmentsResultsEvaluator class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:29'!
+assessment: anAssessment result: aResult
+
+	^self new
+		assessment: anAssessment;
+		result: aResult;
+		yourself! !
+
+!AssessmentNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+handlerActionForEvaluation
+
+	self resume! !
+
+!AssessmentNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+handlerActionForPrerequisiteEvaluation
+
+	self return: false! !
+
+!AssessmentNotification methodsFor: 'assessments' stamp: 'SqR 2/22/2015 18:58'!
+messageTextForHandling
+
+	^self messageText! !
+
+!AssessmentMalfunctionNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+defaultAction
+
+	^self noHandler! !
+
+!AssessmentMalfunctionNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+handlerActionForEvaluation
+
+	self pass! !
+
+!AssessmentMalfunctionNotification methodsFor: 'assessments' stamp: 'SqR 3/24/2015 19:02'!
+preventsCheckSuccess
+
+	^true! !
+
+!AssessmentMalfunctionNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+resignalAsAssessmentMalfunctionNotification
+
+	self pass! !
+
+!CheckAbstractFailureNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+defaultAction
+
+	^self noHandler! !
+
+!CheckAbstractFailureNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+occurredWhileEvaluating: aCheck
+inTheContextOf: anEvaluationContext
+
+	| failure |
+	failure := self resultFor: aCheck.
+	anEvaluationContext addResult: failure.
+	super
+		occurredWhileEvaluating: aCheck
+		inTheContextOf: anEvaluationContext! !
+
+!CheckAbstractFailureNotification methodsFor: 'assessments' stamp: 'SqR 3/24/2015 19:02'!
+preventsCheckSuccess
+
+	^true! !
+
+!CheckAbstractFailureNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+resultFor: aCheck
+
+	| failure |
+	failure := aCheck newCheckFailure.
+	failure prettyPrint: self messageTextForHandling.
+	^failure! !
+
+!CheckFailureNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+handlerActionForEvaluation
+
+	self return! !
+
+!CheckSkipNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+resultFor: aCheck
+
+	| failure |
+	failure := aCheck newCheckSkip.
+	failure prettyPrint: self messageTextForHandling.
+	^failure! !
+
+!CheckValidationFailureNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+aspect
+
+	^aspect! !
+
+!CheckValidationFailureNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+object
+
+	^object! !
+
+!CheckValidationFailureNotification methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+aspect: anObject
+
+	aspect := anObject! !
+
+!CheckValidationFailureNotification methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+object: anObject
+
+	object := anObject! !
+
+!CheckValidationFailureNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+resultFor: aCheck
+
+	| failure |
+	failure := aCheck newCheckValidationFailure.
+	failure prettyPrint: self messageTextForHandling.
+	failure object: self object.
+	failure aspect: self aspect.
+	^failure! !
+
+!CheckBenchmarkMeasurementNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+iterationsPerSecond
+
+	^iterationsPerSecond! !
+
+!CheckBenchmarkMeasurementNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+prettyPrintForScenario
+
+	^prettyPrintForScenario! !
+
+!CheckBenchmarkMeasurementNotification methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+iterationsPerSecond: anObject
+
+	iterationsPerSecond := anObject! !
+
+!CheckBenchmarkMeasurementNotification methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+prettyPrintForScenario: anObject
+
+	prettyPrintForScenario := anObject! !
+
+!CheckBenchmarkMeasurementNotification methodsFor: 'private - assessments' stamp: 'SqR 3/8/2015 18:10'!
+newResultFor: aCheck
+
+	^aCheck newCheckBenchmarkResult! !
+
+!CheckBenchmarkMeasurementNotification methodsFor: 'private - assessments' stamp: 'SqR 3/8/2015 18:10'!
+resultFor: aCheck
+
+	| newResult |
+	newResult := self newResultFor: aCheck.
+	newResult prettyPrint: self messageTextForHandling.
+	newResult prettyPrintForScenario: self prettyPrintForScenario.
+	newResult iterationsPerSecond: self iterationsPerSecond.
+	^newResult! !
+
+!CheckBenchmarkMeasurementNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+occurredWhileEvaluating: aCheck
+inTheContextOf: anEvaluationContext
+
+	| newResult |
+	newResult := self resultFor: aCheck.
+	anEvaluationContext addResult: newResult.
+	super
+		occurredWhileEvaluating: aCheck
+		inTheContextOf: anEvaluationContext! !
+
+!CheckBenchmarkAbstractExpectationNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+expectedIterationsPerSecond
+
+	^expectedIterationsPerSecond! !
+
+!CheckBenchmarkAbstractExpectationNotification methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+expectedIterationsPerSecond: anObject
+
+	expectedIterationsPerSecond := anObject! !
+
+!CheckBenchmarkAbstractExpectationNotification methodsFor: 'private - assessments' stamp: 'SqR 3/8/2015 18:10'!
+resultFor: aCheck
+
+	| newResult |
+	newResult := super resultFor: aCheck.
+	newResult expectedIterationsPerSecond: self expectedIterationsPerSecond.
+	^newResult! !
+
+!CheckBenchmarkExpectationFailedNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+newResultFor: aCheck
+
+	^aCheck newCheckBenchmarkExpectationFailed! !
+
+!CheckBenchmarkExpectationMetNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+newResultFor: aCheck
+
+	^aCheck newCheckBenchmarkExpectationMet! !
+
+!CheckNoticeNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+notice
+
+	^notice! !
+
+!CheckNoticeNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+notice: anObject
+
+	notice := anObject! !
+
+!CheckNoticeNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+noticeFor: aCheck
+
+	^aCheck newCheckNotice! !
+
+!CheckNoticeNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+occurredWhileEvaluating: aCheck
+inTheContextOf: anEvaluationContext
+
+	| newNotice |
+	newNotice := self noticeFor: aCheck.
+	newNotice notice: self notice.
+	newNotice prettyPrint: self messageTextForHandling.
+	anEvaluationContext addResult: newNotice.
+	super
+		occurredWhileEvaluating: aCheck
+		inTheContextOf: anEvaluationContext! !
+
+!CheckPassNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+occurredWhileEvaluating: aCheck
+inTheContextOf: anEvaluationContext
+
+	self recordPassFor: aCheck in: anEvaluationContext.
+	super
+		occurredWhileEvaluating: aCheck
+		inTheContextOf: anEvaluationContext! !
+
+!CheckPassNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+recordPassFor: aCheck in: anEvaluationContext
+
+	| pass |
+	pass := aCheck newCheckPass.
+	pass prettyPrint: self messageTextForHandling.
+	anEvaluationContext addResult: pass! !
+
+!CheckBenchmarkPassNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+prettyPrintForScenario
+
+	^prettyPrintForScenario! !
+
+!CheckBenchmarkPassNotification methodsFor: 'private - accessing' stamp: 'SqR 3/8/2015 18:10'!
+prettyPrintForScenario: anObject
+
+	prettyPrintForScenario := anObject! !
+
+!CheckBenchmarkPassNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+recordPassFor: aCheck in: anEvaluationContext
+
+	| pass |
+	pass := aCheck newCheckBenchmarkPass.
+	pass prettyPrint: self messageTextForHandling.
+	pass prettyPrintForScenario: self prettyPrintForScenario.
+	anEvaluationContext addResult: pass! !
+
+!PrerequisiteFailureNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+handlerActionForPrerequisiteEvaluation
+
+	self return: false! !
+
+!PrerequisiteFailureNotification methodsFor: 'assessments' stamp: 'SqR 3/24/2015 19:02'!
+preventsCheckSuccess
+
+	^true! !
+
+!ResultAdoptionNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+assessmentResult
+
+	^assessmentResult! !
+
+!ResultAdoptionNotification methodsFor: 'accessing' stamp: 'SqR 3/8/2015 18:10'!
+assessmentResult: anObject
+
+	assessmentResult := anObject! !
+
+!ResultAdoptionNotification methodsFor: 'assessments' stamp: 'SqR 3/8/2015 18:10'!
+occurredWhileEvaluating: aCheck
+inTheContextOf: anEvaluationContext
+
+	anEvaluationContext adoptResult: self assessmentResult.
+	super
+		occurredWhileEvaluating: aCheck
+		inTheContextOf: anEvaluationContext! !
+
+!AssessmentsWindow methodsFor: 'GUI building' stamp: 'SqR 9/12/2015 11:27'!
+buildLayoutMorph
+
+	^LayoutMorph newColumn! !
+
+!AssessmentsWindow methodsFor: 'GUI building' stamp: 'sqr 5/25/2016 14:19'!
+buildMorphicWindow
+
+	| layout |
+	layout := self buildLayoutMorph.
+	self layoutMorph addMorph: layout! !
+
+!AssessmentsWindow methodsFor: 'GUI building' stamp: 'SqR 9/7/2015 16:57'!
+defaultStripeHeight
+
+	^40! !
+
+!AssessmentsWindow methodsFor: 'GUI building' stamp: 'sqr 5/25/2016 14:12'!
+minimumExtent
+
+	^400 @ 400! !
+
+!AssessmentsWindow methodsFor: 'GUI building' stamp: 'sqr 1/13/2016 21:56'!
+separatorHeight
+
+	^1! !
+
+!AssessmentsWindow methodsFor: 'GUI building' stamp: 'SqR 9/12/2015 11:37'!
+windowColor
+
+	| red green blue |
+	red := (self windowColorBaseRGB at: 1) raisedTo: (self windowColorPowers at: 1).
+	green := (self windowColorBaseRGB at: 2) raisedTo: (self windowColorPowers at: 2).
+	blue := (self windowColorBaseRGB at: 3) raisedTo: (self windowColorPowers at: 3).
+	^Color r: red g: green b: blue! !
+
+!AssessmentsWindow methodsFor: 'GUI building' stamp: 'SqR 9/12/2015 11:35'!
+windowColorBaseRGB
+
+	^#(0.2 0.9 0.2)! !
+
+!AssessmentsWindow methodsFor: 'GUI building' stamp: 'SqR 9/12/2015 11:34'!
+windowColorPowers
+
+	^#(1.0 1.0 1.0)! !
+
+!AssessmentsWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/7/2015 16:58'!
+buildMorphicButtonAction: anAction label: aLabel
+
+	^PluggableButtonMorph 
+		model: self
+		stateGetter: nil
+		action: anAction
+		label: aLabel! !
+
+!AssessmentsWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/7/2015 16:59'!
+buildMorphicSeparator
+
+	^BoxedMorph new
+		color: Color black;
+		yourself! !
+
+!AssessmentsWindow methodsFor: 'GUI building - widgets' stamp: 'jmv 9/6/2017 10:01:25'!
+buildMorphicStatusBar
+
+	| answer |
+	answer := TextModelMorph
+		textProvider: self model
+		textGetter: #statusBarText.
+	answer hideScrollBarsIndefinitely.
+	answer disableEditing.
+	^answer! !
+
+!AssessmentsWindow methodsFor: 'actions' stamp: 'sqr 11/2/2019 19:43:22'!
+cursorWaitWhile: aBlock
+
+	Cursor waitCursor showWhile: [aBlock value]! !
+
+!AssessmentsWindow methodsFor: 'actions' stamp: 'SqR 9/7/2015 16:59'!
+refresh
+
+	self model refresh! !
+
+!AssessmentsWindow class methodsFor: 'subclass responsibility' stamp: 'SqR 9/7/2015 17:02'!
+newEvaluator
+
+	self subclassResponsibility! !
+
+!AssessmentsWindow class methodsFor: 'subclass responsibility' stamp: 'SqR 9/7/2015 17:10'!
+windowLabel
+
+	self subclassResponsibility! !
+
+!AssessmentsWindow class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:03'!
+openEvaluator
+
+	self openEvaluator: self newEvaluator! !
+
+!AssessmentsWindow class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:03'!
+openEvaluator: anEvaluator
+
+	self open: anEvaluator label: self windowLabel! !
+
+!AssessmentsChecklistEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/7/2015 15:30'!
+browse
+
+	self model selectedChecklistDo:
+		[:checklist |
+			checklist classAndSelectorForBrowsingDo:
+				[:class :selector | BrowserWindow fullOnClass: class selector: selector].
+		]! !
+
+!AssessmentsChecklistEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/7/2015 15:31'!
+browseHierarchy
+
+	self model selectedChecklistDo:
+		[:checklist |
+			checklist classAndSelectorForBrowsingDo:
+				[:class :selector | HierarchyBrowserWindow onClass: class selector: selector].
+		]! !
+
+!AssessmentsChecklistEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/7/2015 14:33'!
+evaluate
+
+	self cursorWaitWhile: [self model evaluate]! !
+
+!AssessmentsChecklistEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/7/2015 14:34'!
+evaluateAll
+
+	self cursorWaitWhile: [self model evaluateAll]! !
+
+!AssessmentsChecklistEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/7/2015 14:34'!
+evaluateHierarchy
+
+	self cursorWaitWhile: [self model evaluateHierarchy]! !
+
+!AssessmentsChecklistEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/7/2015 17:03'!
+spawn
+
+	self model selectedChecklistDo: [:checklist | self class openEvaluatorRootedAt: checklist]! !
+
+!AssessmentsChecklistEvaluatorWindow methodsFor: 'GUI building' stamp: 'sqr 5/25/2016 14:08'!
+buildLayoutMorph
+
+	^super buildLayoutMorph
+		addMorph: self buildMorphicChecklistTree proportionalWidth: 1.0;
+		addMorph: self buildMorphicSeparator fixedHeight: self separatorHeight;
+		addMorph: self buildMorphicStatusBar fixedHeight: self defaultStripeHeight;
+		addMorph: self buildMorphicSeparator fixedHeight: self separatorHeight;
+		addMorph: self buildMorphicButtons fixedHeight: self defaultStripeHeight;
+		yourself! !
+
+!AssessmentsChecklistEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/6/2015 01:33'!
+buildMorphicButtons
+
+	^LayoutMorph newRow
+		addMorph: self buildMorphicEvaluateButton proportionalWidth: 0.25;
+		addMorph: self buildMorphicEvaluateHierarchyButton proportionalWidth: 0.25;
+		addMorph: self buildMorphicEvaluateAllButton proportionalWidth: 0.25;
+		addMorph: self buildMorphicRefreshButton proportionalWidth: 0.25;
+		yourself! !
+
+!AssessmentsChecklistEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'jmv 8/10/2024 18:07:46'!
+buildMorphicChecklistTree
+
+	| answer |
+	answer := (HierarchicalListMorph
+		withModel: self model
+		listGetter: #checklists
+		indexGetter: #selectedChecklist
+		indexSetter: #selectedChecklist:)
+			menuNshortcutsKey: #checklistMenuSpec.
+	answer autoDeselect: false.
+	answer autoExpand: true.
+	answer expandAll.
+	^answer! !
+
+!AssessmentsChecklistEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/6/2015 02:07'!
+buildMorphicEvaluateAllButton
+
+	^self buildMorphicButtonAction: #evaluateAll label: 'Evaluate All'! !
+
+!AssessmentsChecklistEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/6/2015 02:07'!
+buildMorphicEvaluateButton
+
+	^self buildMorphicButtonAction: #evaluate label: 'Evaluate'! !
+
+!AssessmentsChecklistEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/6/2015 02:07'!
+buildMorphicEvaluateHierarchyButton
+
+	^self buildMorphicButtonAction: #evaluateHierarchy label: 'Evaluate Hierarchy'! !
+
+!AssessmentsChecklistEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/6/2015 02:07'!
+buildMorphicRefreshButton
+
+	^self buildMorphicButtonAction: #refresh label: 'Refresh'! !
+
+!AssessmentsChecklistEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'jmv 8/10/2024 18:12:35'!
+checklistMenuSpec
+
+	^#(
+		#(0 		'Checklist' 					false)
+		#(10		'Browse...' 				nil 	window 			browse 						editFindReplaceIcon)
+		#(20		'Hierarchy...' 				nil 	window 			browseHierarchy 						editFindReplaceIcon)
+		#(30 		'-----')
+		#(40		'Spawn...' 				nil 	window 			spawn 						goTopIcon)
+	)! !
+
+!AssessmentsChecklistEvaluatorWindow class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:01'!
+newEvaluator
+
+	^AssessmentsChecklistEvaluator new! !
+
+!AssessmentsChecklistEvaluatorWindow class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:03'!
+openEvaluatorRootedAt: aChecklist
+
+	| evaluator |
+	evaluator := self newEvaluator.
+	evaluator checkRepositoryRoot: aChecklist.
+	self openEvaluator: evaluator! !
+
+!AssessmentsChecklistEvaluatorWindow class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:02'!
+windowLabel
+
+	^'Checklist Evaluator'! !
+
+!AssessmentsResultsEvaluatorWindow methodsFor: 'actions' stamp: 'sqr 1/25/2016 15:43'!
+browse
+
+	self model selectedResultDo:
+		[:result |
+			result classAndSelectorForBrowsingDo:
+				[:class :selector | BrowserWindow fullOnClass: class selector: selector]
+		]! !
+
+!AssessmentsResultsEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/17/2015 02:44'!
+copyAllToClipboard
+
+	self privateCopyAsTextToClipboard: self model resultRoot! !
+
+!AssessmentsResultsEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/17/2015 02:42'!
+copyHierarchyToClipboard
+
+	self model selectedResultDo:
+		[:result | self privateCopyAsTextToClipboard: result]! !
+
+!AssessmentsResultsEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/17/2015 02:26'!
+debug
+
+	self model selectedResultDo:
+		[:result | [result debugResult] fork]! !
+
+!AssessmentsResultsEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/17/2015 03:18'!
+reEvaluate
+
+	self model reEvaluate.
+	self reExpandResultTree! !
+
+!AssessmentsResultsEvaluatorWindow methodsFor: 'actions' stamp: 'SqR 9/17/2015 02:55'!
+runToFailure
+
+	self model selectedResultDo:
+		[:result |
+			[
+				| newResult |
+				newResult := result runResultToFailure.
+				newResult isEmpty not
+					:: and: [newResult allChecksPassed]
+					:: ifTrue: [self inform: 'No error occurred']
+			] fork
+		]! !
+
+!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building' stamp: 'sqr 5/25/2016 14:09'!
+buildLayoutMorph
+
+	| newResultTree |
+	newResultTree := self buildMorphicResultTree.
+	self resultTree: newResultTree.
+	^super buildLayoutMorph
+		addMorph: newResultTree proportionalWidth: 1.0;
+		addMorph: self buildMorphicSeparator fixedHeight: self separatorHeight;
+		addMorph: self buildMorphicStatusBar fixedHeight: self defaultStripeHeight;
+		addMorph: self buildMorphicSeparator fixedHeight: self separatorHeight;
+		addMorph: self buildMorphicButtons fixedHeight: self defaultStripeHeight;
+		yourself! !
+
+!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building' stamp: 'SqR 9/17/2015 03:11'!
+buildMorphicWindow
+
+	super buildMorphicWindow.
+	self reExpandResultTree! !
+
+!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building' stamp: 'SqR 9/12/2015 11:37'!
+windowColorPowers
+
+	^#(0.2 1.3 0.5)! !
+
+!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/12/2015 11:41'!
+buildMorphicButtons
+
+	^LayoutMorph newRow
+		addMorph: self buildMorphicDebugButton proportionalWidth: 0.33;
+		addMorph: self buildMorphicRunToFailureButton proportionalWidth: 0.33;
+		addMorph: self buildMorphicReEvaluateButton proportionalWidth: 0.33;
+		yourself! !
+
+!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/12/2015 11:41'!
+buildMorphicDebugButton
+
+	^self buildMorphicButtonAction: #debug label: 'Debug'! !
+
+!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/12/2015 11:41'!
+buildMorphicReEvaluateButton
+
+	^self buildMorphicButtonAction: #reEvaluate label: 'Reevaluate Assessment'! !
+
+!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'jmv 8/10/2024 18:07:26'!
+buildMorphicResultTree
+
+	| answer |
+	answer := (HierarchicalListMorph
+		withModel: self model
+		listGetter: #results
+		indexGetter: #selectedResult
+		indexSetter: #selectedResult:)
+			menuNshortcutsKey: #resultMenuSpec.
+	answer autoDeselect: false.
+	answer autoExpand: false.
+	^answer! !
+
+!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'SqR 9/12/2015 11:41'!
+buildMorphicRunToFailureButton
+
+	^self buildMorphicButtonAction: #runToFailure label: 'Run to Failure'! !
+
+!AssessmentsResultsEvaluatorWindow methodsFor: 'GUI building - widgets' stamp: 'jmv 8/10/2024 18:14:41'!
+resultMenuSpec
+
+	^#(
+		#(0 		'Result' 					false)
+		#(10		'Debug...' 									nil 	window 			debug 								debugIcon)
+		#(20		'Run to Failure...' 									nil 	window 			runToFailure 								mediaPlaybackStartIcon)
+		#(30 		'-----')
+		#(40		'Browse...' 									nil 	window 			browse 								editFindReplaceIcon)
+		#(50 		'-----')
+		#(60		'Copy hierarchy as text to clipboard...' 									nil 	window 			copyHierarchyToClipboard 								copyIcon)
+		#(70		'Copy all as text to clipboard...' 									nil 	window 			copyAllToClipboard 								copyIcon)
+	)! !
+
+!AssessmentsResultsEvaluatorWindow methodsFor: 'private - actions' stamp: 'SqR 9/17/2015 02:41'!
+privateCopyAsTextToClipboard: aCheckResult
+
+	| textBuffer |
+	textBuffer := String new writeStream.
+	aCheckResult printClipboardTextOn: textBuffer.
+	Clipboard storeObject: textBuffer contents! !
+
+!AssessmentsResultsEvaluatorWindow methodsFor: 'private - actions' stamp: 'SqR 9/17/2015 03:11'!
+reExpandResultTree
+
+	self resultTree expandAllAsPer:
+		[:each | each complexContents shouldExpandAutomaticallyWhenViewed]! !
+
+!AssessmentsResultsEvaluatorWindow methodsFor: 'private - accessing' stamp: 'SqR 9/17/2015 03:08'!
+resultTree
+
+	^resultTree! !
+
+!AssessmentsResultsEvaluatorWindow methodsFor: 'private - accessing' stamp: 'SqR 9/17/2015 03:09'!
+resultTree: aMorph
+
+	resultTree := aMorph! !
+
+!AssessmentsResultsEvaluatorWindow class methodsFor: 'instance creation' stamp: 'SqR 9/12/2015 11:27'!
+windowLabel
+
+	^'Results Evaluator'! !
+
+!AssessmentsListItemWrapper methodsFor: 'printing' stamp: 'SqR 9/12/2015 11:56'!
+newDisplayString
+
+	^self item printString! !
+
+!AssessmentsListItemWrapper methodsFor: 'printing' stamp: 'SqR 9/7/2015 16:48'!
+printOn: aStream
+
+	aStream nextPutAll: self displayString! !
+
+!AssessmentsListItemWrapper methodsFor: 'converting' stamp: 'SqR 9/7/2015 16:49'!
+asString
+
+	^self displayString! !
+
+!AssessmentsListItemWrapper methodsFor: 'private' stamp: 'SqR 9/7/2015 16:48'!
+basicContents
+
+	^Array new! !
+
+!AssessmentsListItemWrapper methodsFor: 'testing' stamp: 'SqR 9/7/2015 16:48'!
+canBeDragged
+
+	^false! !
+
+!AssessmentsListItemWrapper methodsFor: 'testing' stamp: 'SqR 9/7/2015 16:48'!
+hasContents
+
+	^self contents notEmpty! !
+
+!AssessmentsListItemWrapper methodsFor: 'accessing' stamp: 'SqR 9/7/2015 16:49'!
+contents
+
+	contents notNil ifTrue: [^contents].
+	self contents: self basicContents.
+	^contents! !
+
+!AssessmentsListItemWrapper methodsFor: 'accessing' stamp: 'SqR 9/12/2015 11:56'!
+displayString
+
+	displayString notNil ifTrue: [^displayString].
+	self displayString: self newDisplayString.
+	^displayString! !
+
+!AssessmentsListItemWrapper methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 16:47'!
+contents: aCollection
+
+	contents := aCollection! !
+
+!AssessmentsListItemWrapper methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 16:47'!
+displayString: aString
+
+	displayString := aString! !
+
+!AssessmentAbstractResultUIListItem methodsFor: 'comparing' stamp: 'SqR 9/12/2015 11:54'!
+<= aListItem
+
+	^self displayString <= aListItem displayString! !
+
+!AssessmentAbstractResultUIListItem methodsFor: 'private' stamp: 'SqR 9/12/2015 12:05'!
+basicContents
+
+	^OrderedCollection new! !
+
+!AssessmentAbstractResultUIListItem methodsFor: 'private' stamp: 'SqR 9/7/2015 17:50'!
+newRunToFailureChecklist
+
+	^CustomRunToFailureChecklist new! !
+
+!AssessmentAbstractResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/12/2015 11:59'!
+classAndSelectorForBrowsingDo: aBlock
+
+	aBlock value: self checkResult classForBrowsing value: nil! !
+
+!AssessmentAbstractResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 17:48'!
+debugChecklist
+
 	^self! !
+
+!AssessmentAbstractResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 17:48'!
+debugResult
+
+	self evaluateChecklist: self debugChecklist! !
+
+!AssessmentAbstractResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 17:48'!
+evaluateChecklist: aChecklist
+
+	^aChecklist assessment evaluationResult! !
+
+!AssessmentAbstractResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 17:49'!
+newDebugChecklist
+
+	^CustomDebugChecklist new! !
+
+!AssessmentAbstractResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 17:49'!
+runResultToFailure
+
+	^self evaluateChecklist: self runToFailureChecklist! !
+
+!AssessmentAbstractResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 17:49'!
+runToFailureChecklist
+
+	^self! !
+
+!AssessmentAbstractResultUIListItem methodsFor: 'printing' stamp: 'SqR 9/12/2015 11:57'!
+newDisplayString
+
+	^self class name! !
+
+!AssessmentAbstractResultUIListItem methodsFor: 'printing - clipboard' stamp: 'SqR 9/7/2015 17:50'!
+printClipboardTextOn: aStream
+
+	self
+		printClipboardTextOn: aStream
+		withIndentation:0! !
+
+!AssessmentAbstractResultUIListItem methodsFor: 'printing - clipboard' stamp: 'SqR 9/7/2015 17:50'!
+printClipboardTextOn: aStream
+withIndentation: anInteger
+
+	anInteger timesRepeat: [aStream tab].
+	self printOn: aStream.
+	aStream newLine! !
+
+!AssessmentAbstractResultUIListItem class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:47'!
+new
+	"Become independent of whether super new sends initialize"
+
+	^self basicNew! !
+
+!AssessmentResultUICheckResultListItem methodsFor: 'checklists' stamp: 'SqR 9/7/2015 17:52'!
+collectAllChecksInto: aChecklist
+
+	^self
+		privateCollectAllChecksExcept: Set new
+		into: aChecklist! !
+
+!AssessmentResultUICheckResultListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 17:53'!
+debugChecklist
+
+	^self collectAllChecksInto: self newDebugChecklist! !
+
+!AssessmentResultUICheckResultListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 17:53'!
+runToFailureChecklist
+
+	^self collectAllChecksInto: self newRunToFailureChecklist! !
+
+!AssessmentResultUICheckResultListItem methodsFor: 'printing - clipboard' stamp: 'SqR 9/12/2015 12:04'!
+printClipboardTextOn: aStream
+withIndentation: anInteger
+
+	super
+		printClipboardTextOn: aStream
+		withIndentation: anInteger.
+	self contents do:
+		[:each |
+			each
+				printClipboardTextOn: aStream
+				withIndentation: anInteger + 1
+		]! !
+
+!AssessmentResultUICheckResultListItem methodsFor: 'private - checklists' stamp: 'SqR 9/12/2015 12:04'!
+privateCollectAllChecksExcept: duplicates
+into: aChecklist
+
+	self contents do:
+		[:each |
+			each
+				privateCollectAllChecksExcept: duplicates
+				into: aChecklist
+		].
+	^aChecklist! !
+
+!AssessmentResultUICheckResult methodsFor: 'accessing' stamp: 'SqR 9/7/2015 17:54'!
+checkResult
+
+	^checkResult! !
+
+!AssessmentResultUICheckResult methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 17:56'!
+checkResult: anObject
+
+	checkResult := anObject! !
+
+!AssessmentResultUICheckResult methodsFor: 'evaluation' stamp: 'sqr 1/13/2016 22:23'!
+classAndSelectorForBrowsingDo: aBlock
+
+	self checkResult classAndSelectorForBrowsingDo: aBlock! !
+
+!AssessmentResultUICheckResult methodsFor: 'printing' stamp: 'SqR 9/12/2015 11:57'!
+newDisplayString
+
+	| answer |
+	answer := String new writeStream.
+	self checkResult summaryPrintOn: answer.
+	^answer contents! !
+
+!AssessmentResultUICheckResult methodsFor: 'private - checklists' stamp: 'SqR 9/7/2015 17:56'!
+privateCollectAllChecksExcept: duplicates
+into: aChecklist
+
+	self checkResult checkDo:
+		[:check |
+			(duplicates includes: check) ifFalse:
+				[
+					aChecklist addCheck: check.
+					duplicates add: check
+				]
+		].
+	^super
+		privateCollectAllChecksExcept: duplicates
+		into: aChecklist! !
+
+!AssessmentResultUICheckResult class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 17:57'!
+forCheckResult: aCheckResult
+
+	^self new
+		checkResult: aCheckResult;
+		yourself! !
+
+!AssessmentResultUICompositeResult methodsFor: 'private' stamp: 'SqR 9/12/2015 12:06'!
+basicContents
+
+	^SortedCollection new! !
+
+!AssessmentResultUIResultFilter methodsFor: 'comparing' stamp: 'SqR 9/7/2015 18:00'!
+<= aFilter
+
+	self majorSortKey > aFilter majorSortKey ifTrue: [^false].
+	self majorSortKey < aFilter majorSortKey ifTrue: [^true].
+	^self minorSortKey <= aFilter minorSortKey! !
+
+!AssessmentResultUIResultFilter methodsFor: 'private' stamp: 'SqR 9/12/2015 12:08'!
+basicContents
+
+	| answer |
+	answer := Dictionary new.
+	self results do:
+		[:each |
+			| classification composite |
+			classification := each displayClassificationTag.
+			composite := answer
+				at: classification
+				ifAbsentPut: [AssessmentResultUIResultPerClassification forClassification: classification].
+			composite addChild: (self checkResultHolderFor: each)
+		].
+	^answer asSortedCollection! !
+
+!AssessmentResultUIResultFilter methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 18:01'!
+checkResultHolderFor: aCheckResult
+
+	^AssessmentResultUICheckResult forCheckResult: aCheckResult! !
+
+!AssessmentResultUIResultFilter methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 18:01'!
+result: anObject
+
+	result := anObject! !
+
+!AssessmentResultUIResultFilter methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:00'!
+classificationTag
+
+	^self class! !
+
+!AssessmentResultUIResultFilter methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:00'!
+majorSortKey
+
+	^String new! !
+
+!AssessmentResultUIResultFilter methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:00'!
+minorSortKey
+
+	^String new! !
+
+!AssessmentResultUIResultFilter methodsFor: 'printing' stamp: 'SqR 9/12/2015 11:57'!
+newDisplayString
+
+	^self classificationTag name! !
+
+!AssessmentResultUIResultFilter methodsFor: 'accessing' stamp: 'SqR 9/7/2015 17:59'!
+result
+
+	^result! !
+
+!AssessmentResultUIResultFilter methodsFor: 'accessing' stamp: 'SqR 9/7/2015 18:00'!
+results
+
+	^self result checkResultsClassifiedAs: self classificationTag! !
+
+!AssessmentResultUIResultFilter methodsFor: 'testing' stamp: 'SqR 9/7/2015 18:02'!
+shouldExpandAutomaticallyWhenViewed
+
+	^false! !
+
+!AssessmentResultUIResultFilter class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 18:03'!
+forResult: aResult
+
+	^self new
+		result: aResult;
+		yourself! !
+
+!AssessmentResultUIResultFilter class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 18:04'!
+forResult: aResult andClassificationTag: aClassificationTag
+
+	| genericAnswer |
+	AssessmentResultUIResultFilterPreset subclasses do:
+		[:one |
+			| preset |
+			preset := one forResult: aResult.
+			preset classificationTag = aClassificationTag ifTrue: [^preset].
+		].
+	genericAnswer := AssessmentResultUIResultFilterOthers forResult: aResult.
+	genericAnswer classificationTag: aClassificationTag.
+	^genericAnswer! !
+
+!AssessmentResultUIResultFilterOthers methodsFor: 'accessing' stamp: 'SqR 9/7/2015 18:05'!
+classificationTag
+
+	^classificationTag! !
+
+!AssessmentResultUIResultFilterOthers methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 18:05'!
+classificationTag: anObject
+
+	classificationTag := anObject! !
+
+!AssessmentResultUIResultFilterOthers methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:05'!
+majorSortKey
+
+	^self classificationTag preventsAssessmentSuccess
+		ifTrue: ['2'] ifFalse: ['3']! !
+
+!AssessmentResultUIResultFilterOthers methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:05'!
+minorSortKey
+
+	^self classificationTag name! !
+
+!AssessmentResultUIResultFilterOthers methodsFor: 'testing' stamp: 'SqR 9/7/2015 18:05'!
+shouldExpandAutomaticallyWhenViewed
+
+	^self classificationTag preventsAssessmentSuccess! !
+
+!AssessmentResultUIResultFilterPreset methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:06'!
+majorSortKey
+
+	^'1'! !
+
+!AssessmentResultUIResultFilterErrors methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:06'!
+classificationTag
+
+	^self result errorTag! !
+
+!AssessmentResultUIResultFilterErrors methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:07'!
+minorSortKey
+
+	^'1'! !
+
+!AssessmentResultUIResultFilterErrors methodsFor: 'testing' stamp: 'SqR 9/7/2015 18:06'!
+shouldExpandAutomaticallyWhenViewed
+
+	^true! !
+
+!AssessmentResultUIResultFilterFailures methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:07'!
+classificationTag
+
+	^self result failureTag! !
+
+!AssessmentResultUIResultFilterFailures methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:07'!
+minorSortKey
+
+	^'2'! !
+
+!AssessmentResultUIResultFilterFailures methodsFor: 'testing' stamp: 'SqR 9/7/2015 18:07'!
+shouldExpandAutomaticallyWhenViewed
+
+	^true! !
+
+!AssessmentResultUIResultFilterPasses methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:08'!
+classificationTag
+
+	^self result benchmarkPassTag! !
+
+!AssessmentResultUIResultFilterPasses methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:08'!
+majorSortKey
+
+	^'4'! !
+
+!AssessmentResultUIResultFilterBenchmarkPasses methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:08'!
+classificationTag
+
+	^self result passTag! !
+
+!AssessmentResultUIResultFilterBenchmarkPasses methodsFor: 'filtering' stamp: 'SqR 9/7/2015 18:09'!
+majorSortKey
+
+	^'5'! !
+
+!AssessmentResultUIResultFilterRoot methodsFor: 'accessing' stamp: 'SqR 9/12/2015 12:04'!
+adoptResult: aResult
+
+	aResult tagsAndResultsDo:
+		[:eachTag :someResults |
+			| newChild |
+			newChild := AssessmentResultUIResultFilter
+				forResult: aResult
+				andClassificationTag: eachTag.
+			self contents add: newChild
+		]! !
+
+!AssessmentResultUIResultFilterRoot methodsFor: 'printing' stamp: 'SqR 9/12/2015 11:57'!
+newDisplayString
+
+	^'Assessment Results'! !
+
+!AssessmentResultUIResultFilterRoot methodsFor: 'testing' stamp: 'SqR 9/12/2015 12:19'!
+shouldExpandAutomaticallyWhenViewed
+
+	^true! !
+
+!AssessmentResultUIResultFilterRoot class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 18:09'!
+forResult: aResult
+
+	^self new
+		adoptResult: aResult;
+		yourself! !
+
+!AssessmentResultUIResultPerClassification methodsFor: 'accessing' stamp: 'SqR 9/12/2015 12:04'!
+addChild: anObject
+
+	self contents add: anObject! !
+
+!AssessmentResultUIResultPerClassification methodsFor: 'evaluation' stamp: 'SqR 9/12/2015 12:00'!
+classAndSelectorForBrowsingDo: aBlock
+
+	aBlock value: self classification value: nil! !
+
+!AssessmentResultUIResultPerClassification methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 18:12'!
+classification
+
+	^classification! !
+
+!AssessmentResultUIResultPerClassification methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 18:12'!
+classification: anObject
+
+	classification := anObject! !
+
+!AssessmentResultUIResultPerClassification methodsFor: 'printing' stamp: 'SqR 9/12/2015 11:57'!
+newDisplayString
+
+	^self classification printString! !
+
+!AssessmentResultUIResultPerClassification methodsFor: 'testing' stamp: 'SqR 9/12/2015 12:24'!
+shouldExpandAutomaticallyWhenViewed
+
+	^true! !
+
+!AssessmentResultUIResultPerClassification class methodsFor: 'instance creation' stamp: 'SqR 9/7/2015 18:11'!
+forClassification: aClassification
+
+	^self new
+		classification: aClassification;
+		yourself! !
+
+!CheckBenchmarkResultUIListItem methodsFor: 'display' stamp: 'SqR 9/7/2015 18:14'!
+checklist
+
+	^self result check checklist printString! !
+
+!CheckBenchmarkResultUIListItem methodsFor: 'display' stamp: 'SqR 9/7/2015 18:14'!
+iterationsPerSecond
+
+	^self result iterationsPerSecondPrintString! !
+
+!CheckBenchmarkResultUIListItem methodsFor: 'display' stamp: 'SqR 9/7/2015 18:15'!
+measurement
+
+	^self result prettyPrint! !
+
+!CheckBenchmarkResultUIListItem methodsFor: 'display' stamp: 'SqR 9/7/2015 18:15'!
+scenario
+
+	^self result prettyPrintForScenario! !
+
+!CheckBenchmarkResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/12/2015 12:00'!
+classAndSelectorForBrowsingDo: aBlock
+
+	aBlock value: self result classForBrowsing value: nil! !
+
+!CheckBenchmarkResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 18:15'!
+debugChecklist
+
+	^self newDebugChecklist
+		addCheck: self result check;
+		yourself! !
+
+!CheckBenchmarkResultUIListItem methodsFor: 'evaluation' stamp: 'SqR 9/7/2015 18:15'!
+runToFailureChecklist
+
+	^self newRunToFailureChecklist
+		addCheck: self result check;
+		yourself! !
+
+!CheckBenchmarkResultUIListItem methodsFor: 'printing' stamp: 'SqR 9/12/2015 11:57'!
+newDisplayString
+
+	| answer |
+	answer := String new writeStream.
+	self result summaryPrintOn: answer.
+	^answer contents! !
+
+!CheckBenchmarkResultUIListItem methodsFor: 'accessing' stamp: 'SqR 9/7/2015 18:13'!
+result
+
+	^result! !
+
+!CheckBenchmarkResultUIListItem methodsFor: 'private - accessing' stamp: 'SqR 9/7/2015 18:15'!
+result: anObject
+
+	result := anObject! !
+
+!CheckBenchmarkResultUIListItem class methodsFor: 'instance creation' stamp: 'SqR 9/12/2015 11:50'!
+forResult: aResult
+
+	^self new
+		result: aResult;
+		yourself! !
+
+!CheckBenchmarkExpectationUIListItem methodsFor: 'display' stamp: 'SqR 9/7/2015 18:16'!
+expectedIterationsPerSecond
+
+	^self result shortActualSpeedPrintString! !
+
+!CheckBenchmarkExpectationUIListItem methodsFor: 'display' stamp: 'sqr 1/14/2016 01:33'!
+passed
+
+	^self result preventsAssessmentSuccess not! !
+
+!AssessmentsChecklistWrapper methodsFor: 'private' stamp: 'SqR 9/5/2015 16:07'!
+basicContents
+
+	| checklistSubclasses visibleSubclasses sortedSubclasses |
+	checklistSubclasses := self checklist checkSelectorLookupSubclasses.
+	visibleSubclasses := checklistSubclasses select: [:any | any shouldBeDisplayedInChecklistEvaluator].
+	sortedSubclasses := visibleSubclasses asSortedCollection: [:x :y | x name < y name].
+	^sortedSubclasses collect: [:each | self class with: each]! !
+
+!AssessmentsChecklistWrapper methodsFor: 'accessing' stamp: 'SqR 9/5/2015 15:47'!
+checklist
+
+	^self item! !
+
+!AssessmentsChecklistWrapper methodsFor: 'private - accessing' stamp: 'SqR 9/12/2015 11:51'!
+checklist: aChecklist
+
+	self setItem: aChecklist! !
 
 !String methodsFor: '*Assessments' stamp: 'sqr 1/16/2016 22:27'!
 assessmentsPrettyPrint
@@ -11254,3 +11238,13 @@ preventsCheckSuccess
 	"In some dialects, UnhandledError is not a subclass of Error"
 
 	^true! !
+
+!Behavior methodsFor: '*Assessments' stamp: 'SqR 2/21/2015 21:18'!
+classForBrowsing
+
+	^self! !
+
+!UndefinedObject methodsFor: '*Assessments' stamp: 'SqR 2/21/2015 21:19'!
+validationAspectPrettyPrint
+
+	^'<no aspect>'! !
