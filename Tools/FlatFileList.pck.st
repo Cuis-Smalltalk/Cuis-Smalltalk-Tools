@@ -1,8 +1,18 @@
-'From Cuis7.1 [latest update: #6378] on 18 May 2024 at 4:30:57 pm'!
+'From Cuis7.1 [latest update: #6596] on 17 August 2024 at 8:51:55 am'!
 'Description Flat file browser tool. Alternative to Cuis default FileList tool.'!
-!provides: 'FlatFileList' 1 44!
+!provides: 'FlatFileList' 1 45!
 SystemOrganization addCategory: #FlatFileList!
 
+
+!classDefinition: #FlatFileList category: #FlatFileList!
+Object subclass: #FlatFileList
+	instanceVariableNames: 'currentDirectory selectedFile sortBy sortAscending'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'FlatFileList'!
+!classDefinition: 'FlatFileList class' category: #FlatFileList!
+FlatFileList class
+	instanceVariableNames: ''!
 
 !classDefinition: #FlatFileListWindow category: #FlatFileList!
 SystemWindow subclass: #FlatFileListWindow
@@ -34,16 +44,9 @@ FlatFileListWindow subclass: #FlatFileSelectionWindow
 FlatFileSelectionWindow class
 	instanceVariableNames: ''!
 
-!classDefinition: #FlatFileList category: #FlatFileList!
-Object subclass: #FlatFileList
-	instanceVariableNames: 'currentDirectory selectedFile sortBy sortAscending'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'FlatFileList'!
-!classDefinition: 'FlatFileList class' category: #FlatFileList!
-FlatFileList class
-	instanceVariableNames: ''!
 
+!FlatFileList commentStamp: '<historical>' prior: 0!
+Model of FlatFileListWindow.!
 
 !FlatFileListWindow commentStamp: '<historical>' prior: 0!
 A flat file browser.!
@@ -59,8 +62,103 @@ When set, filenameFilter is a block for filtering the type of files allowed. For
 
 FlatFileSelectionWindow withFileDo: [:fileEntry | fileEntry inspect]!
 
-!FlatFileList commentStamp: '<historical>' prior: 0!
-Model of FlatFileListWindow.!
+!FlatFileList methodsFor: 'as yet unclassified' stamp: 'MM 5/9/2022 09:55:34'!
+currentDirectory: aDirectory
+
+	currentDirectory _ aDirectory.
+	self changed: #currentDirectory.
+	self selectedFile: nil! !
+
+!FlatFileList methodsFor: 'as yet unclassified' stamp: 'MM 5/7/2022 23:12:28'!
+currentDirectoryFiles
+
+	|files|
+	
+	files _ self currentDirectory files.
+	
+	^ sortBy caseOf: {
+		[#name] -> [|sorter| sorter _ sortAscending 
+						ifTrue: [[:f1 :f2 | f1 name < f2 name]]
+						ifFalse: [[:f1 :f2 | f1 name > f2 name]].
+					files asSortedCollection: sorter].
+		[#modificationTime] -> [|sorter| sorter _ sortAscending 
+						ifTrue: [[:f1 :f2 | f1 modificationTime < f2 modificationTime]]
+						ifFalse: [[:f1 :f2 | f1 modificationTime > f2 modificationTime]].
+					files asSortedCollection: sorter].
+		[#size] -> [|sorter| sorter _ sortAscending 
+						ifTrue: [[:f1 :f2 | f1 fileSize < f2 fileSize]]
+						ifFalse: [[:f1 :f2 | f1 fileSize > f2 fileSize]].
+					files asSortedCollection: sorter].
+		[#extension] -> [|sorter| sorter _ sortAscending 
+						ifTrue: [[:f1 :f2 | f1 extension < f2 extension]]
+						ifFalse: [[:f1 :f2 | f1 extension > f2 extension]].
+					files asSortedCollection: sorter].
+	}! !
+
+!FlatFileList methodsFor: 'as yet unclassified' stamp: 'MM 5/8/2022 10:48:37'!
+currentDirectoryList
+	^ currentDirectory directories asSortedCollection: [:d1 :d2 | d1 name < d2 name]! !
+
+!FlatFileList methodsFor: 'as yet unclassified' stamp: 'MM 5/7/2022 21:11:20'!
+defaultInitialDirectory
+
+	^ Preferences initialFileListDirectories
+		caseOf: {
+			[ #roots ] -> [ 	DirectoryEntry roots first].
+			[ #image ] -> [ DirectoryEntry smalltalkImageDirectory ].
+			[ #vm  ] -> [ DirectoryEntry vmDirectory ].
+			[ #current ] -> [DirectoryEntry currentDirectory]}
+		otherwise: [DirectoryEntry currentDirectory]! !
+
+!FlatFileList methodsFor: 'as yet unclassified' stamp: 'MM 5/9/2022 09:52:34'!
+gotoParentDirectory
+	currentDirectory parent ifNotNil: [:parent |
+		self currentDirectory: parent]! !
+
+!FlatFileList methodsFor: 'as yet unclassified' stamp: 'MM 5/7/2022 22:15:06'!
+initialize
+
+	currentDirectory _ self defaultInitialDirectory.
+	sortBy _ #name.
+	sortAscending _ true.! !
+
+!FlatFileList methodsFor: 'as yet unclassified' stamp: 'MM 5/7/2022 22:10:42'!
+toggleSortDirection
+
+	sortAscending _ sortAscending not! !
+
+!FlatFileList methodsFor: 'accessing' stamp: 'MM 5/7/2022 18:12:53'!
+currentDirectory
+	"Answer the value of currentDirectory"
+
+	^ currentDirectory! !
+
+!FlatFileList methodsFor: 'accessing' stamp: 'MM 5/7/2022 18:12:53'!
+selectedFile
+	"Answer the value of selectedFile"
+
+	^ selectedFile! !
+
+!FlatFileList methodsFor: 'accessing' stamp: 'MM 5/9/2022 09:48:40'!
+selectedFile: anObject
+	"Set the value of selectedFile"
+
+	selectedFile _ anObject.
+	self changed: #selectedFile! !
+
+!FlatFileList methodsFor: 'accessing' stamp: 'MM 5/7/2022 21:34:38'!
+sortBy
+	"Answer the value of sortBy"
+
+	^ sortBy! !
+
+!FlatFileList methodsFor: 'accessing' stamp: 'MM 5/7/2022 22:12:24'!
+sortBy: anObject
+	"Set the value of sortBy"
+
+	sortBy == anObject ifTrue: [self toggleSortDirection ].
+	sortBy _ anObject
+	! !
 
 !FlatFileListWindow methodsFor: 'as yet unclassified' stamp: 'MM 5/7/2022 23:12:52'!
 addSortMenuItems: aMenu
@@ -74,7 +172,7 @@ addSortMenuItems: aMenu
 browseFileChanges
 	ChangeList browseRecentLogOn: model selectedFile! !
 
-!FlatFileListWindow methodsFor: 'as yet unclassified' stamp: 'jmv 5/17/2024 18:08:20'!
+!FlatFileListWindow methodsFor: 'as yet unclassified' stamp: 'MM 8/14/2024 23:23:20'!
 buildMorphicWindow
 
 	| upperPanel directoryPanel toolbar gotoParentButton refreshButton statusBar |
@@ -118,9 +216,10 @@ buildMorphicWindow
 				listGetter: #fileListNames
 				indexGetter: #fileIndex 
 				indexSetter: #fileIndex:)
-					mainView: self
+					menuNshortcutsKey: #fileListMenuSpec.
+					"mainView: self
 					menuGetter: #fileListMenu
-					keystrokeAction: #fileListKey:from:.
+					keystrokeAction: #fileListKey:from:."
 	fileList 	doubleClickSelector: #doubleClickFile.
 	
 	upperPanel addAdjusterAndMorph: fileList layoutSpec: LayoutSpec useAll.
@@ -179,6 +278,12 @@ fileListMenu
 		ifNil: [ self noFileSelectedMenu ]
 		ifNotNil: [ self fileSelectedMenu ]! !
 
+!FlatFileListWindow methodsFor: 'as yet unclassified' stamp: 'MM 8/14/2024 23:23:57'!
+fileListMenuSpec
+	^model selectedFile
+		ifNil: [ self noFileSelectedMenuSpec ]
+		ifNotNil: [ self fileSelectedMenuSpec ]! !
+
 !FlatFileListWindow methodsFor: 'as yet unclassified' stamp: 'MM 5/7/2022 23:08:12'!
 fileSelectedMenu
 
@@ -206,6 +311,41 @@ fileSelectedMenu
 	self addSortMenuItems: menu.
 	
 	^ menu! !
+
+!FlatFileListWindow methodsFor: 'as yet unclassified' stamp: 'MM 8/17/2024 08:51:48'!
+fileSelectedMenuSpec
+
+	"See #getMenu comment for help."
+
+	| spec |
+	
+	spec := OrderedCollection 
+		with:  #(10 'view (v)' $v window viewSelectedFile inspectIcon)
+		with:	  #(20 'workspace with contents (c)' $c window viewContentsInWorkspace).
+		
+	({'pck'. 'pck.st'} includes: model selectedFile extension)
+		ifTrue: [spec addLast: #(30 'install package (i)' $i window installPackageFile)].
+		
+	model selectedFile extension = 'st'
+		ifTrue: [spec addLast: #(40 'file in' nil window fileInFile)].
+		
+	model selectedFile extension = 'cs.st'
+		ifTrue: [spec addLast: #(40 'install changeset (i)' $i window installChangeSet)].
+		
+	model selectedFile extension = 'changes'
+		ifTrue: [spec addLast: #(40 'browse changes in file' nil window browseFileChanges)].
+	
+	spec addLast: #(50 '---').
+	
+	spec addAll:
+	#(
+		#(60 'sort by name (n)' $n window sortByName)
+		#(70 'sort by size (s)' $s window sortBySize)
+		#(80 'sort by modification time (m)' $m window sortByModificationTime)
+		#(90 'sort by extension (x)' $e window sortByExtension)
+	).
+		
+	^ spec asArray! !
 
 !FlatFileListWindow methodsFor: 'as yet unclassified' stamp: 'MM 5/9/2022 17:35:20'!
 fileSelectionChanged
@@ -235,6 +375,16 @@ noFileSelectedMenu
 	self addSortMenuItems: menu.
 	
 	^ menu! !
+
+!FlatFileListWindow methodsFor: 'as yet unclassified' stamp: 'MM 8/17/2024 08:46:36'!
+noFileSelectedMenuSpec
+
+	^ #(
+		#(10 'sort by name (n)' $n window sortByName)
+		#(20 'sort by size (s)' $s window sortBySize)
+		#(30 'sort by modification time (m)' $m window sortByModificationTime)
+		#(40 'sort by extension (x)' $e window sortByExtension)
+	)! !
 
 !FlatFileListWindow methodsFor: 'as yet unclassified' stamp: 'MM 5/7/2022 20:35:19'!
 openSelectedFile
@@ -442,101 +592,3 @@ selectionAction: aBlock
 !FlatFileSelectionWindow class methodsFor: 'as yet unclassified' stamp: 'MM 5/9/2022 10:21:12'!
 withFileDo: aBlock
 	self open selectionAction: aBlock! !
-
-!FlatFileList methodsFor: 'as yet unclassified' stamp: 'MM 5/9/2022 09:55:34'!
-currentDirectory: aDirectory
-
-	currentDirectory _ aDirectory.
-	self changed: #currentDirectory.
-	self selectedFile: nil! !
-
-!FlatFileList methodsFor: 'as yet unclassified' stamp: 'MM 5/7/2022 23:12:28'!
-currentDirectoryFiles
-
-	|files|
-	
-	files _ self currentDirectory files.
-	
-	^ sortBy caseOf: {
-		[#name] -> [|sorter| sorter _ sortAscending 
-						ifTrue: [[:f1 :f2 | f1 name < f2 name]]
-						ifFalse: [[:f1 :f2 | f1 name > f2 name]].
-					files asSortedCollection: sorter].
-		[#modificationTime] -> [|sorter| sorter _ sortAscending 
-						ifTrue: [[:f1 :f2 | f1 modificationTime < f2 modificationTime]]
-						ifFalse: [[:f1 :f2 | f1 modificationTime > f2 modificationTime]].
-					files asSortedCollection: sorter].
-		[#size] -> [|sorter| sorter _ sortAscending 
-						ifTrue: [[:f1 :f2 | f1 fileSize < f2 fileSize]]
-						ifFalse: [[:f1 :f2 | f1 fileSize > f2 fileSize]].
-					files asSortedCollection: sorter].
-		[#extension] -> [|sorter| sorter _ sortAscending 
-						ifTrue: [[:f1 :f2 | f1 extension < f2 extension]]
-						ifFalse: [[:f1 :f2 | f1 extension > f2 extension]].
-					files asSortedCollection: sorter].
-	}! !
-
-!FlatFileList methodsFor: 'as yet unclassified' stamp: 'MM 5/8/2022 10:48:37'!
-currentDirectoryList
-	^ currentDirectory directories asSortedCollection: [:d1 :d2 | d1 name < d2 name]! !
-
-!FlatFileList methodsFor: 'as yet unclassified' stamp: 'MM 5/7/2022 21:11:20'!
-defaultInitialDirectory
-
-	^ Preferences initialFileListDirectories
-		caseOf: {
-			[ #roots ] -> [ 	DirectoryEntry roots first].
-			[ #image ] -> [ DirectoryEntry smalltalkImageDirectory ].
-			[ #vm  ] -> [ DirectoryEntry vmDirectory ].
-			[ #current ] -> [DirectoryEntry currentDirectory]}
-		otherwise: [DirectoryEntry currentDirectory]! !
-
-!FlatFileList methodsFor: 'as yet unclassified' stamp: 'MM 5/9/2022 09:52:34'!
-gotoParentDirectory
-	currentDirectory parent ifNotNil: [:parent |
-		self currentDirectory: parent]! !
-
-!FlatFileList methodsFor: 'as yet unclassified' stamp: 'MM 5/7/2022 22:15:06'!
-initialize
-
-	currentDirectory _ self defaultInitialDirectory.
-	sortBy _ #name.
-	sortAscending _ true.! !
-
-!FlatFileList methodsFor: 'as yet unclassified' stamp: 'MM 5/7/2022 22:10:42'!
-toggleSortDirection
-
-	sortAscending _ sortAscending not! !
-
-!FlatFileList methodsFor: 'accessing' stamp: 'MM 5/7/2022 18:12:53'!
-currentDirectory
-	"Answer the value of currentDirectory"
-
-	^ currentDirectory! !
-
-!FlatFileList methodsFor: 'accessing' stamp: 'MM 5/7/2022 18:12:53'!
-selectedFile
-	"Answer the value of selectedFile"
-
-	^ selectedFile! !
-
-!FlatFileList methodsFor: 'accessing' stamp: 'MM 5/9/2022 09:48:40'!
-selectedFile: anObject
-	"Set the value of selectedFile"
-
-	selectedFile _ anObject.
-	self changed: #selectedFile! !
-
-!FlatFileList methodsFor: 'accessing' stamp: 'MM 5/7/2022 21:34:38'!
-sortBy
-	"Answer the value of sortBy"
-
-	^ sortBy! !
-
-!FlatFileList methodsFor: 'accessing' stamp: 'MM 5/7/2022 22:12:24'!
-sortBy: anObject
-	"Set the value of sortBy"
-
-	sortBy == anObject ifTrue: [self toggleSortDirection ].
-	sortBy _ anObject
-	! !
