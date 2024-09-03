@@ -1,8 +1,28 @@
-'From Cuis7.1 [latest update: #6378] on 18 May 2024 at 4:28:31 pm'!
+'From Cuis7.1 [latest update: #6669] on 2 September 2024 at 7:52:15 pm'!
 'Description Tool for browsing and editing Cuis preferences.'!
-!provides: 'CompactPreferenceBrowser' 1 3!
+!provides: 'CompactPreferenceBrowser' 1 4!
 SystemOrganization addCategory: #CompactPreferenceBrowser!
 
+
+!classDefinition: #PreferenceSelectionButtonMorph category: #CompactPreferenceBrowser!
+BoxedMorph subclass: #PreferenceSelectionButtonMorph
+	instanceVariableNames: 'elems model placeHolder button printer getter setter selectionStrategy'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'CompactPreferenceBrowser'!
+!classDefinition: 'PreferenceSelectionButtonMorph class' category: #CompactPreferenceBrowser!
+PreferenceSelectionButtonMorph class
+	instanceVariableNames: ''!
+
+!classDefinition: #PreferenceToggleButtonMorph category: #CompactPreferenceBrowser!
+BoxedMorph subclass: #PreferenceToggleButtonMorph
+	instanceVariableNames: 'model getStateSelector isPressed actWhen actionSelector'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'CompactPreferenceBrowser'!
+!classDefinition: 'PreferenceToggleButtonMorph class' category: #CompactPreferenceBrowser!
+PreferenceToggleButtonMorph class
+	instanceVariableNames: ''!
 
 !classDefinition: #PreferenceEditorMorph category: #CompactPreferenceBrowser!
 LayoutMorph subclass: #PreferenceEditorMorph
@@ -44,36 +64,6 @@ SystemWindow subclass: #CompactPreferenceBrowser
 CompactPreferenceBrowser class
 	instanceVariableNames: ''!
 
-!classDefinition: #PreferenceSelectionButtonMorph category: #CompactPreferenceBrowser!
-BoxedMorph subclass: #PreferenceSelectionButtonMorph
-	instanceVariableNames: 'elems model placeHolder button printer getter setter selectionStrategy'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'CompactPreferenceBrowser'!
-!classDefinition: 'PreferenceSelectionButtonMorph class' category: #CompactPreferenceBrowser!
-PreferenceSelectionButtonMorph class
-	instanceVariableNames: ''!
-
-!classDefinition: #PreferenceToggleButtonMorph category: #CompactPreferenceBrowser!
-BoxedMorph subclass: #PreferenceToggleButtonMorph
-	instanceVariableNames: 'model getStateSelector isPressed actWhen actionSelector'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'CompactPreferenceBrowser'!
-!classDefinition: 'PreferenceToggleButtonMorph class' category: #CompactPreferenceBrowser!
-PreferenceToggleButtonMorph class
-	instanceVariableNames: ''!
-
-
-!PreferenceEditorMorph commentStamp: '<historical>' prior: 0!
-The editor row for a single preference!
-
-!CompactPreferenceBrowser commentStamp: '<historical>' prior: 0!
-Cuis Smalltalk preferences editor.
-
-CompactPreferenceBrowser open.
-
-Or open from WorldMenu.!
 
 !PreferenceSelectionButtonMorph commentStamp: '<historical>' prior: 0!
 Button morph that opens a selection menu for selecting a value.
@@ -90,6 +80,488 @@ Structure:
                                                           When #list, a LIstSelectionMorph is used for selecting values.
                                                           When a Number, a MenuMorph is used if elems size is <= that number, and a ListSelectionMorph if elems size > that number.
                                                           Default is number with value 20.!
+
+!PreferenceEditorMorph commentStamp: '<historical>' prior: 0!
+The editor row for a single preference!
+
+!CompactPreferenceBrowser commentStamp: '<historical>' prior: 0!
+Cuis Smalltalk preferences editor.
+
+CompactPreferenceBrowser open.
+
+Or open from WorldMenu.!
+
+!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
+button
+	"Answer the value of button"
+
+	^ button! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
+button: anObject
+	"Set the value of button"
+
+	button _ anObject! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
+elems
+	"Answer the value of elems"
+
+	^ elems isBlock ifTrue: [elems value]
+		ifFalse: [elems]! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
+elems: anObject
+	"Set the value of elems"
+
+	elems _ anObject! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
+getter
+	"Answer the value of getter"
+
+	^ getter! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
+getter: anObject
+	"Set the value of getter"
+
+	getter _ anObject! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
+model
+	"Answer the value of model"
+
+	^ model! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
+model: anObject
+	"Set the value of model"
+
+	model _ anObject! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
+placeHolder
+	"Answer the value of placeHolder"
+
+	^ placeHolder! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
+placeHolder: anObject
+	"Set the value of placeHolder"
+
+	placeHolder _ anObject! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
+printer
+	"Answer the value of printer"
+
+	^ printer! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:35'!
+printer: anObject
+	"Set the value of printer"
+
+	printer _ anObject! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:35'!
+selectionStrategy
+	"Answer the value of selectionStrategy"
+
+	^ selectionStrategy! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:35'!
+selectionStrategy: anObject
+	"Set the value of selectionStrategy"
+
+	selectionStrategy _ anObject! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:35'!
+setter
+	"Answer the value of setter"
+
+	^ setter! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:35'!
+setter: anObject
+	"Set the value of setter"
+
+	setter _ anObject! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
+color: aColor
+	button color: aColor! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
+drawOn: aCavas
+
+	"do nothing"! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
+fontToUse
+	^ FontFamily defaultFamilyAndPointSize! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
+initialize: aModel getter: getSymbol setter: setSymbol elems: aCollection printer: aSymbol
+
+	| label |
+	
+	model := aModel.
+	placeHolder := '--'.
+	button _ PluggableButtonMorph new model: self.
+	printer := aSymbol.
+	elems := aCollection.
+	getter _ getSymbol.
+	setter _ setSymbol.
+	selectionStrategy _ 20.
+	
+	label := self value ifNil: [placeHolder] ifNotNil: [self value perform: printer].
+	
+	button label: label;
+			action: #selectItem;
+			color: Color lightGray;
+			morphExtent: self measureContents.
+			
+	self addMorph: button.
+	self morphExtent: button morphExtent.! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
+layoutSubmorphs
+	self submorphsDo: [:m | m morphExtent: self morphExtent]! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
+measureContents
+
+	| f label |
+	
+	label := self value ifNil: [placeHolder] ifNotNil: [self value perform: printer].
+	f _ self fontToUse.
+	^((f widthOfString: label) + 10) @ (f lineSpacing + 10).! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
+minimumExtent
+	^ self measureContents! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
+morphExtent
+	^ self minimumExtent! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:55:27'!
+selectItem
+	^ self selectItemWithMenu! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
+selectItem: item
+
+	self value: item.
+	self update.
+	self 
+		triggerEvent: #itemSelected:
+		with: item! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
+selectItemWithMenu
+
+	| item menu |
+	
+	(self elems collect:[:elem | elem perform: printer]) ifNotEmpty: [:labelList |
+		menu := self selectionMenuClass labelList: labelList selections: self elems .
+		item := menu startUpMenu.
+	
+		item ifNotNil: [		self selectItem: item ]]
+		! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
+selectionMenuClass
+	^ SelectionMenu! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
+someSubmorphPositionOrExtentChanged
+	"Our extent, or some submorph changed. Must layout submorphs again."
+	super someSubmorphPositionOrExtentChanged .
+	
+	button morphExtent ifNotNil: [
+		self morphExtent: button morphExtent]! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
+update
+
+	button label: (self value perform: printer).
+	self morphExtent: 0@0.
+	self redrawNeeded.
+	self owner ifNotNil: [:o | o someSubmorphPositionOrExtentChanged]  ! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
+value
+	^ self model perform: getter! !
+
+!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
+value: anObject
+	self model perform: setter with: anObject! !
+
+!PreferenceSelectionButtonMorph class methodsFor: 'instance creation' stamp: 'MM 6/14/2023 20:56:24'!
+on: aModel 
+	^ self
+		on: aModel
+		elems: #()
+		printer: #asString.! !
+
+!PreferenceSelectionButtonMorph class methodsFor: 'instance creation' stamp: 'MM 6/14/2023 20:56:28'!
+on: aModel elems: aCollection
+	^ self
+		on: aModel
+		elems: aCollection
+		printer: #asString.! !
+
+!PreferenceSelectionButtonMorph class methodsFor: 'instance creation' stamp: 'MM 6/14/2023 20:49:35'!
+on: aModel elems: aCollection printer: aSymbol
+	"(SelectionButtonMorph on: (ValueHolder value: #foo))
+	elems: #(foo bar baz);
+	color: Color lightGray ;
+	openInWorld"
+	^ self on: aModel getter: #value setter: #value: elems: aCollection printer: aSymbol! !
+
+!PreferenceSelectionButtonMorph class methodsFor: 'instance creation' stamp: 'MM 6/14/2023 20:49:35'!
+on: aModel getter: getter setter: setter elems: aCollection printer: aSymbol
+	"(SelectionButtonMorph on: (ValueHolder value: #foo))
+	elems: #(foo bar baz);
+	color: Color lightGray ;
+	openInWorld"
+	^ self new initialize: aModel getter: getter setter: setter elems: aCollection printer: aSymbol! !
+
+!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
+actWhen
+	"Answer the value of actWhen"
+
+	^ actWhen! !
+
+!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
+actWhen: anObject
+	"Set the value of actWhen"
+
+	actWhen _ anObject! !
+
+!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
+actionSelector
+	"Answer the value of actionSelector"
+
+	^ actionSelector! !
+
+!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
+actionSelector: anObject
+	"Set the value of actionSelector"
+
+	actionSelector _ anObject! !
+
+!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
+getStateSelector
+	"Answer the value of getStateSelector"
+
+	^ getStateSelector! !
+
+!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
+getStateSelector: anObject
+	"Set the value of getStateSelector"
+
+	getStateSelector _ anObject! !
+
+!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/15/2023 12:22:43'!
+initialize
+	super initialize.
+	
+	getStateSelector := #value.
+	self morphExtent: 34@20.
+	color := Color veryVeryLightGray .
+	actWhen := #buttonDown.
+	extent := nil! !
+
+!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
+isPressed
+	"Answer the value of isPressed"
+
+	^ isPressed! !
+
+!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
+isPressed: anObject
+	"Set the value of isPressed"
+
+	isPressed _ anObject! !
+
+!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
+model
+	"Answer the value of model"
+
+	^ model! !
+
+!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
+model: anObject
+	"Set the value of model"
+
+	model ifNotNil: [model removeDependent: self].
+	getStateSelector ifNotNil: [
+		anObject ifNotNil: [anObject addDependent: self]].
+	model _ anObject! !
+
+!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
+update: aSymbol
+
+	super update: aSymbol.
+	aSymbol = getStateSelector ifTrue: [
+		self redrawNeeded ]! !
+
+!PreferenceToggleButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
+defaultExtent
+
+	^ 30@16! !
+
+!PreferenceToggleButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/15/2023 12:21:10'!
+drawOn: aCanvas
+
+	|rx ry statusColor |
+	
+	"Calculate the radius of toggles."
+	ry := self morphHeight // 2.
+	rx := ry.
+	
+	"Draw the background."
+	
+	statusColor := self value ifTrue: [Color green] ifFalse: [Color gray].
+	
+	aCanvas ellipseCenter: rx@ry  
+				radius: rx@ry  
+				borderWidth: 1  
+				borderColor: statusColor
+				fillColor: statusColor.
+	
+	aCanvas ellipseCenter:  ((self morphExtent x - rx)@ry)
+			radius: rx@ry  
+			borderWidth: 1
+			borderColor: statusColor
+			fillColor: statusColor.
+			
+	aCanvas fillRectangle: ((rx@0) corner: ((self morphExtent x - rx)@self morphExtent y)) color: statusColor.
+	
+	"Draw either the On or Off toggle." 
+	
+	self value ifFalse: [
+			aCanvas ellipseCenter: rx@ry  
+				radius: ((rx@ry) - 2)  
+				borderWidth: 0  
+				borderColor: color
+				fillColor: color]
+		ifTrue: [
+			aCanvas ellipseCenter:  ((self morphExtent x - rx)@ry)
+				radius: ((rx@ry) - 2)  
+				borderWidth: 0
+				borderColor: color
+				fillColor: color] ! !
+
+!PreferenceToggleButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
+handlesMouseDown: aMouseButtonEvent
+	"Do I want to receive mouseDown events (mouseDown:, mouseMove:, mouseUp:)?"
+	^true! !
+
+!PreferenceToggleButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/2/2024 19:51:26'!
+localBounds
+
+	^`0@0` extent: self morphExtent.! !
+
+!PreferenceToggleButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
+morphExtent
+
+	^ extent ifNil: [extent := self defaultExtent]! !
+
+!PreferenceToggleButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
+morphExtent: aPoint
+
+	"The extent of this widget is set once when initializing it. Then it does not change anymore."
+	"We need to ignore further calls from LayoutMorphs so that extent doesn't change."
+	extent ifNil: [super morphExtent: aPoint]! !
+
+!PreferenceToggleButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
+mouseButton1Down: aMouseButtonEvent localPosition: localEventPosition
+
+	isPressed _ true.
+	self redrawNeeded.
+	(actWhen == #buttonDown or: [ actWhen == #buttonStillDown ])
+		ifTrue: [
+			self performAction ]
+		ifFalse: [
+			"Don't make multi-click slower if we act on button down, just do multiple actions"
+			aMouseButtonEvent hand
+				waitForClicksOrDragOrSimulatedMouseButton2: self
+				event: aMouseButtonEvent
+				clkSel: nil
+				clkNHalf: nil
+				dblClkSel: #doubleClick:localPosition:
+				dblClkNHalfSel: nil
+				tripleClkSel: nil ]! !
+
+!PreferenceToggleButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
+performAction
+	"Inform the model that this button has been pressed. "
+
+	actionSelector ifNotNil: [
+		actionSelector isBlock ifTrue: [actionSelector value]
+		ifFalse: [	model perform: actionSelector ]]
+	! !
+
+!PreferenceToggleButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
+value
+
+	^ model perform: getStateSelector ! !
+
+!PreferenceToggleButtonMorph class methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:46:47'!
+example1
+
+	|s|
+	
+	s := Switch newOff.
+	
+	(PreferenceToggleButtonMorph on: s)
+		getStateSelector: #isOn;
+		actionSelector: #switch;
+		morphExtent: 30@16;
+		openInWorld
+	
+	! !
+
+!PreferenceToggleButtonMorph class methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 21:22:20'!
+example2
+
+	|s|
+	
+	s := Switch newOff.
+	
+	(PreferenceToggleButtonMorph on: s)
+		getStateSelector: #isOn;
+		actionSelector: #switch;
+		openInWorld
+	
+	! !
+
+!PreferenceToggleButtonMorph class methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
+model: aModel
+
+	^ self new 
+		model: aModel;
+		yourself! !
+
+!PreferenceToggleButtonMorph class methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
+model: anObject stateGetter: getStateSel action: actionSel
+
+	^ self new
+		model: anObject;
+		getStateSelector: getStateSel;
+		actionSelector: actionSel;
+		yourself! !
+
+!PreferenceToggleButtonMorph class methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
+on: aModel
+
+	^ self new 
+		model: aModel;
+		yourself! !
 
 !PreferenceEditorMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/15/2023 11:44:16'!
 evaluatePreferenceValue
@@ -557,478 +1029,6 @@ open
 	"self open"
 	
 	self new openInWorld! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
-button
-	"Answer the value of button"
-
-	^ button! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
-button: anObject
-	"Set the value of button"
-
-	button _ anObject! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
-elems
-	"Answer the value of elems"
-
-	^ elems isBlock ifTrue: [elems value]
-		ifFalse: [elems]! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
-elems: anObject
-	"Set the value of elems"
-
-	elems _ anObject! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
-getter
-	"Answer the value of getter"
-
-	^ getter! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
-getter: anObject
-	"Set the value of getter"
-
-	getter _ anObject! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
-model
-	"Answer the value of model"
-
-	^ model! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
-model: anObject
-	"Set the value of model"
-
-	model _ anObject! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
-placeHolder
-	"Answer the value of placeHolder"
-
-	^ placeHolder! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
-placeHolder: anObject
-	"Set the value of placeHolder"
-
-	placeHolder _ anObject! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:34'!
-printer
-	"Answer the value of printer"
-
-	^ printer! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:35'!
-printer: anObject
-	"Set the value of printer"
-
-	printer _ anObject! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:35'!
-selectionStrategy
-	"Answer the value of selectionStrategy"
-
-	^ selectionStrategy! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:35'!
-selectionStrategy: anObject
-	"Set the value of selectionStrategy"
-
-	selectionStrategy _ anObject! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:35'!
-setter
-	"Answer the value of setter"
-
-	^ setter! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:49:35'!
-setter: anObject
-	"Set the value of setter"
-
-	setter _ anObject! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
-color: aColor
-	button color: aColor! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
-drawOn: aCavas
-
-	"do nothing"! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
-fontToUse
-	^ FontFamily defaultFamilyAndPointSize! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
-initialize: aModel getter: getSymbol setter: setSymbol elems: aCollection printer: aSymbol
-
-	| label |
-	
-	model := aModel.
-	placeHolder := '--'.
-	button _ PluggableButtonMorph new model: self.
-	printer := aSymbol.
-	elems := aCollection.
-	getter _ getSymbol.
-	setter _ setSymbol.
-	selectionStrategy _ 20.
-	
-	label := self value ifNil: [placeHolder] ifNotNil: [self value perform: printer].
-	
-	button label: label;
-			action: #selectItem;
-			color: Color lightGray;
-			morphExtent: self measureContents.
-			
-	self addMorph: button.
-	self morphExtent: button morphExtent.! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
-layoutSubmorphs
-	self submorphsDo: [:m | m morphExtent: self morphExtent]! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
-measureContents
-
-	| f label |
-	
-	label := self value ifNil: [placeHolder] ifNotNil: [self value perform: printer].
-	f _ self fontToUse.
-	^((f widthOfString: label) + 10) @ (f lineSpacing + 10).! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
-minimumExtent
-	^ self measureContents! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
-morphExtent
-	^ self minimumExtent! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:55:27'!
-selectItem
-	^ self selectItemWithMenu! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
-selectItem: item
-
-	self value: item.
-	self update.
-	self 
-		triggerEvent: #itemSelected:
-		with: item! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
-selectItemWithMenu
-
-	| item menu |
-	
-	(self elems collect:[:elem | elem perform: printer]) ifNotEmpty: [:labelList |
-		menu := self selectionMenuClass labelList: labelList selections: self elems .
-		item := menu startUpMenu.
-	
-		item ifNotNil: [		self selectItem: item ]]
-		! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
-selectionMenuClass
-	^ SelectionMenu! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
-someSubmorphPositionOrExtentChanged
-	"Our extent, or some submorph changed. Must layout submorphs again."
-	super someSubmorphPositionOrExtentChanged .
-	
-	button morphExtent ifNotNil: [
-		self morphExtent: button morphExtent]! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
-update
-
-	button label: (self value perform: printer).
-	self morphExtent: 0@0.
-	self redrawNeeded.
-	self owner ifNotNil: [:o | o someSubmorphPositionOrExtentChanged]  ! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
-value
-	^ self model perform: getter! !
-
-!PreferenceSelectionButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:49:35'!
-value: anObject
-	self model perform: setter with: anObject! !
-
-!PreferenceSelectionButtonMorph class methodsFor: 'instance creation' stamp: 'MM 6/14/2023 20:56:24'!
-on: aModel 
-	^ self
-		on: aModel
-		elems: #()
-		printer: #asString.! !
-
-!PreferenceSelectionButtonMorph class methodsFor: 'instance creation' stamp: 'MM 6/14/2023 20:56:28'!
-on: aModel elems: aCollection
-	^ self
-		on: aModel
-		elems: aCollection
-		printer: #asString.! !
-
-!PreferenceSelectionButtonMorph class methodsFor: 'instance creation' stamp: 'MM 6/14/2023 20:49:35'!
-on: aModel elems: aCollection printer: aSymbol
-	"(SelectionButtonMorph on: (ValueHolder value: #foo))
-	elems: #(foo bar baz);
-	color: Color lightGray ;
-	openInWorld"
-	^ self on: aModel getter: #value setter: #value: elems: aCollection printer: aSymbol! !
-
-!PreferenceSelectionButtonMorph class methodsFor: 'instance creation' stamp: 'MM 6/14/2023 20:49:35'!
-on: aModel getter: getter setter: setter elems: aCollection printer: aSymbol
-	"(SelectionButtonMorph on: (ValueHolder value: #foo))
-	elems: #(foo bar baz);
-	color: Color lightGray ;
-	openInWorld"
-	^ self new initialize: aModel getter: getter setter: setter elems: aCollection printer: aSymbol! !
-
-!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
-actWhen
-	"Answer the value of actWhen"
-
-	^ actWhen! !
-
-!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
-actWhen: anObject
-	"Set the value of actWhen"
-
-	actWhen _ anObject! !
-
-!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
-actionSelector
-	"Answer the value of actionSelector"
-
-	^ actionSelector! !
-
-!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
-actionSelector: anObject
-	"Set the value of actionSelector"
-
-	actionSelector _ anObject! !
-
-!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
-getStateSelector
-	"Answer the value of getStateSelector"
-
-	^ getStateSelector! !
-
-!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
-getStateSelector: anObject
-	"Set the value of getStateSelector"
-
-	getStateSelector _ anObject! !
-
-!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/15/2023 12:22:43'!
-initialize
-	super initialize.
-	
-	getStateSelector := #value.
-	self morphExtent: 34@20.
-	color := Color veryVeryLightGray .
-	actWhen := #buttonDown.
-	extent := nil! !
-
-!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
-isPressed
-	"Answer the value of isPressed"
-
-	^ isPressed! !
-
-!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
-isPressed: anObject
-	"Set the value of isPressed"
-
-	isPressed _ anObject! !
-
-!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
-model
-	"Answer the value of model"
-
-	^ model! !
-
-!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
-model: anObject
-	"Set the value of model"
-
-	model ifNotNil: [model removeDependent: self].
-	getStateSelector ifNotNil: [
-		anObject ifNotNil: [anObject addDependent: self]].
-	model _ anObject! !
-
-!PreferenceToggleButtonMorph methodsFor: 'accessing' stamp: 'MM 6/14/2023 20:45:06'!
-update: aSymbol
-
-	super update: aSymbol.
-	aSymbol = getStateSelector ifTrue: [
-		self redrawNeeded ]! !
-
-!PreferenceToggleButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
-defaultExtent
-
-	^ 30@16! !
-
-!PreferenceToggleButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/15/2023 12:21:10'!
-drawOn: aCanvas
-
-	|rx ry statusColor |
-	
-	"Calculate the radius of toggles."
-	ry := self morphHeight // 2.
-	rx := ry.
-	
-	"Draw the background."
-	
-	statusColor := self value ifTrue: [Color green] ifFalse: [Color gray].
-	
-	aCanvas ellipseCenter: rx@ry  
-				radius: rx@ry  
-				borderWidth: 1  
-				borderColor: statusColor
-				fillColor: statusColor.
-	
-	aCanvas ellipseCenter:  ((self morphExtent x - rx)@ry)
-			radius: rx@ry  
-			borderWidth: 1
-			borderColor: statusColor
-			fillColor: statusColor.
-			
-	aCanvas fillRectangle: ((rx@0) corner: ((self morphExtent x - rx)@self morphExtent y)) color: statusColor.
-	
-	"Draw either the On or Off toggle." 
-	
-	self value ifFalse: [
-			aCanvas ellipseCenter: rx@ry  
-				radius: ((rx@ry) - 2)  
-				borderWidth: 0  
-				borderColor: color
-				fillColor: color]
-		ifTrue: [
-			aCanvas ellipseCenter:  ((self morphExtent x - rx)@ry)
-				radius: ((rx@ry) - 2)  
-				borderWidth: 0
-				borderColor: color
-				fillColor: color] ! !
-
-!PreferenceToggleButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
-handlesMouseDown: aMouseButtonEvent
-	"Do I want to receive mouseDown events (mouseDown:, mouseMove:, mouseUp:)?"
-	^true! !
-
-!PreferenceToggleButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
-morphExtent
-
-	^ extent ifNil: [extent := self defaultExtent]! !
-
-!PreferenceToggleButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
-morphExtent: aPoint
-
-	"The extent of this widget is set once when initializing it. Then it does not change anymore."
-	"We need to ignore further calls from LayoutMorphs so that extent doesn't change."
-	extent ifNil: [super morphExtent: aPoint]! !
-
-!PreferenceToggleButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
-morphLocalBounds
-
-	^`0@0` extent: self morphExtent.! !
-
-!PreferenceToggleButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
-mouseButton1Down: aMouseButtonEvent localPosition: localEventPosition
-
-	isPressed _ true.
-	self redrawNeeded.
-	(actWhen == #buttonDown or: [ actWhen == #buttonStillDown ])
-		ifTrue: [
-			self performAction ]
-		ifFalse: [
-			"Don't make multi-click slower if we act on button down, just do multiple actions"
-			aMouseButtonEvent hand
-				waitForClicksOrDragOrSimulatedMouseButton2: self
-				event: aMouseButtonEvent
-				clkSel: nil
-				clkNHalf: nil
-				dblClkSel: #doubleClick:localPosition:
-				dblClkNHalfSel: nil
-				tripleClkSel: nil ]! !
-
-!PreferenceToggleButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
-performAction
-	"Inform the model that this button has been pressed. "
-
-	actionSelector ifNotNil: [
-		actionSelector isBlock ifTrue: [actionSelector value]
-		ifFalse: [	model perform: actionSelector ]]
-	! !
-
-!PreferenceToggleButtonMorph methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
-value
-
-	^ model perform: getStateSelector ! !
-
-!PreferenceToggleButtonMorph class methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:46:47'!
-example1
-
-	|s|
-	
-	s := Switch newOff.
-	
-	(PreferenceToggleButtonMorph on: s)
-		getStateSelector: #isOn;
-		actionSelector: #switch;
-		morphExtent: 30@16;
-		openInWorld
-	
-	! !
-
-!PreferenceToggleButtonMorph class methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 21:22:20'!
-example2
-
-	|s|
-	
-	s := Switch newOff.
-	
-	(PreferenceToggleButtonMorph on: s)
-		getStateSelector: #isOn;
-		actionSelector: #switch;
-		openInWorld
-	
-	! !
-
-!PreferenceToggleButtonMorph class methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
-model: aModel
-
-	^ self new 
-		model: aModel;
-		yourself! !
-
-!PreferenceToggleButtonMorph class methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
-model: anObject stateGetter: getStateSel action: actionSel
-
-	^ self new
-		model: anObject;
-		getStateSelector: getStateSel;
-		actionSelector: actionSel;
-		yourself! !
-
-!PreferenceToggleButtonMorph class methodsFor: 'as yet unclassified' stamp: 'MM 6/14/2023 20:45:06'!
-on: aModel
-
-	^ self new 
-		model: aModel;
-		yourself! !
 
 !PreferenceSet class methodsFor: '*CompactPreferenceBrowser' stamp: 'MM 6/16/2023 18:49:54'!
 openPreferencesInspector

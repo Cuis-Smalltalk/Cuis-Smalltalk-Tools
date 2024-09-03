@@ -19,7 +19,7 @@ Also, you can use catalog specific shortcuts:
     alt-s : Selectors catalog.
     alt-p : System categories catalog.
     alt-t : Tools catalog.'!
-!provides: 'PopupFinder' 1 61!
+!provides: 'PopupFinder' 1 62!
 !requires: 'WorldKeyStrokes' 1 4 nil!
 SystemOrganization addCategory: #'PopupFinder-Model'!
 SystemOrganization addCategory: #'PopupFinder-UI'!
@@ -561,7 +561,7 @@ model: anObject
 openInWorld
 	super openInWorld.
 	self morphHeight: 300.
-	self morphPositionInWorld: ((self runningWorld morphWidth / 2)  - (self morphWidth / 2)) @ 200.
+	self positionInWorld: ((self runningWorld morphWidth / 2)  - (self morphWidth / 2)) @ 200.
 	self comeToFront.
 
 	"Disable focusFollowsMouse while the finder is open."
