@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6409] on 26 May 2024 at 11:18:01 am'!
+'From Cuis7.1 [latest update: #6715] on 12 September 2024 at 12:30:06 pm'!
 'Description Implementation of Errors that can be resumed in multiple ways.
 
 Inspired by Common Lisp''s restartable conditions. See: https://gigamonkeys.com/book/beyond-exception-handling-conditions-and-restarts.html'!
-!provides: 'MultiResumableExceptions' 1 12!
+!provides: 'MultiResumableExceptions' 1 13!
 SystemOrganization addCategory: #MultiResumableExceptions!
 
 
@@ -188,7 +188,7 @@ example1
 		case: #bar do: [Transcript show: 'bar'];
 		signal! !
 
-!MultiResumableError class methodsFor: 'examples' stamp: 'MM 6/23/2023 23:21:31'!
+!MultiResumableError class methodsFor: 'examples' stamp: 'jmv 9/12/2024 12:27:11'!
 example2
 
 	"In this example, a MultiResumableError is signaled for when a file does not exist.
@@ -209,13 +209,13 @@ example2
 					Transcript show: 'Creating file'. 
 					fileEntry forceWriteStream];
 				case: 'create with text' do: [|text|
-					text := FillInTheBlankMorph request: 'Text for the file:'.
+					text := StringRequestMorph request: 'Text for the file:'.
 					text ifNotNil: [fileEntry textContents: text]];
 				signal].
 	
 	fileEntry textContents edit! !
 
-!MultiResumableError class methodsFor: 'examples' stamp: 'MM 6/24/2023 12:47:23'!
+!MultiResumableError class methodsFor: 'examples' stamp: 'jmv 9/12/2024 12:27:15'!
 example3
 
 	"In this example, a MultiResumableError is signaled for when a file does not exist.
@@ -234,7 +234,7 @@ example3
 				messageText: 'File does not exist';
 				case: 'retry' do: [];
 				case: 'use other file name' do: [ |newFileName|
-					newFileName := FillInTheBlankMorph request: 'Filename:' initialAnswer: fileName.
+					newFileName := StringRequestMorph request: 'Filename:' initialAnswer: fileName.
 					newFileName ifNotNil: [fileName := newFileName. fileEntry := fileName asFileEntry]];
 				signal].
 	
@@ -297,7 +297,7 @@ example4
 	'failed' -> failed.
 	'retried' -> retried} asDictionary explore! !
 
-!MultiResumableError class methodsFor: 'examples' stamp: 'MM 6/23/2023 23:32:47'!
+!MultiResumableError class methodsFor: 'examples' stamp: 'jmv 9/12/2024 12:27:19'!
 example5
 
 	"Retry with interactor example."
@@ -316,7 +316,7 @@ example5
 				case: 'retry' do: [];
 				case: 'use other file name' do: [:newFileName | 					
 					newFileName ifNotNil: [fileName := newFileName. fileEntry := fileName asFileEntry]]
-				interactor: [FillInTheBlankMorph request: 'Text for the file:' initialAnswer: fileName];
+				interactor: [StringRequestMorph request: 'Text for the file:' initialAnswer: fileName];
 				signal].
 	
 	fileEntry textContents edit! !

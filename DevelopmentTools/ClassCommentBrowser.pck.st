@@ -1,18 +1,8 @@
-'From Cuis7.1 [latest update: #6378] on 18 May 2024 at 4:26:31 pm'!
+'From Cuis7.1 [latest update: #6715] on 12 September 2024 at 12:28:17 pm'!
 'Description List classes whose names include terms such as "Pluggable," "Morphic," "Text," or "Morph", search their class comments or open browsers on them.'!
-!provides: 'ClassCommentBrowser' 1 47!
+!provides: 'ClassCommentBrowser' 1 48!
 SystemOrganization addCategory: #ClassCommentBrowser!
 
-
-!classDefinition: #CommentGuide category: #ClassCommentBrowser!
-AbstractHierarchicalList subclass: #CommentGuide
-	instanceVariableNames: 'window rootNames root browser subList index key'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ClassCommentBrowser'!
-!classDefinition: 'CommentGuide class' category: #ClassCommentBrowser!
-CommentGuide class
-	instanceVariableNames: 'topics'!
 
 !classDefinition: #NotCommented category: #ClassCommentBrowser!
 ActiveModel subclass: #NotCommented
@@ -23,6 +13,16 @@ ActiveModel subclass: #NotCommented
 !classDefinition: 'NotCommented class' category: #ClassCommentBrowser!
 NotCommented class
 	instanceVariableNames: ''!
+
+!classDefinition: #CommentGuide category: #ClassCommentBrowser!
+AbstractHierarchicalList subclass: #CommentGuide
+	instanceVariableNames: 'window rootNames root browser subList index key'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ClassCommentBrowser'!
+!classDefinition: 'CommentGuide class' category: #ClassCommentBrowser!
+CommentGuide class
+	instanceVariableNames: 'topics'!
 
 !classDefinition: #CommentGuideListMorph category: #ClassCommentBrowser!
 HierarchicalListMorph subclass: #CommentGuideListMorph
@@ -65,6 +65,9 @@ CommentGuideWrapper class
 	instanceVariableNames: ''!
 
 
+!NotCommented commentStamp: '<historical>' prior: 0!
+The model for view of classes without comments.!
+
 !CommentGuide commentStamp: 'dhn 5/11/2019 14:52:06' prior: 0!
 Class comments browser for Cuis
 
@@ -84,9 +87,6 @@ This class provides the model for browsing class comments based on class names w
 	Morph
 	
 The view for this model is CommentGuideWindow.!
-
-!NotCommented commentStamp: '<historical>' prior: 0!
-The model for view of classes without comments.!
 
 !CommentGuideListMorph commentStamp: 'dhn 6/15/2016 17:30' prior: 0!
 A list of terms and acronyms which occur in class names. Selection can be made by typed key, arrows, or clicks.
@@ -135,6 +135,56 @@ A view for listing classes without comments.!
 Provide the wrapper for a list item in CommentGuideWindow.
 
 Removes the undesired cruft after the item name.!
+
+!NotCommented methodsFor: 'operating' stamp: 'dhn 5/10/2019 21:08:59'!
+bumListIndex
+	"Answer the value of bumListIndex"
+	
+	bumListIndex ifNil: [bumListIndex _ 0].
+	^ bumListIndex! !
+
+!NotCommented methodsFor: 'operating' stamp: 'dhn 5/10/2019 21:11:02'!
+bumListIndex: anIndex
+	"Set the value of bumListIndex"
+	
+	bumListIndex _ anIndex.
+	self changed: #bumListIndex! !
+
+!NotCommented methodsFor: 'accessing' stamp: 'dhn 5/10/2019 21:34:40'!
+bumList
+	"Answer the list of classes"
+	
+	^ bumList! !
+
+!NotCommented methodsFor: 'accessing' stamp: 'dhn 5/10/2019 21:35:36'!
+bumList: aCollection
+	"Set the list of classes"
+	
+	bumList _ aCollection! !
+
+!NotCommented methodsFor: 'accessing' stamp: 'dhn 5/9/2019 21:12:37'!
+classList
+	"Answer the value of classList"
+
+	classList ifNil: [classList _ OrderedCollection new].
+	^ classList! !
+
+!NotCommented methodsFor: 'accessing' stamp: 'dhn 5/9/2019 21:07:40'!
+classList: anObject
+	"Set the value of classList"
+
+	classList _ anObject! !
+
+!NotCommented methodsFor: 'accessing' stamp: 'dhn 5/9/2019 21:43:01'!
+getList
+
+	^ self bumList! !
+
+!NotCommented methodsFor: 'initialization' stamp: 'dhn 5/10/2019 13:01:53'!
+initialize
+
+	bumList _ OrderedCollection new.
+	bumListIndex _ 0! !
 
 !CommentGuide methodsFor: 'accessing' stamp: 'dhn 10/6/2015 20:43'!
 commentOf: aString
@@ -311,56 +361,6 @@ open
 tokenChars
 	"Answer the alphabet, capitalized, plus the digits"
 	^ ($A to: $Z), ($0 to: $9)! !
-
-!NotCommented methodsFor: 'operating' stamp: 'dhn 5/10/2019 21:08:59'!
-bumListIndex
-	"Answer the value of bumListIndex"
-	
-	bumListIndex ifNil: [bumListIndex _ 0].
-	^ bumListIndex! !
-
-!NotCommented methodsFor: 'operating' stamp: 'dhn 5/10/2019 21:11:02'!
-bumListIndex: anIndex
-	"Set the value of bumListIndex"
-	
-	bumListIndex _ anIndex.
-	self changed: #bumListIndex! !
-
-!NotCommented methodsFor: 'accessing' stamp: 'dhn 5/10/2019 21:34:40'!
-bumList
-	"Answer the list of classes"
-	
-	^ bumList! !
-
-!NotCommented methodsFor: 'accessing' stamp: 'dhn 5/10/2019 21:35:36'!
-bumList: aCollection
-	"Set the list of classes"
-	
-	bumList _ aCollection! !
-
-!NotCommented methodsFor: 'accessing' stamp: 'dhn 5/9/2019 21:12:37'!
-classList
-	"Answer the value of classList"
-
-	classList ifNil: [classList _ OrderedCollection new].
-	^ classList! !
-
-!NotCommented methodsFor: 'accessing' stamp: 'dhn 5/9/2019 21:07:40'!
-classList: anObject
-	"Set the value of classList"
-
-	classList _ anObject! !
-
-!NotCommented methodsFor: 'accessing' stamp: 'dhn 5/9/2019 21:43:01'!
-getList
-
-	^ self bumList! !
-
-!NotCommented methodsFor: 'initialization' stamp: 'dhn 5/10/2019 13:01:53'!
-initialize
-
-	bumList _ OrderedCollection new.
-	bumListIndex _ 0! !
 
 !CommentGuideListMorph methodsFor: 'events-processing' stamp: 'dhn 6/15/2016 16:56'!
 keySelection
@@ -585,20 +585,20 @@ noComment
 			mod bumList: hits.
 			nwin _ (NoCommentsWindow open: mod label: 'Classes with no Comments') morphExtent: 400@600]! !
 
-!CommentGuideWindow methodsFor: 'searching' stamp: 'dhn 5/9/2019 16:53:44'!
+!CommentGuideWindow methodsFor: 'searching' stamp: 'jmv 9/12/2024 12:27:30'!
 searchAllComments
 	"Search for a string in class comments of all classes"
 	| arg hits caption menu |
 	
-	arg _ ''.
-	arg _ FillInTheBlankMorph request: 'Search All Class Comments for:'.
-	caption _ 'Classes with Comments containing "', arg, '"'.
+	arg := ''.
+	arg := StringRequestMorph request: 'Search All Class Comments for:'.
+	caption := 'Classes with Comments containing "', arg, '"'.
 			
-	hits _ self searchIn: Smalltalk classNames for: arg.
+	hits := self searchIn: Smalltalk classNames for: arg.
 	hits 
 		ifEmpty: [listMorph flash]
 		ifNotEmpty: [
-			(menu _ MenuMorph entitled: caption)
+			(menu := MenuMorph entitled: caption)
 				defaultTarget: self;
 				addStayUpIcons.
 				hits do: [:h | menu add: h target: self action: #showFind: argument: h].
@@ -608,19 +608,19 @@ searchAllComments
 					
 	^ nil! !
 
-!CommentGuideWindow methodsFor: 'searching' stamp: 'dhn 9/18/2018 17:55:56'!
+!CommentGuideWindow methodsFor: 'searching' stamp: 'jmv 9/12/2024 12:27:33'!
 searchClassNames
 	"Search class names for a string"
 	| arg str hits menu |
-	arg _ FillInTheBlankMorph request: 'Search Class Names for:'.
+	arg := StringRequestMorph request: 'Search Class Names for:'.
 	arg 
 		ifNotEmpty: [
-			hits _ OrderedCollection new.
-			(menu _ MenuMorph entitled: 'Class Names With "', arg, '"')
+			hits := OrderedCollection new.
+			(menu := MenuMorph entitled: 'Class Names With "', arg, '"')
 				defaultTarget: self;
 				addStayUpIcons.
 			Smalltalk classNames do: [:ea |
-				str _ ea asString.
+				str := ea asString.
 				(str findString: arg startingAt: 1 caseSensitive: false) > 0
 					ifTrue: [
 						hits addLast: ea asString.
@@ -633,24 +633,24 @@ searchClassNames
 					openInWorld;
 					morphPosition: self morphPosition + (-70@50)]]! !
 
-!CommentGuideWindow methodsFor: 'searching' stamp: 'dhn 9/18/2018 18:16:02'!
+!CommentGuideWindow methodsFor: 'searching' stamp: 'jmv 9/12/2024 12:27:36'!
 searchComment
 	"Search for a string in class comments of root siblings"
 	| arg hits col nam menu |
-	arg _ ''.
+	arg := ''.
 	(model getCurrentSelection item isKindOf: String)
 		ifTrue: [	"searching from the leaf"
-			col _ model selectedRoot.
-			nam _ model root itemName]
+			col := model selectedRoot.
+			nam := model root itemName]
 		ifFalse: [	"searching from the root"
-			col _ model getCurrentSelection item.	"gather every leaf"
-			nam _ model getCurrentSelection itemName].
-		arg _ FillInTheBlankMorph request: 'Search Root Named "', nam, '"'.
-		(menu _ MenuMorph entitled: 'Comments in Root with "', arg, '"')
+			col := model getCurrentSelection item.	"gather every leaf"
+			nam := model getCurrentSelection itemName].
+		arg := StringRequestMorph request: 'Search Root Named "', nam, '"'.
+		(menu := MenuMorph entitled: 'Comments in Root with "', arg, '"')
 			defaultTarget: self;
 			addStayUpIcons.
 
-		hits _ self searchIn: col for: arg.
+		hits := self searchIn: col for: arg.
 		hits 
 			ifEmpty: [listMorph flash]
 			ifNotEmpty: [
