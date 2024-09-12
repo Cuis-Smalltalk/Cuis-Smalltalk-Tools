@@ -1,6 +1,6 @@
 'From Cuis7.1 [latest update: #6715] on 12 September 2024 at 12:29:30 pm'!
 'Description Tool for browsing and editing Cuis preferences.'!
-!provides: 'CompactPreferenceBrowser' 1 5!
+!provides: 'CompactPreferenceBrowser' 1 6!
 SystemOrganization addCategory: #CompactPreferenceBrowser!
 
 
@@ -45,7 +45,7 @@ CompactPreferenceBrowser class
 	instanceVariableNames: ''!
 
 !classDefinition: #PreferenceSelectionButtonMorph category: #CompactPreferenceBrowser!
-BoxedMorph subclass: #PreferenceSelectionButtonMorph
+BorderedBoxMorph subclass: #PreferenceSelectionButtonMorph
 	instanceVariableNames: 'elems model placeHolder button printer getter setter selectionStrategy'
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -55,7 +55,7 @@ PreferenceSelectionButtonMorph class
 	instanceVariableNames: ''!
 
 !classDefinition: #PreferenceToggleButtonMorph category: #CompactPreferenceBrowser!
-BoxedMorph subclass: #PreferenceToggleButtonMorph
+BorderedBoxMorph subclass: #PreferenceToggleButtonMorph
 	instanceVariableNames: 'model getStateSelector isPressed actWhen actionSelector'
 	classVariableNames: ''
 	poolDictionaries: ''
