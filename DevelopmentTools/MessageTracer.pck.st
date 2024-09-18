@@ -1,29 +1,9 @@
-'From Cuis7.1 [latest update: #6378] on 18 May 2024 at 4:34:01 pm'!
+'From Cuis7.1 [latest update: #6727] on 17 September 2024 at 11:36:17 pm'!
 'Description Utility library for tracing the sending of messages.'!
-!provides: 'MessageTracer' 1 36!
+!provides: 'MessageTracer' 1 38!
 SystemOrganization addCategory: #'MessageTracer-Tests'!
 SystemOrganization addCategory: #MessageTracer!
 
-
-!classDefinition: #MessageTracerWindow category: #MessageTracer!
-SystemWindow subclass: #MessageTracerWindow
-	instanceVariableNames: 'messageListIndex tracedMessage'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'MessageTracer'!
-!classDefinition: 'MessageTracerWindow class' category: #MessageTracer!
-MessageTracerWindow class
-	instanceVariableNames: ''!
-
-!classDefinition: #MessageTracerTestSubject category: #'MessageTracer-Tests'!
-Object subclass: #MessageTracerTestSubject
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'MessageTracer-Tests'!
-!classDefinition: 'MessageTracerTestSubject class' category: #'MessageTracer-Tests'!
-MessageTracerTestSubject class
-	instanceVariableNames: ''!
 
 !classDefinition: #MessageTracer category: #MessageTracer!
 Object subclass: #MessageTracer
@@ -45,9 +25,26 @@ Object subclass: #TracedMethodWrapper
 TracedMethodWrapper class
 	instanceVariableNames: ''!
 
+!classDefinition: #MessageTracerTestSubject category: #'MessageTracer-Tests'!
+Object subclass: #MessageTracerTestSubject
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MessageTracer-Tests'!
+!classDefinition: 'MessageTracerTestSubject class' category: #'MessageTracer-Tests'!
+MessageTracerTestSubject class
+	instanceVariableNames: ''!
 
-!MessageTracerWindow commentStamp: '<historical>' prior: 0!
-A morphic tool for managing traced messages.!
+!classDefinition: #MessageTracerWindow category: #MessageTracer!
+SystemWindow subclass: #MessageTracerWindow
+	instanceVariableNames: 'messageListIndex tracedMessage'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MessageTracer'!
+!classDefinition: 'MessageTracerWindow class' category: #MessageTracer!
+MessageTracerWindow class
+	instanceVariableNames: ''!
+
 
 !MessageTracer commentStamp: 'MM 7/29/2022 12:51:13' prior: 0!
 I provide an api for tracing the sending of messages.
@@ -80,112 +77,8 @@ subject fib: 10.
 
 MessageTracerTestSubject untrace: #fib:.!
 
-!MessageTracerWindow methodsFor: 'actions' stamp: 'MM 11/5/2022 20:20:08'!
-browseSelectedMessage
-
-	tracedMessage ifNotNil: [
-	.	BrowserWindow fullOnClass: tracedMessage compiledMethod methodClass 
-						selector: tracedMessage compiledMethod selector]! !
-
-!MessageTracerWindow methodsFor: 'actions' stamp: 'MM 11/5/2022 20:25:25'!
-untraceAll
-	model untraceAll.
-	self changed: #messageList! !
-
-!MessageTracerWindow methodsFor: 'actions' stamp: 'MM 11/5/2022 20:27:32'!
-untraceSelectedMessage
-
-	model untrace: 	tracedMessage.
-	self changed: #messageList! !
-
-!MessageTracerWindow methodsFor: 'initialization' stamp: 'MM 11/5/2022 18:51:06'!
-initialize
-	super initialize.
-	
-	messageListIndex _ 0.! !
-
-!MessageTracerWindow methodsFor: 'GUI building' stamp: 'jmv 5/17/2024 18:08:28'!
-buildMorphicWindow
-
-	| messageList actionsRow |
-	
-	messageList := PluggableListMorph
-					withModel: self
-					listGetter: #messageList
-					indexGetter: #messageListIndex
-					indexSetter: #messageListIndex:.
-					
-	layoutMorph addMorphUseAll: messageList.
-	
-	actionsRow := LayoutMorph newRow.
-	
-	actionsRow addMorph: (PluggableButtonMorph model: self action: #browseSelectedMessage label: 'Browse').
-	actionsRow addMorph: (PluggableButtonMorph model: self action: #untraceSelectedMessage label: 'Untrace').
-	actionsRow addMorph: (PluggableButtonMorph model: self action: #untraceAll label: 'Untrace all').
-	layoutMorph addMorph: actionsRow fixedHeight: 30.! !
-
-!MessageTracerWindow methodsFor: 'GUI building' stamp: 'MM 11/5/2022 18:59:20'!
-initialExtent
-
-	^ 400@300! !
-
-!MessageTracerWindow methodsFor: 'GUI building' stamp: 'MM 11/5/2022 20:41:23'!
-update: anObject
-
-	self changed: #messageList! !
-
-!MessageTracerWindow methodsFor: 'accessing' stamp: 'MM 11/5/2022 19:03:32'!
-messageList
-	^ model tracing collect: [:traceWrapper | 
-		traceWrapper compiledMethod methodClass name asString , '>>', traceWrapper selector asString]! !
-
-!MessageTracerWindow methodsFor: 'accessing' stamp: 'MM 11/5/2022 18:51:14'!
-messageListIndex
-	"Answer the value of messageListIndex"
-
-	^ messageListIndex! !
-
-!MessageTracerWindow methodsFor: 'accessing' stamp: 'MM 11/5/2022 20:16:34'!
-messageListIndex: anObject
-	"Set the value of messageListIndex"
-
-	messageListIndex := anObject.
-	tracedMessage _ nil.
-	
-	anObject ifNotNil: [
-		anObject isZero ifFalse: [ 
-			tracedMessage _ model tracing at: anObject]]
-			! !
-
-!MessageTracerWindow class methodsFor: 'as yet unclassified' stamp: 'MM 11/5/2022 18:56:30'!
-open
-	^ self open: MessageTracer singleton label: 'Tracing'! !
-
-!MessageTracerTestSubject methodsFor: 'as yet unclassified' stamp: 'MM 6/17/2022 13:33:48'!
-add: x to: y
-
-	^ x + y! !
-
-!MessageTracerTestSubject methodsFor: 'as yet unclassified' stamp: 'MM 6/17/2022 12:51:53'!
-bar
-
-	^ 'bar'! !
-
-!MessageTracerTestSubject methodsFor: 'as yet unclassified' stamp: 'MM 6/17/2022 13:36:43'!
-fact: x
-
-	^ x = 1 ifTrue: [x]
-		ifFalse: [x * (self fact: x - 1)]! !
-
-!MessageTracerTestSubject methodsFor: 'as yet unclassified' stamp: 'MM 6/17/2022 13:39:28'!
-fib: x
-
-	^ x <= 1 ifTrue: [x]
-		ifFalse: [(self fib: x - 1) + (self fib: x - 2)]! !
-
-!MessageTracerTestSubject methodsFor: 'as yet unclassified' stamp: 'MM 6/17/2022 12:51:47'!
-foo
-	^ 'foo'! !
+!MessageTracerWindow commentStamp: '<historical>' prior: 0!
+A morphic tool for managing traced messages.!
 
 !MessageTracer methodsFor: 'accessing' stamp: 'MM 6/17/2022 12:35:45'!
 outputStream
@@ -269,6 +162,10 @@ initialize
 tracing
 	^ tracing! !
 
+!MessageTracer class methodsFor: 'as yet unclassified' stamp: 'MM 9/17/2024 23:27:21'!
+initialize
+	BrowserWindow at: #messageListMenuSpec registerMenuAndShortcutsSpecProvider: (MessageSend receiver: self selector: #systemBrowserMenu:)! !
+
 !MessageTracer class methodsFor: 'as yet unclassified' stamp: 'MM 11/5/2022 18:41:23'!
 messageListMenuOptions
 	
@@ -308,6 +205,13 @@ outputStream
 !MessageTracer class methodsFor: 'as yet unclassified' stamp: 'MM 6/17/2022 12:35:13'!
 singleton
 	^ singleton ifNil: [singleton _ self new]! !
+
+!MessageTracer class methodsFor: 'as yet unclassified' stamp: 'MM 9/17/2024 23:36:12'!
+systemBrowserMenu: aWidget
+
+	^#(#(22		 'toggle tracing' 				$t 	model 			toggleMessageTracing debugIcon)
+		#(23 'show traced messages' 				nil 	model 			showTracedMessages 			displayIcon)
+		#(24 'untrace all' nil model untraceAll debugIcon))! !
 
 !MessageTracer class methodsFor: 'api' stamp: 'MM 11/5/2022 20:33:11'!
 toggleTrace: aCompiledMethod
@@ -477,6 +381,123 @@ when: aSymbol
 on: aClass selector: selector
 	^ self new initialize: aClass selector: selector! !
 
+!MessageTracerTestSubject methodsFor: 'as yet unclassified' stamp: 'MM 6/17/2022 13:33:48'!
+add: x to: y
+
+	^ x + y! !
+
+!MessageTracerTestSubject methodsFor: 'as yet unclassified' stamp: 'MM 6/17/2022 12:51:53'!
+bar
+
+	^ 'bar'! !
+
+!MessageTracerTestSubject methodsFor: 'as yet unclassified' stamp: 'MM 6/17/2022 13:36:43'!
+fact: x
+
+	^ x = 1 ifTrue: [x]
+		ifFalse: [x * (self fact: x - 1)]! !
+
+!MessageTracerTestSubject methodsFor: 'as yet unclassified' stamp: 'MM 6/17/2022 13:39:28'!
+fib: x
+
+	^ x <= 1 ifTrue: [x]
+		ifFalse: [(self fib: x - 1) + (self fib: x - 2)]! !
+
+!MessageTracerTestSubject methodsFor: 'as yet unclassified' stamp: 'MM 6/17/2022 12:51:47'!
+foo
+	^ 'foo'! !
+
+!MessageTracerWindow methodsFor: 'actions' stamp: 'MM 11/5/2022 20:20:08'!
+browseSelectedMessage
+
+	tracedMessage ifNotNil: [
+	.	BrowserWindow fullOnClass: tracedMessage compiledMethod methodClass 
+						selector: tracedMessage compiledMethod selector]! !
+
+!MessageTracerWindow methodsFor: 'actions' stamp: 'MM 11/5/2022 20:25:25'!
+untraceAll
+	model untraceAll.
+	self changed: #messageList! !
+
+!MessageTracerWindow methodsFor: 'actions' stamp: 'MM 11/5/2022 20:27:32'!
+untraceSelectedMessage
+
+	model untrace: 	tracedMessage.
+	self changed: #messageList! !
+
+!MessageTracerWindow methodsFor: 'initialization' stamp: 'MM 11/5/2022 18:51:06'!
+initialize
+	super initialize.
+	
+	messageListIndex _ 0.! !
+
+!MessageTracerWindow methodsFor: 'GUI building' stamp: 'jmv 5/17/2024 18:08:28'!
+buildMorphicWindow
+
+	| messageList actionsRow |
+	
+	messageList := PluggableListMorph
+					withModel: self
+					listGetter: #messageList
+					indexGetter: #messageListIndex
+					indexSetter: #messageListIndex:.
+					
+	layoutMorph addMorphUseAll: messageList.
+	
+	actionsRow := LayoutMorph newRow.
+	
+	actionsRow addMorph: (PluggableButtonMorph model: self action: #browseSelectedMessage label: 'Browse').
+	actionsRow addMorph: (PluggableButtonMorph model: self action: #untraceSelectedMessage label: 'Untrace').
+	actionsRow addMorph: (PluggableButtonMorph model: self action: #untraceAll label: 'Untrace all').
+	layoutMorph addMorph: actionsRow fixedHeight: 30.! !
+
+!MessageTracerWindow methodsFor: 'GUI building' stamp: 'MM 11/5/2022 18:59:20'!
+initialExtent
+
+	^ 400@300! !
+
+!MessageTracerWindow methodsFor: 'GUI building' stamp: 'MM 11/5/2022 20:41:23'!
+update: anObject
+
+	self changed: #messageList! !
+
+!MessageTracerWindow methodsFor: 'accessing' stamp: 'MM 11/5/2022 19:03:32'!
+messageList
+	^ model tracing collect: [:traceWrapper | 
+		traceWrapper compiledMethod methodClass name asString , '>>', traceWrapper selector asString]! !
+
+!MessageTracerWindow methodsFor: 'accessing' stamp: 'MM 11/5/2022 18:51:14'!
+messageListIndex
+	"Answer the value of messageListIndex"
+
+	^ messageListIndex! !
+
+!MessageTracerWindow methodsFor: 'accessing' stamp: 'MM 11/5/2022 20:16:34'!
+messageListIndex: anObject
+	"Set the value of messageListIndex"
+
+	messageListIndex := anObject.
+	tracedMessage _ nil.
+	
+	anObject ifNotNil: [
+		anObject isZero ifFalse: [ 
+			tracedMessage _ model tracing at: anObject]]
+			! !
+
+!MessageTracerWindow class methodsFor: 'as yet unclassified' stamp: 'MM 11/5/2022 18:56:30'!
+open
+	^ self open: MessageTracer singleton label: 'Tracing'! !
+
+!Behavior methodsFor: '*MessageTracer' stamp: 'MM 6/17/2022 13:35:02'!
+trace: aSelector
+
+	MessageTracer trace: self selector: aSelector! !
+
+!Behavior methodsFor: '*MessageTracer' stamp: 'MM 6/17/2022 13:40:56'!
+untrace: aSelector
+
+	MessageTracer untrace: self selector: aSelector! !
+
 !Browser methodsFor: '*MessageTracer' stamp: 'MM 11/5/2022 20:14:34'!
 showTracedMessages
 
@@ -494,12 +515,8 @@ toggleMessageTracing
 	selectedMethod := self selectedClassOrMetaClass >> self selectedMessageName.
 	MessageTracer toggleTrace: selectedMethod! !
 
-!Behavior methodsFor: '*MessageTracer' stamp: 'MM 6/17/2022 13:35:02'!
-trace: aSelector
-
-	MessageTracer trace: self selector: aSelector! !
-
-!Behavior methodsFor: '*MessageTracer' stamp: 'MM 6/17/2022 13:40:56'!
-untrace: aSelector
-
-	MessageTracer untrace: self selector: aSelector! !
+!Browser methodsFor: '*MessageTracer' stamp: 'MM 9/17/2024 23:34:19'!
+untraceAll
+	
+	MessageTracer untraceAll! !
+MessageTracer initialize!
