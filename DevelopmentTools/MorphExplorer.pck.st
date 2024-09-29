@@ -1,10 +1,10 @@
-'From Cuis7.1 [latest update: #6578] on 10 August 2024 at 6:05:46 pm'!
+'From Cuis7.1 [latest update: #6752] on 29 September 2024 at 4:15:03 pm'!
 'Description Tool that combines an explorer and an inspector specialized for Morphs.
 
 Open from the Morphs Halo menu: Debug -> Explore.
 
 Pickup morph to explore from the Window menu.'!
-!provides: 'MorphExplorer' 1 20!
+!provides: 'MorphExplorer' 1 21!
 SystemOrganization addCategory: #MorphExplorer!
 
 
@@ -90,7 +90,7 @@ noteNewSelection: anItemWrapper
 	
 	^ super noteNewSelection: anItemWrapper! !
 
-!MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'jmv 8/10/2024 18:01:07'!
+!MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'MM 9/29/2024 16:13:58'!
 buildMorphicWindow
 
 	|leftCol|
@@ -109,7 +109,7 @@ buildMorphicWindow
 	self createInspectorMorphOn: model rootMorph.
 	
 	leftCol addMorph: listMorph layoutSpec: LayoutSpec useAll.
-	leftCol addMorph: (PluggableButtonMorph model: self action: #pickMorph label: 'Pick morph')
+	leftCol addMorph: (PluggableButtonMorph model: self action: #pickMorph label: 'Pick submorph')
 			fixedHeight: 30.
 		
 	self layoutMorph
@@ -118,7 +118,7 @@ buildMorphicWindow
 	
 	self setLabel: model rootMorph shortPrintString.! !
 
-!MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'MM 6/13/2023 11:46:56'!
+!MorphExplorerWindow methodsFor: 'as yet unclassified' stamp: 'MM 9/29/2024 16:14:10'!
 buildWindowMenu
 
 	|menu|
@@ -126,7 +126,7 @@ buildWindowMenu
 	menu := super buildWindowMenu.
 	
 	menu addLine.
-	menu add: 'pick morph ...' action: #pickMorph icon: #worldIcon.
+	menu add: 'pick submorph ...' action: #pickMorph icon: #worldIcon.
 	
 	^ menu! !
 
