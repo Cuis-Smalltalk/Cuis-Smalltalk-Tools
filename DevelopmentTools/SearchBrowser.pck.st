@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6526] on 19 July 2024 at 8:46:56 am'!
+'From Cuis7.1 [latest update: #6877] on 2 December 2024 at 8:07:36 am'!
 'Description Browser tool for searching Cuis source code.'!
-!provides: 'SearchBrowser' 1 43!
+!provides: 'SearchBrowser' 1 44!
 !requires: 'Regex-Core' 1 6 nil!
 SystemOrganization addCategory: #SearchBrowser!
 
@@ -409,11 +409,11 @@ selectSource
 		sourceSelectionButton label: selection asString.
 		sourceSelectionButton owner someSubmorphPositionOrExtentChanged]! !
 
-!SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 7/1/2024 15:31:11'!
+!SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 12/2/2024 08:07:18'!
 initialize
 
 	BrowserWindow at: #classListMenuSpec registerMenuAndShortcutsSpecProvider:  (MessageSend receiver: self selector: #systemBrowserClassMenu:).
-	BrowserWindow at: #systemCategoriesListMenuSpec registerMenuAndShortcutsSpecProvider: (MessageSend receiver: self selector: #systemBrowserCategoryMenu:)! !
+	BrowserWindow at: #systemCatListMenuSpec registerMenuAndShortcutsSpecProvider: (MessageSend receiver: self selector: #systemBrowserCategoryMenu:)! !
 
 !SearchBrowserWindow class methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 07:57:56'!
 open
