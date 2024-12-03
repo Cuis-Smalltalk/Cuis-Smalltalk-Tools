@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 10:22:58 am'!
+'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 12:43:22 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 19!
+!provides: 'KeyStrokes' 1 20!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -153,6 +153,51 @@ printOn: aStream
 	keyCharacter ifNotNil: [keyCharacter printOn: aStream].
 	keyValue ifNotNil: [keyValue printOn: aStream].
 	keySelector ifNotNil: [keySelector printOn: aStream].! !
+
+!KeyStroke class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 12:43:17'!
+readFrom: aStream
+
+	"
+	KeyStroke readFrom: 'alt+$b' readStream.
+	KeyStroke readFrom: 'shift+ctrl+#esc' readStream.
+	"
+
+	| readModifier alt ctrl shift character message done |
+	
+	alt := false.
+	ctrl := false.
+	shift := false.
+	done := false.
+	
+	readModifier := [aStream peek = $a ifTrue: [ "alt"
+						self assert: ((aStream next: 'alt' size) = 'alt') description: 'alt expected'.
+						alt := true].
+					aStream peek = $c ifTrue: [ "ctrl"
+						self assert: ((aStream next: 'ctrl' size) = 'ctrl') description: 'ctrl expected'.
+						ctrl := true].
+					aStream peek = $s ifTrue: [ "shift"
+						self assert: ((aStream next: 'shift' size) = 'shift') description: 'shift expected'.
+						shift := true]].
+	readModifier value.
+	[aStream atEnd or: [done]] whileFalse: [
+		self assert: ((aStream next: 1) = '+') description: '+ expected'.
+		({$$. $#} includes: aStream peek) ifTrue: [
+			(aStream peek = $$) ifTrue: [ "character"
+				character := Character readFrom: aStream.
+				done := true].
+			(aStream peek = $#) ifTrue: ["message"
+				message := Symbol readFrom: aStream.
+				done := true]]
+			ifFalse: [readModifier value]].
+	
+	^KeyStroke new
+		alt: alt;
+		control: ctrl;
+		shift: shift;
+		keyCharacter: character;
+		keySelector: message;
+		yourself
+			! !
 
 !KeyStrokeHandler methodsFor: 'accessing' stamp: 'MM 11/21/2024 10:57:26'!
 context
