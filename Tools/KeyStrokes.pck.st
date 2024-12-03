@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 3:57:57 pm'!
+'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 4:11:55 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 24!
+!provides: 'KeyStrokes' 1 25!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -289,6 +289,29 @@ value: aKeyboardEvent
 value: aKeyboardEvent value: aContext
 
 	^ self handle: aKeyboardEvent in: aContext! !
+
+!KeyStrokeHandler class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 16:11:02'!
+fromArray: anArray
+
+	"
+	KeyStrokeHandler fromArray: #('alt+$b' open Browser).
+	KeyStrokeHandler fromArray: #('alt+$b' open Browser WorldMorph).
+	"
+	anArray size = 3 ifTrue: [
+		^KeyStrokeHandler 
+			keyStroke: (anArray at: 1) asKeyStroke
+			context: WorldMorph
+			receiver: (Smalltalk at: (anArray at: 3))
+			selector: (anArray at: 2)].
+		
+	anArray size = 4 ifTrue: [
+		^KeyStrokeHandler
+			keyStroke: (anArray at: 1) asKeyStroke
+			context: (anArray at: 4)
+			receiver: (Smalltalk at: (anArray at: 3))
+			selector: (anArray at: 2)].
+	
+	self error: 'Bad KeyStrokeHandler spec'.! !
 
 !KeyStrokeHandler class methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 10:58:08'!
 keyStroke: aKeyStroke context: aContext handler: aBlock
