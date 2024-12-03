@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 12:49:50 pm'!
+'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 3:57:57 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 21!
+!provides: 'KeyStrokes' 1 24!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -61,11 +61,11 @@ Use KeyStrokes>>addKeyStroke:handler: for adding a handler for a particular key 
 You can also add a key stroke handler for a key stroke event with KeyStrokes>>addKeyStrokeHandler:.
 The block passed as argument is passed the key stroke event and should return a boolean that indicates if the event was handled or not.
 
-For example, use this to install a handler for Cmd-p for opening preferences inspector:
+For example, use this to install a handler for ctrl-p for opening preferences inspector:
 
 KeyStrokes 
-	addKeyStroke: [:ev | (ev commandAltKeyPressed or: [ ev controlKeyPressed ]) and: [ev keyCharacter = $p]]
-	handler: [Preferences openPreferencesInspector]. 
+	addKeyStroke: 'ctrl+$p' asKeyStroke
+	receiver: Preferences selector: #openPreferencesInspector.
 	
 KeyStrokes openHelp!
 
@@ -295,9 +295,18 @@ keyStroke: aKeyStroke context: aContext handler: aBlock
 
 	^ super new initialize: aKeyStroke context: aContext handler: aBlock! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 8/16/2020 11:43:09'!
+!KeyStrokeHandler class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 15:45:02'!
+keyStroke: aKeyStroke context: aContext receiver: aReceiver selector: aSelector
+
+	^ super new initialize: aKeyStroke context: aContext handler: (MessageSend receiver: aReceiver selector: aSelector)! !
+
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 15:56:35'!
 addKeyStroke: aKeyStroke handler: aBlock
-	KeyStrokesMapping at: aKeyStroke put: aBlock! !
+	KeyStrokesHandlers add: (KeyStrokeHandler keyStroke: aKeyStroke context: WorldMorph handler: aBlock)! !
+
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 15:56:58'!
+addKeyStroke: aKeyStroke receiver: aReceiver selector: aSelector
+	KeyStrokesHandlers add: (KeyStrokeHandler keyStroke: aKeyStroke context: WorldMorph handler:  (MessageSend receiver: aReceiver selector: aSelector))! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 2/6/2021 13:40:21'!
 addKeyStrokeHandler: aBlock
@@ -345,12 +354,11 @@ help
 			s newLine]]
 			! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 12:02:27'!
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 15:57:10'!
 initialize
 	"self initialize"
 	KeyStrokesHandlers := OrderedCollection new.
 	KeyStrokesInterceptors := OrderedCollection new.
-	KeyStrokesMapping := Dictionary new.
 	KeyStrokes addKeyStrokeHandler: (KeyStrokeHandler keyStroke: (KeyStroke new alt: true; keyCharacter: $b)
 														 context: WorldMorph  
 														 handler: (MessageSend 		receiver: Browser selector: #open)). 
@@ -366,13 +374,6 @@ interceptKeyStroke: aKeyboardEvent morph: aMorph
 	KeyStrokesInterceptors do: [:handler |
 		(handler value: aKeyboardEvent value: aMorph) ifTrue: [^true]].
 	^ false! !
-
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 8/16/2020 11:48:34'!
-keyStrokeMappingsHandler: aKeyboardEvent
-	KeyStrokesMapping keysAndValuesDo: [:ks :handler |
-		(ks value: aKeyboardEvent) ifTrue: [
-			handler value. ^true]].
-	^false! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 13:33:47'!
 openHelp
@@ -391,6 +392,36 @@ worldMenuOptions
 			#icon 			-> 		#accessoriesCharacterMapIcon.
 			#balloonText 			-> 		'Visualize system keystrokes'.
 		} asDictionary}`! !
+
+!KeyStrokesEditor methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 15:22:09'!
+updateKeyStrokes
+
+	| contents separatorCharacter handlers |
+	
+	contents := self actualContents readStream.
+	separatorCharacter := [:char | {Character space. Character tab} includes: char].
+	handlers := OrderedCollection new.
+		
+	[contents nextLine = 'Keywords:'] whileFalse.
+	
+	[contents atEnd] whileFalse: [ |line|
+		line := contents nextLine.
+		line ifNotEmpty: [| readLine escapeWhiteSpace keyStroke context handler |
+			readLine := line readStream.
+			escapeWhiteSpace := [[separatorCharacter value: line peek] whileTrue: [readLine next]].
+			escapeWhiteSpace value.
+			keyStroke := KeyStroke readFrom: line.
+			escapeWhiteSpace value.
+			context := self readContextFrom: line.
+			escapeWhiteSpace value.
+			self assert: (line next = $-) description: 'dash separator expected'.
+			handler := self readHandlerFrom: line.
+			escapeWhiteSpace value.
+			handlers add: (KeyStrokeHandler keyStroke: keyStroke context: context handler: handler)]].! !
+
+!CharacterSequence methodsFor: '*KeyStrokes' stamp: 'MM 12/3/2024 15:51:55'!
+asKeyStroke
+	^KeyStroke readFrom: self readStream! !
 
 !Theme methodsFor: '*KeyStrokes-icons' stamp: 'MM 12/3/2024 10:22:20'!
 accessoriesCharacterMapIcon
