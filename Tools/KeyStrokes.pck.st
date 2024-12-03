@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 7:33:09 pm'!
+'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 7:54:58 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 33!
+!provides: 'KeyStrokes' 1 35!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -286,10 +286,10 @@ handles: aKeyboardEvent
 
 	^ keyStroke handles: aKeyboardEvent! !
 
-!KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 11:16:03'!
+!KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 19:45:07'!
 handles: aKeyboardEvent in: aContext
-
-	^ (context isKindOf: aContext) and: [keyStroke handles: aKeyboardEvent]! !
+	
+	^ (aContext isKindOf: context) and: [keyStroke handles: aKeyboardEvent]! !
 
 !KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 10:58:40'!
 initialize: aKeyStroke context: aContext handler: aBlock
@@ -297,6 +297,15 @@ initialize: aKeyStroke context: aContext handler: aBlock
 	keyStroke := aKeyStroke.
 	context := aContext.
 	handler := aBlock! !
+
+!KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 19:48:52'!
+printOn: aStream
+
+	keyStroke printOn: aStream.
+	aStream nextPutAll: ' in '.
+	context printOn: aStream.
+	aStream nextPutAll: ' -> '.
+	handler printOn: aStream! !
 
 !KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 12:09:34'!
 value: aKeyboardEvent
@@ -430,9 +439,9 @@ initialize
 	KeyStrokes addKeyStrokeHandler: [:ev | KeyStrokes keyStrokeMappingsHandler: ev].
 	KeyStrokes addKeyStrokeInterceptor: [:ev :morph | KeyStrokes defaultWorldKeyStrokeInterceptor: ev morph: morph]. "! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 19:21:32'!
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 19:53:57'!
 interceptKeyStroke: aKeyboardEvent morph: aMorph
-	KeyStrokesInterceptors do: [:handler |
+	KeyStrokesHandlers do: [:handler |
 		(handler value: aKeyboardEvent value: aMorph keyStrokeContext) ifTrue: [^true]].
 	^ false! !
 
