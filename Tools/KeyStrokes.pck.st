@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 4:50:15 pm'!
+'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 6:50:03 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 27!
+!provides: 'KeyStrokes' 1 29!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -172,6 +172,17 @@ printOn: aStream
 	keyCharacter ifNotNil: [keyCharacter printOn: aStream].
 	keyValue ifNotNil: [keyValue printOn: aStream].
 	keySelector ifNotNil: [keySelector printOn: aStream].! !
+
+!KeyStroke methodsFor: 'comparing' stamp: 'MM 12/3/2024 18:49:35'!
+= aKeyStroke
+	aKeyStroke == self ifTrue: [^true].
+	aKeyStroke shift = shift ifFalse: [^false].
+	aKeyStroke control = control ifFalse: [^false].
+	aKeyStroke alt = alt ifFalse: [^false].
+	aKeyStroke keyValue = keyValue ifFalse: [^false].
+	aKeyStroke keyCharacter = keyCharacter ifFalse: [^false].
+	aKeyStroke keySelector = keySelector ifFalse: [^false].
+	^true! !
 
 !KeyStroke class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 12:46:43'!
 readFrom: aStream
@@ -382,15 +393,15 @@ handleKeyStroke: aKeyboardEvent
 		(handler value: aKeyboardEvent) ifTrue: [^true]].
 	^ false! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 13:33:37'!
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 16:58:46'!
 help
 
 	^ String streamContents: [:s |
 		KeyStrokesHandlers do: [:handler |
 			handler keyStroke printOn: s.
-			s nextPutAll: ' ['.
+			s nextPutAll: ' in '.
 			handler context printOn: s.
-			s nextPutAll: ']  -  '.
+			s nextPutAll: ': '.
 			handler handler printOn: s.
 			s newLine]]
 			! !
