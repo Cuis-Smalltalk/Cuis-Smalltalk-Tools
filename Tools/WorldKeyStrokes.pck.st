@@ -1,27 +1,27 @@
-'From Cuis 5.0 [latest update: #4528] on 8 February 2021 at 3:18:13 pm'!
+'From Cuis7.1 [latest update: #6828] on 21 November 2024 at 8:01:10 am'!
 'Description Extensible World keystrokes.
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'WorldKeyStrokes' 1 5!
-SystemOrganization addCategory: 'WorldKeyStrokes'!
+!provides: 'WorldKeyStrokes' 1 6!
+SystemOrganization addCategory: #WorldKeyStrokes!
 
 
-!classDefinition: #KeyCombination category: 'WorldKeyStrokes'!
+!classDefinition: #KeyCombination category: #WorldKeyStrokes!
 Object subclass: #KeyCombination
 	instanceVariableNames: 'shift alt control keyCharacter keyValue'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'WorldKeyStrokes'!
-!classDefinition: 'KeyCombination class' category: 'WorldKeyStrokes'!
+!classDefinition: 'KeyCombination class' category: #WorldKeyStrokes!
 KeyCombination class
 	instanceVariableNames: ''!
 
-!classDefinition: #WorldKeyStrokes category: 'WorldKeyStrokes'!
+!classDefinition: #WorldKeyStrokes category: #WorldKeyStrokes!
 Object subclass: #WorldKeyStrokes
 	instanceVariableNames: ''
 	classVariableNames: 'KeyStrokesHandlers KeyStrokesInterceptors KeyStrokesMapping'
 	poolDictionaries: ''
 	category: 'WorldKeyStrokes'!
-!classDefinition: 'WorldKeyStrokes class' category: 'WorldKeyStrokes'!
+!classDefinition: 'WorldKeyStrokes class' category: #WorldKeyStrokes!
 WorldKeyStrokes class
 	instanceVariableNames: ''!
 
@@ -124,13 +124,13 @@ addKeyStrokeHandler: aBlock
 addKeyStrokeInterceptor: aBlock
 	KeyStrokesInterceptors addFirst: aBlock! !
 
-!WorldKeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 8/16/2020 11:45:09'!
+!WorldKeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 08:00:59'!
 defaultWorldKeyStrokeHandler: aKeyboardEvent
 	(aKeyboardEvent commandAltKeyPressed or: [ aKeyboardEvent controlKeyPressed ])
 		ifTrue: [
-			aKeyboardEvent keyCharacter = $b ifTrue: [ BrowserWindow openBrowser . ^true].
-			aKeyboardEvent keyCharacter = $f ifTrue: [ BrowserWindow findClass.^true ].
-			aKeyboardEvent keyCharacter = $F ifTrue: [ MessageSetWindow findInSourceCode. ^true ]		].
+			aKeyboardEvent keyCharacter = $b ifTrue: [ Browser open . ^true].
+			aKeyboardEvent keyCharacter = $f ifTrue: [ BrowserWindow findAndBrowseClass.^true ].
+			aKeyboardEvent keyCharacter = $F ifTrue: [ MessageNames open . ^true ]		].
 	^false! !
 
 !WorldKeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 2/6/2021 16:32:25'!
@@ -172,13 +172,6 @@ keyStrokeMappingsHandler: aKeyboardEvent
 			handler value. ^true]].
 	^false! !
 
-!WorldMorph methodsFor: '*WorldKeyStrokes' stamp: 'MM 2/6/2021 13:36:38'!
-keyStroke: aKeyboardEvent
-	"Handle a keystroke event."
-	
-	^ (WorldKeyStrokes handleKeyStroke: aKeyboardEvent)
-		ifFalse: [ super keyStroke: aKeyboardEvent ]! !
-
 !KeyboardEvent methodsFor: '*WorldKeyStrokes' stamp: 'MM 2/6/2021 16:34:13'!
 sendEventTo: aMorph
 	"Dispatch the receiver into anObject"
@@ -191,4 +184,11 @@ sendEventTo: aMorph
 	type == #keyUp ifTrue: [ 
 		^ aMorph processKeyUp: self ].
 	^ super sendEventTo: aMorph.! !
+
+!WorldMorph methodsFor: '*WorldKeyStrokes' stamp: 'MM 2/6/2021 13:36:38'!
+keyStroke: aKeyboardEvent
+	"Handle a keystroke event."
+	
+	^ (WorldKeyStrokes handleKeyStroke: aKeyboardEvent)
+		ifFalse: [ super keyStroke: aKeyboardEvent ]! !
 WorldKeyStrokes initialize!
