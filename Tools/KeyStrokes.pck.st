@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 12:43:22 pm'!
+'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 12:49:50 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 20!
+!provides: 'KeyStrokes' 1 21!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -36,6 +36,22 @@ Object subclass: #KeyStrokes
 KeyStrokes class
 	instanceVariableNames: ''!
 
+!classDefinition: #KeyStrokesEditor category: #KeyStrokes!
+TextEditor subclass: #KeyStrokesEditor
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'KeyStrokes'!
+!classDefinition: 'KeyStrokesEditor class' category: #KeyStrokes!
+KeyStrokesEditor class
+	instanceVariableNames: ''!
+
+
+!KeyStroke commentStamp: '<historical>' prior: 0!
+A key combination.!
+
+!KeyStrokeHandler commentStamp: '<historical>' prior: 0!
+Handler for reacting to a KeyStroke.!
 
 !KeyStrokes commentStamp: '<historical>' prior: 0!
 Holds keystoke handlers.
@@ -52,6 +68,9 @@ KeyStrokes
 	handler: [Preferences openPreferencesInspector]. 
 	
 KeyStrokes openHelp!
+
+!KeyStrokesEditor commentStamp: '<historical>' prior: 0!
+Text editor that provides the editing of keystrokes.!
 
 !KeyStroke methodsFor: 'accessing' stamp: 'MM 2/8/2021 15:09:19'!
 alt
@@ -154,12 +173,12 @@ printOn: aStream
 	keyValue ifNotNil: [keyValue printOn: aStream].
 	keySelector ifNotNil: [keySelector printOn: aStream].! !
 
-!KeyStroke class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 12:43:17'!
+!KeyStroke class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 12:46:43'!
 readFrom: aStream
 
 	"
 	KeyStroke readFrom: 'alt+$b' readStream.
-	KeyStroke readFrom: 'shift+ctrl+#esc' readStream.
+	KeyStroke readFrom: 'shift+ctrl+#isEsc' readStream.
 	"
 
 	| readModifier alt ctrl shift character message done |
