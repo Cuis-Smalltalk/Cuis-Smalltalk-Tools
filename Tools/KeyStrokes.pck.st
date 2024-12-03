@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 6:53:42 pm'!
+'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 7:21:45 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 30!
+!provides: 'KeyStrokes' 1 31!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -426,10 +426,10 @@ initialize
 	KeyStrokes addKeyStrokeHandler: [:ev | KeyStrokes keyStrokeMappingsHandler: ev].
 	KeyStrokes addKeyStrokeInterceptor: [:ev :morph | KeyStrokes defaultWorldKeyStrokeInterceptor: ev morph: morph]. "! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 2/6/2021 16:34:55'!
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 19:21:32'!
 interceptKeyStroke: aKeyboardEvent morph: aMorph
 	KeyStrokesInterceptors do: [:handler |
-		(handler value: aKeyboardEvent value: aMorph) ifTrue: [^true]].
+		(handler value: aKeyboardEvent value: aMorph keyStrokeContext) ifTrue: [^true]].
 	^ false! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 18:52:50'!
@@ -503,10 +503,20 @@ sendEventTo: aMorph
 		^ aMorph processKeyUp: self ].
 	^ super sendEventTo: aMorph.! !
 
+!Morph methodsFor: '*KeyStrokes' stamp: 'MM 12/3/2024 19:20:31'!
+keyStrokeContext
+
+	^ self! !
+
 !WorldMorph methodsFor: '*KeyStrokes' stamp: 'MM 2/6/2021 13:36:38'!
 keyStroke: aKeyboardEvent
 	"Handle a keystroke event."
 	
 	^ (KeyStrokes handleKeyStroke: aKeyboardEvent)
 		ifFalse: [ super keyStroke: aKeyboardEvent ]! !
+
+!InnerTextMorph methodsFor: '*KeyStrokes' stamp: 'MM 12/3/2024 19:21:11'!
+keyStrokeContext
+
+	^ model! !
 KeyStrokes initialize!
