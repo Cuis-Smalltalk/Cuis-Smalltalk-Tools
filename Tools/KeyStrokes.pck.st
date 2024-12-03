@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 4:11:55 pm'!
+'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 4:18:22 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 25!
+!provides: 'KeyStrokes' 1 26!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -323,6 +323,10 @@ keyStroke: aKeyStroke context: aContext receiver: aReceiver selector: aSelector
 
 	^ super new initialize: aKeyStroke context: aContext handler: (MessageSend receiver: aReceiver selector: aSelector)! !
 
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 16:17:10'!
+add: aHandler
+	^ self addKeyStrokeHandler: aHandler! !
+
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 15:56:35'!
 addKeyStroke: aKeyStroke handler: aBlock
 	KeyStrokesHandlers add: (KeyStrokeHandler keyStroke: aKeyStroke context: WorldMorph handler: aBlock)! !
@@ -331,9 +335,14 @@ addKeyStroke: aKeyStroke handler: aBlock
 addKeyStroke: aKeyStroke receiver: aReceiver selector: aSelector
 	KeyStrokesHandlers add: (KeyStrokeHandler keyStroke: aKeyStroke context: WorldMorph handler:  (MessageSend receiver: aReceiver selector: aSelector))! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 2/6/2021 13:40:21'!
-addKeyStrokeHandler: aBlock
-	KeyStrokesHandlers addFirst: aBlock! !
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 16:16:29'!
+addKeyStrokeHandler: aHandlerOrArray
+
+	(aHandlerOrArray isKindOf: KeyStrokeHandler)
+		ifTrue: [^KeyStrokesHandlers addFirst: aHandlerOrArray].
+	aHandlerOrArray isArray ifTrue: [
+		^KeyStrokesHandlers addFirst: (KeyStrokeHandler fromArray: aHandlerOrArray)].
+	self error: 'Bad key stroke handler spec'! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 2/6/2021 16:28:41'!
 addKeyStrokeInterceptor: aBlock
