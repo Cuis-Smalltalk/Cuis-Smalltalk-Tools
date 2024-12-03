@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 7:21:45 pm'!
+'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 7:33:09 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 31!
+!provides: 'KeyStrokes' 1 33!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -270,11 +270,15 @@ keyStroke: anObject
 
 	keyStroke := anObject! !
 
-!KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 11:49:38'!
+!KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 19:26:33'!
 handle: aKeyboardEvent in: aContext
 
 	^ (self handles: aKeyboardEvent in: aContext)
-		ifTrue: [handler value. true]
+		ifTrue: [
+			handler isSymbol 
+				ifTrue: [aContext perform: handler]
+				ifFalse: [handler value].
+			true]
 		ifFalse: [false]! !
 
 !KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 12:08:35'!
@@ -515,8 +519,8 @@ keyStroke: aKeyboardEvent
 	^ (KeyStrokes handleKeyStroke: aKeyboardEvent)
 		ifFalse: [ super keyStroke: aKeyboardEvent ]! !
 
-!InnerTextMorph methodsFor: '*KeyStrokes' stamp: 'MM 12/3/2024 19:21:11'!
+!InnerTextMorph methodsFor: '*KeyStrokes' stamp: 'MM 12/3/2024 19:32:03'!
 keyStrokeContext
 
-	^ model! !
+	^ editor! !
 KeyStrokes initialize!
