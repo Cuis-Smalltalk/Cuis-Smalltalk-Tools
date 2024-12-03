@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 6:50:03 pm'!
+'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 6:53:42 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 29!
+!provides: 'KeyStrokes' 1 30!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -155,6 +155,11 @@ handles: aKeyboardEvent
 	(keySelector isNil or: [aKeyboardEvent perform: keySelector]) ifFalse: [^false].
 	
 	^ true! !
+
+!KeyStroke methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 18:53:21'!
+asKeyStroke
+
+	^self! !
 
 !KeyStroke methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 11:50:59'!
 initialize
@@ -351,9 +356,9 @@ addAll: aCollection
 addKeyStroke: aKeyStroke handler: aBlock
 	KeyStrokesHandlers add: (KeyStrokeHandler keyStroke: aKeyStroke context: WorldMorph handler: aBlock)! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 15:56:58'!
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 18:53:03'!
 addKeyStroke: aKeyStroke receiver: aReceiver selector: aSelector
-	KeyStrokesHandlers add: (KeyStrokeHandler keyStroke: aKeyStroke context: WorldMorph handler:  (MessageSend receiver: aReceiver selector: aSelector))! !
+	KeyStrokesHandlers add: (KeyStrokeHandler keyStroke: aKeyStroke asKeyStroke context: WorldMorph handler:  (MessageSend receiver: aReceiver selector: aSelector))! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 16:16:29'!
 addKeyStrokeHandler: aHandlerOrArray
@@ -426,6 +431,11 @@ interceptKeyStroke: aKeyboardEvent morph: aMorph
 	KeyStrokesInterceptors do: [:handler |
 		(handler value: aKeyboardEvent value: aMorph) ifTrue: [^true]].
 	^ false! !
+
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 18:52:50'!
+on: aKeyStroke send: aSelector to: anObject
+
+	^self addKeyStroke: aKeyStroke receiver: anObject selector: aSelector! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 13:33:47'!
 openHelp
