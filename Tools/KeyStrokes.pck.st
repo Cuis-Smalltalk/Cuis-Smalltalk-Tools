@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 4:18:22 pm'!
+'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 4:50:15 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 26!
+!provides: 'KeyStrokes' 1 27!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -326,6 +326,15 @@ keyStroke: aKeyStroke context: aContext receiver: aReceiver selector: aSelector
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 16:17:10'!
 add: aHandler
 	^ self addKeyStrokeHandler: aHandler! !
+
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 16:50:05'!
+addAll: aCollection
+	"Example:
+		KeyStrokes addAll: #(('alt+$p' open CompactPreferenceBrowser)
+                                                ('alt+$s' open SearchBrowserWindow ))
+	"
+	aCollection do: [:keyStrokeHandler |
+		self add: keyStrokeHandler]! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 15:56:35'!
 addKeyStroke: aKeyStroke handler: aBlock
