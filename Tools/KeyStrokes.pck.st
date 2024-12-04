@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6877] on 4 December 2024 at 9:35:56 am'!
+'From Cuis7.1 [latest update: #6884] on 4 December 2024 at 10:15:52 am'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 46!
+!provides: 'KeyStrokes' 1 47!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -58,7 +58,29 @@ KeyStrokesEditor class
 
 
 !KeyStroke commentStamp: '<historical>' prior: 0!
-A key combination.!
+I represent a combination of key presses.
+
+Instance vars:
+- shift (Boolean): true when shift key is pressed.
+- alt (Boolean): true when alt key is pressed.
+- control (Boolean): true when control key is pressed.
+- keyCharacter (Character): the key character that finalizes the combination.
+- keySelector (Symbol): message selector to send to the KeyboardEvent involved to determine if the KeyStroke applies. For instance, #isEsc, #isReturnKey, etc.
+
+Usage:
+
+Create a KeyStroke, then use #handles: with a KeyboardEvent to determine if the KeyStroke matches it.
+To create a KeyStroke it is possible to use #asKeyStroke on a String.
+syntax ::= mod1+mod2+characterOrMessage
+mod ::= shift | ctrl | alt
+characterOrMessage ::= $character | #message
+
+Examples:
+
+KeyStroke new shift: true; keyCharacter: $a.
+'shift+$a' asKeyStroke.
+'shift+#isEsc' asKeyStroke.
+'ctrl+alt+$c' asKeyStroke.!
 
 !KeyStrokeHandler commentStamp: '<historical>' prior: 0!
 Handler for reacting to a KeyStroke.!
