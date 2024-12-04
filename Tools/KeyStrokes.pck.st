@@ -1,8 +1,10 @@
-'From Cuis7.1 [latest update: #6884] on 4 December 2024 at 11:50:07 am'!
+'From Cuis7.1 [latest update: #6884] on 4 December 2024 at 11:55:08 am'!
 'Description Extensible keystrokes handler.
 
-Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 51!
+Author: Mariano Montone <marianomontone@gmail.com>
+
+KeyStrokes installEmacsLikeKeyBindings ; edit.'!
+!provides: 'KeyStrokes' 1 53!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -582,12 +584,14 @@ contextString: aString
 	
 	^true! !
 
-!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 08:53:54'!
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 11:54:48'!
 deleteKeyStroke
 	
 	self keyStrokeHandler ifNotNil: [:kshandler |
 		model remove: kshandler.
-		self changed: #keyStrokesList]! !
+		self changed: #keyStrokesList.
+		keyStrokeIndex := 0.
+		self changed: #keyStrokeIndex]! !
 
 !KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 08:14:51'!
 handlerString
