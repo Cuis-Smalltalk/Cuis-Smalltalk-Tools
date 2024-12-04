@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6884] on 4 December 2024 at 10:15:52 am'!
+'From Cuis7.1 [latest update: #6884] on 4 December 2024 at 10:45:49 am'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 47!
+!provides: 'KeyStrokes' 1 50!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -46,16 +46,6 @@ SystemWindow subclass: #KeyStrokesEditorWindow
 KeyStrokesEditorWindow class
 	instanceVariableNames: ''!
 
-!classDefinition: #KeyStrokesEditor category: #KeyStrokes!
-TextEditor subclass: #KeyStrokesEditor
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'KeyStrokes'!
-!classDefinition: 'KeyStrokesEditor class' category: #KeyStrokes!
-KeyStrokesEditor class
-	instanceVariableNames: ''!
-
 
 !KeyStroke commentStamp: '<historical>' prior: 0!
 I represent a combination of key presses.
@@ -82,10 +72,27 @@ KeyStroke new shift: true; keyCharacter: $a.
 'shift+#isEsc' asKeyStroke.
 'ctrl+alt+$c' asKeyStroke.!
 
-!KeyStrokeHandler commentStamp: '<historical>' prior: 0!
-Handler for reacting to a KeyStroke.!
+!KeyStrokeHandler commentStamp: 'MM 12/4/2024 10:45:32' prior: 0!
+I handle KeyStrokes that ocurred in a certain context.
 
-!KeyStrokes commentStamp: '<historical>' prior: 0!
+Instance variables:
+- keyStroke (KeyStroke): the KeyStroke to handle.
+- context (Class): the class under which the KeyStroke is to be handled.
+- handler (Symbol|MessageSend): The selector or MessageSend to be used to handle the key stroke.
+
+The context is the Morph class under which the key event occurs, or some other object that is in the context of the key event. The context to use and match is determined by #keyStrokeContext of the receiving Morph.
+The context of the handler is compared to the key event context by a type relation.
+For global handlers, WorldMorph is used. For text editing handlers, a subclass of TextEditor can be used.
+
+I support creation from an array spec. See #fromArray: in class side.
+
+Examples:
+
+KeyStrokeHandler fromArray: #('alt+$b' (open Browser)).
+KeyStrokeHandler fromArray: #('alt+$b' (open Browser) WorldMorph).
+KeyStrokeHandler fromArray: #('alt+$p' printIt SmalltalkEditor).!
+
+!KeyStrokes commentStamp: 'MM 12/4/2024 10:39:26' prior: 0!
 Holds keystoke handlers.
 
 Use KeyStrokes>>addKeyStroke:handler: for adding a handler for a particular key stroke.
@@ -96,13 +103,15 @@ The block passed as argument is passed the key stroke event and should return a 
 For example, use this to install a handler for ctrl-p for opening preferences inspector:
 
 KeyStrokes 
-	addKeyStroke: 'ctrl+$p' asKeyStroke
+	addKeyStroke: 'ctrl+$p'
 	receiver: Preferences selector: #openPreferencesInspector.
 	
-KeyStrokes openHelp!
+KeyStrokes openHelp.!
 
-!KeyStrokesEditor commentStamp: '<historical>' prior: 0!
-Text editor that provides the editing of keystrokes.!
+!KeyStrokesEditorWindow commentStamp: '<historical>' prior: 0!
+Tool for editing key bindings.
+
+KeyStrokesEditorWindow open.!
 
 !KeyStroke methodsFor: 'accessing' stamp: 'MM 2/8/2021 15:09:19'!
 alt
@@ -302,8 +311,10 @@ keyStroke: anObject
 
 	keyStroke := anObject! !
 
-!KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 09:35:33'!
+!KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 10:22:08'!
 handle: aKeyboardEvent in: aContext
+
+	"Handle aKeyboardEvent that ocurred in aContext."
 
 	^ (self handles: aKeyboardEvent in: aContext)
 		ifTrue: [
@@ -315,16 +326,6 @@ handle: aKeyboardEvent in: aContext
 				ifFalse: [handler value].
 			true]
 		ifFalse: [false]! !
-
-!KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 12:08:35'!
-handles: aKeyboardEvent
-
-	^ keyStroke handles: aKeyboardEvent! !
-
-!KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 19:45:07'!
-handles: aKeyboardEvent in: aContext
-	
-	^ (aContext isKindOf: context) and: [keyStroke handles: aKeyboardEvent]! !
 
 !KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 10:58:40'!
 initialize: aKeyStroke context: aContext handler: aBlock
@@ -353,6 +354,11 @@ value: aKeyboardEvent
 value: aKeyboardEvent value: aContext
 
 	^ self handle: aKeyboardEvent in: aContext! !
+
+!KeyStrokeHandler methodsFor: 'testing' stamp: 'MM 12/3/2024 19:45:07'!
+handles: aKeyboardEvent in: aContext
+	
+	^ (aContext isKindOf: context) and: [keyStroke handles: aKeyboardEvent]! !
 
 !KeyStrokeHandler class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 22:23:31'!
 fromArray: anArray
@@ -497,7 +503,7 @@ worldMenuOptions
 			#balloonText 			-> 		'Visualize system keystrokes'.
 		} asDictionary}`! !
 
-!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 08:28:11'!
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 10:25:30'!
 buildMorphicWindow
 
 	| keyStrokesList keyStrokeBar buttonsBar |
@@ -515,18 +521,21 @@ buildMorphicWindow
 								askBeforeDiscardingEdits: false;
 								hideScrollBarsIndefinitely;
 								morphHeight: 30; 
+								setBalloonText: 'Key stroke spec';
 								yourself).
 	keyStrokeBar addMorph: ((TextModelMorph textProvider: self textGetter: #handlerString  textSetter: #handlerString: )
 								acceptOnAny: true;
 								askBeforeDiscardingEdits: false;
 								hideScrollBarsIndefinitely;
-								morphHeight: 30; 
+								morphHeight: 30;
+								setBalloonText: 'Key stroke handler'; 
 								yourself).
 	keyStrokeBar addMorph: ((TextModelMorph textProvider: self textGetter: #contextString  textSetter: #contextString: )
 								acceptOnAny: true;
 								askBeforeDiscardingEdits: false;
 								hideScrollBarsIndefinitely;
-								morphHeight: 30; 
+								morphHeight: 30;
+								setBalloonText: 'Key stroke context';
 								yourself).
 								
 	layoutMorph addMorph: keyStrokeBar fixedHeight: 30.
@@ -662,32 +671,6 @@ worldMenuOptions
 			#icon 			-> 		#accessoriesCharacterMapIcon.
 			#balloonText 			-> 		'Edit keystrokes'.
 		} asDictionary}`! !
-
-!KeyStrokesEditor methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 15:22:09'!
-updateKeyStrokes
-
-	| contents separatorCharacter handlers |
-	
-	contents := self actualContents readStream.
-	separatorCharacter := [:char | {Character space. Character tab} includes: char].
-	handlers := OrderedCollection new.
-		
-	[contents nextLine = 'Keywords:'] whileFalse.
-	
-	[contents atEnd] whileFalse: [ |line|
-		line := contents nextLine.
-		line ifNotEmpty: [| readLine escapeWhiteSpace keyStroke context handler |
-			readLine := line readStream.
-			escapeWhiteSpace := [[separatorCharacter value: line peek] whileTrue: [readLine next]].
-			escapeWhiteSpace value.
-			keyStroke := KeyStroke readFrom: line.
-			escapeWhiteSpace value.
-			context := self readContextFrom: line.
-			escapeWhiteSpace value.
-			self assert: (line next = $-) description: 'dash separator expected'.
-			handler := self readHandlerFrom: line.
-			escapeWhiteSpace value.
-			handlers add: (KeyStrokeHandler keyStroke: keyStroke context: context handler: handler)]].! !
 
 !CharacterSequence methodsFor: '*KeyStrokes' stamp: 'MM 12/3/2024 15:51:55'!
 asKeyStroke
