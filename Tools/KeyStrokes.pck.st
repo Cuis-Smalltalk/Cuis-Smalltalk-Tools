@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 10:36:25 pm'!
+'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 11:55:46 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 39!
+!provides: 'KeyStrokes' 1 40!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -34,6 +34,16 @@ Object subclass: #KeyStrokes
 	category: 'KeyStrokes'!
 !classDefinition: 'KeyStrokes class' category: #KeyStrokes!
 KeyStrokes class
+	instanceVariableNames: ''!
+
+!classDefinition: #KeyStrokesEditorWindow category: #KeyStrokes!
+SystemWindow subclass: #KeyStrokesEditorWindow
+	instanceVariableNames: 'keyStrokeIndex'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'KeyStrokes'!
+!classDefinition: 'KeyStrokesEditorWindow class' category: #KeyStrokes!
+KeyStrokesEditorWindow class
 	instanceVariableNames: ''!
 
 !classDefinition: #KeyStrokesEditor category: #KeyStrokes!
@@ -298,13 +308,13 @@ initialize: aKeyStroke context: aContext handler: aBlock
 	context := aContext.
 	handler := aBlock! !
 
-!KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 19:48:52'!
+!KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 23:19:58'!
 printOn: aStream
 
 	keyStroke printOn: aStream.
 	aStream nextPutAll: ' in '.
 	context printOn: aStream.
-	aStream nextPutAll: ' -> '.
+	aStream nextPutAll: ': '.
 	handler printOn: aStream! !
 
 !KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 12:09:34'!
@@ -429,6 +439,11 @@ installEmacsLikeKeyBindings
 	                       ('ctrl+$e' cursorEnd: TextEditor)
 	                       ('ctrl+$y' paste TextEditor))! !
 
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 23:03:04'!
+keyStrokesHandlers
+
+	^ KeyStrokesHandlers ! !
+
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 18:52:50'!
 on: aKeyStroke send: aSelector to: anObject
 
@@ -451,6 +466,85 @@ worldMenuOptions
 			#icon 			-> 		#accessoriesCharacterMapIcon.
 			#balloonText 			-> 		'Visualize system keystrokes'.
 		} asDictionary}`! !
+
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 23:51:58'!
+buildMorphicWindow
+
+	| keyStrokesList keyStrokeBar buttonsBar |
+	
+	keyStrokesList := PluggableListMorph 
+						withModel: self 
+						listGetter: #keyStrokesList 
+						indexGetter: #keyStrokeIndex
+						indexSetter: #keyStrokeIndex:.
+	layoutMorph addMorph: keyStrokesList proportionalWidth: 1.0.
+	
+	keyStrokeBar := LayoutMorph newRow.
+	keyStrokeBar addMorph: ((TextModelMorph textProvider: self textGetter: #keyStrokeString  textSetter: #keyStrokeString: )
+								acceptOnCR: true;
+								askBeforeDiscardingEdits: false;
+								hideScrollBarsIndefinitely;
+								morphHeight: 30; 
+								yourself).
+	keyStrokeBar addMorph: ((TextModelMorph textProvider: self textGetter: #handlerString  textSetter: #handlerString: )
+								acceptOnCR: true;
+								askBeforeDiscardingEdits: false;
+								hideScrollBarsIndefinitely;
+								morphHeight: 30; 
+								yourself).
+	keyStrokeBar addMorph: ((TextModelMorph textProvider: self textGetter: #contextString  textSetter: #contextString: )
+								acceptOnCR: true;
+								askBeforeDiscardingEdits: false;
+								hideScrollBarsIndefinitely;
+								morphHeight: 30; 
+								yourself).
+								
+	layoutMorph addMorph: keyStrokeBar fixedHeight: 30.
+	
+	buttonsBar := LayoutMorph newRow.
+	buttonsBar addMorph: (PluggableButtonMorph model: self action: #setKeyStroke label: 'Set').
+	buttonsBar addMorph: (PluggableButtonMorph model: self action: #deleteKeyStroke label: 'Delete').
+	buttonsBar addMorph: (PluggableButtonMorph model: self action: #help label: 'Help').
+	layoutMorph addMorph: buttonsBar fixedHeight: 30.! !
+
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 23:13:01'!
+contextString
+
+	^ 'SmalltalkEditor'! !
+
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 23:12:48'!
+handlerString
+
+	^'#doIt'! !
+
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 23:53:29'!
+initialExtent
+
+	^ 200@400! !
+
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 23:03:58'!
+keyStrokeIndex
+
+	^ keyStrokeIndex ifNil: [0]! !
+
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 23:12:35'!
+keyStrokeString
+
+	^ 'ctrl+$b'! !
+
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 23:03:14'!
+keyStrokesList
+
+	^ model keyStrokesHandlers! !
+
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 23:04:48'!
+windowColor
+
+	^Color lightYellow! !
+
+!KeyStrokesEditorWindow class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 22:58:29'!
+open
+	^ self open: KeyStrokes label: 'Key strokes'! !
 
 !KeyStrokesEditor methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 15:22:09'!
 updateKeyStrokes
