@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6877] on 4 December 2024 at 8:54:34 am'!
+'From Cuis7.1 [latest update: #6877] on 4 December 2024 at 9:31:10 am'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 44!
+!provides: 'KeyStrokes' 1 45!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -624,6 +624,19 @@ windowColor
 !KeyStrokesEditorWindow class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 22:58:29'!
 open
 	^ self open: KeyStrokes label: 'Key strokes'! !
+
+!KeyStrokesEditorWindow class methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 09:30:57'!
+worldMenuOptions
+	^ `{{
+			#submenuOf 			-> 		TheWorldMenu openLabel.
+			#itemGroup 			-> 		20.
+			#itemOrder 			-> 		20.
+			#label 			-> 		'Edit keystrokes'.
+			#object 			-> 		KeyStrokesEditorWindow.
+			#selector 			-> 		#open.
+			#icon 			-> 		#accessoriesCharacterMapIcon.
+			#balloonText 			-> 		'Edit keystrokes'.
+		} asDictionary}`! !
 
 !KeyStrokesEditor methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 15:22:09'!
 updateKeyStrokes
