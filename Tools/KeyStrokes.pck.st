@@ -1,4 +1,4 @@
-'From Cuis7.1 [latest update: #6884] on 4 December 2024 at 1:48:15 pm'!
+'From Cuis7.1 [latest update: #6884] on 4 December 2024 at 1:53:52 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>
@@ -6,7 +6,7 @@ Author: Mariano Montone <marianomontone@gmail.com>
 Edit keystrokes via WorldMenu -> Open -> Edit keystrokes.
 
 KeyStrokes installEmacsLikeKeyBindings ; edit.'!
-!provides: 'KeyStrokes' 1 55!
+!provides: 'KeyStrokes' 1 56!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -533,7 +533,7 @@ worldMenuOptions
 			#balloonText 			-> 		'Visualize system keystrokes'.
 		} asDictionary}`! !
 
-!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 13:31:12'!
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 13:53:27'!
 buildMorphicWindow
 
 	| keyStrokesList keyStrokeBar buttonsBar |
@@ -571,7 +571,7 @@ buildMorphicWindow
 								hideScrollBarsIndefinitely;
 								morphHeight: 15;
 								morphWidth: 150;
-								setBalloonText: 'Key stroke handler'; 
+								setBalloonText: 'Message selector'; 
 								yourself).
 	keyStrokeBar addMorph:(LabelMorph contents: 'to: ').
 	keyStrokeBar addMorph: ((TextModelMorph textProvider: self textGetter: #receiverString  textSetter: #receiverString: )
@@ -580,7 +580,7 @@ buildMorphicWindow
 								hideScrollBarsIndefinitely;
 								morphHeight: 15;
 								morphWidth: 150;
-								setBalloonText: 'Receiver'; 
+								setBalloonText: 'Receiver (optional)'; 
 								yourself).	
 								
 	layoutMorph addMorph: keyStrokeBar fixedHeight: 15.
@@ -670,10 +670,13 @@ keyStrokeString: aString
 	
 	^true! !
 
-!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 11:39:21'!
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 13:52:20'!
 keyStrokesList
 
-	^ model keyStrokesHandlers asOrderedCollection! !
+	^ model keyStrokesHandlers asSortedCollection: [:h1 :h2 |
+		h1 context asString < h2 context asString or:
+			(h1 context asString = h2 context asString and: [
+				h1 keyStroke asString < h2 keyStroke asString])]! !
 
 !KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 13:34:12'!
 receiverString
