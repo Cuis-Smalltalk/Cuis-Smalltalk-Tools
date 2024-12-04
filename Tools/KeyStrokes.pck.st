@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6884] on 4 December 2024 at 10:45:49 am'!
+'From Cuis7.1 [latest update: #6884] on 4 December 2024 at 11:50:07 am'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 50!
+!provides: 'KeyStrokes' 1 51!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -92,21 +92,24 @@ KeyStrokeHandler fromArray: #('alt+$b' (open Browser)).
 KeyStrokeHandler fromArray: #('alt+$b' (open Browser) WorldMorph).
 KeyStrokeHandler fromArray: #('alt+$p' printIt SmalltalkEditor).!
 
-!KeyStrokes commentStamp: 'MM 12/4/2024 10:39:26' prior: 0!
-Holds keystoke handlers.
+!KeyStrokes commentStamp: 'MM 12/4/2024 10:59:38' prior: 0!
+I'm a registry of KeyStrokeHandlers.
 
-Use KeyStrokes>>addKeyStroke:handler: for adding a handler for a particular key stroke.
+Use #on:send:to for adding a handler for a particular global key stroke.
 
-You can also add a key stroke handler for a key stroke event with KeyStrokes>>addKeyStrokeHandler:.
-The block passed as argument is passed the key stroke event and should return a boolean that indicates if the event was handled or not.
+For example, use this to install a handler for ctrl+$p for opening preferences inspector:
 
-For example, use this to install a handler for ctrl-p for opening preferences inspector:
+KeyStrokes on: 'ctrl+$p' send: #openPreferencesInspector to: Preferences.
 
-KeyStrokes 
-	addKeyStroke: 'ctrl+$p'
-	receiver: Preferences selector: #openPreferencesInspector.
+Key strokes can also be set using array syntax (see KeyStrokeHandler>>fromArray: ) :
+
+KeyStrokes addAll: #(('alt+$p' (open CompactPreferenceBrowser))
+                                  ('alt+$s' (open SearchBrowserWindow )))
 	
-KeyStrokes openHelp.!
+KeyStrokes openHelp.
+KeyStrokes edit.
+
+To reset KeyStrokes evaluate: KeyStrokes initialize.!
 
 !KeyStrokesEditorWindow commentStamp: '<historical>' prior: 0!
 Tool for editing key bindings.
@@ -201,6 +204,12 @@ handles: aKeyboardEvent
 asKeyStroke
 
 	^self! !
+
+!KeyStroke methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 11:35:41'!
+hash
+
+	^ {shift. control. alt. keyCharacter. keyValue. keySelector } hash
+	! !
 
 !KeyStroke methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 11:50:59'!
 initialize
@@ -311,6 +320,13 @@ keyStroke: anObject
 
 	keyStroke := anObject! !
 
+!KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 11:26:13'!
+= aKeyStrokeHandler
+
+	keyStroke = aKeyStrokeHandler keyStroke ifFalse: [^false].
+	context = aKeyStrokeHandler context ifFalse: [^false].
+	^true! !
+
 !KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 10:22:08'!
 handle: aKeyboardEvent in: aContext
 
@@ -326,6 +342,11 @@ handle: aKeyboardEvent in: aContext
 				ifFalse: [handler value].
 			true]
 		ifFalse: [false]! !
+
+!KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 11:37:41'!
+hash
+
+	^ keyStroke hash bitXor: context hash! !
 
 !KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 10:58:40'!
 initialize: aKeyStroke context: aContext handler: aBlock
@@ -415,22 +436,20 @@ addAll: aCollection
 	aCollection do: [:keyStrokeHandler |
 		self add: keyStrokeHandler]! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 15:56:35'!
-addKeyStroke: aKeyStroke handler: aBlock
-	KeyStrokesHandlers add: (KeyStrokeHandler keyStroke: aKeyStroke context: WorldMorph handler: aBlock)! !
-
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 18:53:03'!
-addKeyStroke: aKeyStroke receiver: aReceiver selector: aSelector
-	KeyStrokesHandlers add: (KeyStrokeHandler keyStroke: aKeyStroke asKeyStroke context: WorldMorph handler:  (MessageSend receiver: aReceiver selector: aSelector))! !
-
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 16:16:29'!
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 11:45:09'!
 addKeyStrokeHandler: aHandlerOrArray
 
 	(aHandlerOrArray isKindOf: KeyStrokeHandler)
-		ifTrue: [^KeyStrokesHandlers addFirst: aHandlerOrArray].
+		ifTrue: [KeyStrokesHandlers remove: aHandlerOrArray ifAbsent: [].
+				^KeyStrokesHandlers add: aHandlerOrArray].
 	aHandlerOrArray isArray ifTrue: [
-		^KeyStrokesHandlers addFirst: (KeyStrokeHandler fromArray: aHandlerOrArray)].
+		^self add: (KeyStrokeHandler fromArray: aHandlerOrArray)].
 	self error: 'Bad key stroke handler spec'! !
+
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 10:56:52'!
+edit
+
+	KeyStrokesEditorWindow open! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 21:56:40'!
 handleKeyStroke: aKeyboardEvent in: aMorph
@@ -451,10 +470,10 @@ help
 			s newLine]]
 			! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 21:58:00'!
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 11:38:28'!
 initialize
 	"self initialize"
-	KeyStrokesHandlers := OrderedCollection new.
+	KeyStrokesHandlers := Set new.
 	self initializeDefaults.! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 21:58:48'!
@@ -475,10 +494,13 @@ keyStrokesHandlers
 
 	^ KeyStrokesHandlers ! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 18:52:50'!
-on: aKeyStroke send: aSelector to: anObject
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 11:47:53'!
+on: aKeyStroke in: aContext send: aSelector to: anObject
+	self addKeyStrokeHandler: (KeyStrokeHandler keyStroke: aKeyStroke asKeyStroke context: aContext handler:  (MessageSend receiver: anObject selector: aSelector))! !
 
-	^self addKeyStroke: aKeyStroke receiver: anObject selector: aSelector! !
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 11:48:13'!
+on: aKeyStroke send: aSelector to: anObject
+	^self on: aKeyStroke in: WorldMorph send: aSelector to: anObject! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 13:33:47'!
 openHelp
@@ -595,9 +617,9 @@ initialize
 	keyStrokeHandler := 'inspectIt'.
 	! !
 
-!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 08:52:31'!
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 11:40:02'!
 keyStrokeHandler
-	^keyStrokeIndex isZero ifFalse: [model keyStrokesHandlers at: keyStrokeIndex]! !
+	^keyStrokeIndex isZero ifFalse: [self keyStrokesList at: keyStrokeIndex]! !
 
 !KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 23:03:58'!
 keyStrokeIndex
@@ -632,10 +654,10 @@ keyStrokeString: aString
 	
 	^true! !
 
-!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 23:03:14'!
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 11:39:21'!
 keyStrokesList
 
-	^ model keyStrokesHandlers! !
+	^ model keyStrokesHandlers asOrderedCollection! !
 
 !KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 08:50:00'!
 setKeyStroke
