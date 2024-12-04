@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 7:54:58 pm'!
+'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 10:01:07 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 35!
+!provides: 'KeyStrokes' 1 36!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -29,7 +29,7 @@ KeyStrokeHandler class
 !classDefinition: #KeyStrokes category: #KeyStrokes!
 Object subclass: #KeyStrokes
 	instanceVariableNames: ''
-	classVariableNames: 'KeyStrokesHandlers KeyStrokesInterceptors KeyStrokesMapping'
+	classVariableNames: 'KeyStrokesHandlers'
 	poolDictionaries: ''
 	category: 'KeyStrokes'!
 !classDefinition: 'KeyStrokes class' category: #KeyStrokes!
@@ -382,33 +382,10 @@ addKeyStrokeHandler: aHandlerOrArray
 		^KeyStrokesHandlers addFirst: (KeyStrokeHandler fromArray: aHandlerOrArray)].
 	self error: 'Bad key stroke handler spec'! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 2/6/2021 16:28:41'!
-addKeyStrokeInterceptor: aBlock
-	KeyStrokesInterceptors addFirst: aBlock! !
-
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 08:00:59'!
-defaultWorldKeyStrokeHandler: aKeyboardEvent
-	(aKeyboardEvent commandAltKeyPressed or: [ aKeyboardEvent controlKeyPressed ])
-		ifTrue: [
-			aKeyboardEvent keyCharacter = $b ifTrue: [ Browser open . ^true].
-			aKeyboardEvent keyCharacter = $f ifTrue: [ BrowserWindow findAndBrowseClass.^true ].
-			aKeyboardEvent keyCharacter = $F ifTrue: [ MessageNames open . ^true ]		].
-	^false! !
-
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 2/6/2021 16:32:25'!
-defaultWorldKeyStrokeInterceptor: aKeyboardEvent morph: aMorph
-
-	aKeyboardEvent isFindClassShortcut
-			ifTrue: [ Preferences classFinder value. ^ true ].
-	aKeyboardEvent isCloseWindowShortcut
-			ifTrue: [ aKeyboardEvent closeCurrentWindowOf: aMorph. ^ true ].
-			
-	^ false! !
-
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 8/16/2020 11:49:43'!
-handleKeyStroke: aKeyboardEvent
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 21:56:40'!
+handleKeyStroke: aKeyboardEvent in: aMorph
 	KeyStrokesHandlers do: [:handler |
-		(handler value: aKeyboardEvent) ifTrue: [^true]].
+		(handler value: aKeyboardEvent value: aMorph keyStrokeContext) ifTrue: [^true]].
 	^ false! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 16:58:46'!
@@ -424,26 +401,16 @@ help
 			s newLine]]
 			! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 15:57:10'!
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 21:58:00'!
 initialize
 	"self initialize"
 	KeyStrokesHandlers := OrderedCollection new.
-	KeyStrokesInterceptors := OrderedCollection new.
-	KeyStrokes addKeyStrokeHandler: (KeyStrokeHandler keyStroke: (KeyStroke new alt: true; keyCharacter: $b)
-														 context: WorldMorph  
-														 handler: (MessageSend 		receiver: Browser selector: #open)). 
-	KeyStrokes addKeyStrokeInterceptor: (KeyStrokeHandler keyStroke: (KeyStroke new alt: true; keyCharacter: $b)
-														 context: WorldMorph  
-														 handler: (MessageSend 		receiver: Browser selector: #open)). 
-	"KeyStrokes addKeyStrokeHandler: [:ev | KeyStrokes defaultWorldKeyStrokeHandler: ev].
-	KeyStrokes addKeyStrokeHandler: [:ev | KeyStrokes keyStrokeMappingsHandler: ev].
-	KeyStrokes addKeyStrokeInterceptor: [:ev :morph | KeyStrokes defaultWorldKeyStrokeInterceptor: ev morph: morph]. "! !
+	self initializeDefaults.! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 19:53:57'!
-interceptKeyStroke: aKeyboardEvent morph: aMorph
-	KeyStrokesHandlers do: [:handler |
-		(handler value: aKeyboardEvent value: aMorph keyStrokeContext) ifTrue: [^true]].
-	^ false! !
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 21:58:48'!
+initializeDefaults
+
+	self on: 'alt+$b' send: #open to: Browser.! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 18:52:50'!
 on: aKeyStroke send: aSelector to: anObject
@@ -454,6 +421,10 @@ on: aKeyStroke send: aSelector to: anObject
 openHelp
 
 	self help edit! !
+
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 21:53:53'!
+reset
+	KeyStrokesHandlers := OrderedCollection new! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 10:20:47'!
 worldMenuOptions
@@ -503,11 +474,11 @@ accessoriesCharacterMapIcon
 	^ self fetch: #( '16x16' 'apps' 'accessories-character-map' )
 ! !
 
-!KeyboardEvent methodsFor: '*KeyStrokes' stamp: 'MM 2/6/2021 16:34:13'!
+!KeyboardEvent methodsFor: '*KeyStrokes' stamp: 'MM 12/3/2024 21:56:40'!
 sendEventTo: aMorph
 	"Dispatch the receiver into anObject"
 	type == #keystroke ifTrue: [
-		(KeyStrokes interceptKeyStroke: self morph: aMorph)
+		(KeyStrokes handleKeyStroke: self in: aMorph)
 			ifTrue: [^self].
 		^ aMorph processKeystroke: self ].
 	type == #keyDown ifTrue: [
@@ -520,13 +491,6 @@ sendEventTo: aMorph
 keyStrokeContext
 
 	^ self! !
-
-!WorldMorph methodsFor: '*KeyStrokes' stamp: 'MM 2/6/2021 13:36:38'!
-keyStroke: aKeyboardEvent
-	"Handle a keystroke event."
-	
-	^ (KeyStrokes handleKeyStroke: aKeyboardEvent)
-		ifFalse: [ super keyStroke: aKeyboardEvent ]! !
 
 !InnerTextMorph methodsFor: '*KeyStrokes' stamp: 'MM 12/3/2024 19:32:03'!
 keyStrokeContext
