@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 10:23:48 pm'!
+'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 10:36:25 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 38!
+!provides: 'KeyStrokes' 1 39!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -420,6 +420,14 @@ initialize
 initializeDefaults
 
 	self on: 'alt+$b' send: #open to: Browser.! !
+
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 22:35:48'!
+installEmacsLikeKeyBindings
+
+	self addAll: #(('alt+$w' copySelection TextEditor)
+	                       ('ctrl+$w' cut TextEditor)
+	                       ('ctrl+$e' cursorEnd: TextEditor)
+	                       ('ctrl+$y' paste TextEditor))! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 18:52:50'!
 on: aKeyStroke send: aSelector to: anObject
