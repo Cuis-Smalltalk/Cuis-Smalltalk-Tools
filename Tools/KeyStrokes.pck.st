@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 10:01:07 pm'!
+'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 10:19:30 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 36!
+!provides: 'KeyStrokes' 1 37!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -319,38 +319,44 @@ value: aKeyboardEvent value: aContext
 
 	^ self handle: aKeyboardEvent in: aContext! !
 
-!KeyStrokeHandler class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 16:11:02'!
+!KeyStrokeHandler class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 22:19:10'!
 fromArray: anArray
 
 	"
-	KeyStrokeHandler fromArray: #('alt+$b' open Browser).
-	KeyStrokeHandler fromArray: #('alt+$b' open Browser WorldMorph).
-	"
-	anArray size = 3 ifTrue: [
-		^KeyStrokeHandler 
-			keyStroke: (anArray at: 1) asKeyStroke
-			context: WorldMorph
-			receiver: (Smalltalk at: (anArray at: 3))
-			selector: (anArray at: 2)].
-		
-	anArray size = 4 ifTrue: [
-		^KeyStrokeHandler
-			keyStroke: (anArray at: 1) asKeyStroke
-			context: (anArray at: 4)
-			receiver: (Smalltalk at: (anArray at: 3))
-			selector: (anArray at: 2)].
+	Syntax: #('KeyStroke spec' messageSpec contextSpec?)
+	messageSpec := selector | (selector class).
 	
-	self error: 'Bad KeyStrokeHandler spec'.! !
+	If messageSpec is selector, then the selector is sent to the result of #keyStrokeContext sent to the context.
+	If messageSpec is (selector class), then the message is sent to class.
+	
+	contextSpec is optional. If not specified, then WorldMorph is used as default.
+	
+	Examples:
+	KeyStrokeHandler fromArray: #('alt+$b' (open Browser)).
+	KeyStrokeHandler fromArray: #('alt+$b' (open Browser) WorldMorph).
+	KeyStrokeHandler fromArray: #('alt+$p' printIt SmalltalkEditor).
+	"
+	| context handler handlerSpec |
+	
+	self assert: (anArray size between: 2  and: 3). 
+	context := anArray size = 3 ifTrue: [Smalltalk at: (anArray at: 3)] ifFalse: [WorldMorph].
+	handlerSpec := anArray at: 2.
+	handler := handlerSpec isSymbol ifTrue: [handlerSpec] ifFalse: [MessageSend receiver: (handlerSpec at: 2) selector: (handlerSpec at: 1)].
+	
+	^KeyStrokeHandler 
+			keyStroke: (anArray at: 1) asKeyStroke
+			context: context
+			handler: handler! !
 
-!KeyStrokeHandler class methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 10:58:08'!
-keyStroke: aKeyStroke context: aContext handler: aBlock
+!KeyStrokeHandler class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 22:14:59'!
+keyStroke: aKeyStroke context: aContext handler: aSelectorOrHandler
 
-	^ super new initialize: aKeyStroke context: aContext handler: aBlock! !
+	^ super new initialize: aKeyStroke context: aContext handler: aSelectorOrHandler! !
 
-!KeyStrokeHandler class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 15:45:02'!
+!KeyStrokeHandler class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 22:15:28'!
 keyStroke: aKeyStroke context: aContext receiver: aReceiver selector: aSelector
 
-	^ super new initialize: aKeyStroke context: aContext handler: (MessageSend receiver: aReceiver selector: aSelector)! !
+	^ self keyStroke: aKeyStroke context: aContext handler: (MessageSend receiver: aReceiver selector: aSelector)! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 16:17:10'!
 add: aHandler
