@@ -1,10 +1,12 @@
-'From Cuis7.1 [latest update: #6884] on 4 December 2024 at 11:55:08 am'!
+'From Cuis7.1 [latest update: #6884] on 4 December 2024 at 1:48:15 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>
 
+Edit keystrokes via WorldMenu -> Open -> Edit keystrokes.
+
 KeyStrokes installEmacsLikeKeyBindings ; edit.'!
-!provides: 'KeyStrokes' 1 53!
+!provides: 'KeyStrokes' 1 55!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -40,7 +42,7 @@ KeyStrokes class
 
 !classDefinition: #KeyStrokesEditorWindow category: #KeyStrokes!
 SystemWindow subclass: #KeyStrokesEditorWindow
-	instanceVariableNames: 'keyStrokeIndex keyStrokeString keyStrokeContext keyStrokeHandler'
+	instanceVariableNames: 'keyStrokeIndex keyStrokeString context selector receiver'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'KeyStrokes'!
@@ -350,12 +352,16 @@ hash
 
 	^ keyStroke hash bitXor: context hash! !
 
-!KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 10:58:40'!
-initialize: aKeyStroke context: aContext handler: aBlock
+!KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 13:42:28'!
+initialize: aKeyStroke context: aContext handler: aSelectorOrMessageSend
 
 	keyStroke := aKeyStroke.
 	context := aContext.
-	handler := aBlock! !
+	handler := aSelectorOrMessageSend.
+	
+	self assert: aContext class class = Metaclass .
+	self assert: (keyStroke isKindOf: KeyStroke).
+	self assert: (handler isSymbol or: [handler isKindOf: MessageSend])! !
 
 !KeyStrokeHandler methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 23:19:58'!
 printOn: aStream
@@ -527,7 +533,7 @@ worldMenuOptions
 			#balloonText 			-> 		'Visualize system keystrokes'.
 		} asDictionary}`! !
 
-!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 10:25:30'!
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 13:31:12'!
 buildMorphicWindow
 
 	| keyStrokesList keyStrokeBar buttonsBar |
@@ -540,45 +546,60 @@ buildMorphicWindow
 	layoutMorph addMorph: keyStrokesList proportionalWidth: 1.0.
 	
 	keyStrokeBar := LayoutMorph newRow.
+	keyStrokeBar addMorph:(LabelMorph contents: 'on: ').
 	keyStrokeBar addMorph: ((TextModelMorph textProvider: self textGetter: #keyStrokeString  textSetter: #keyStrokeString: )
 								acceptOnAny: true;
 								askBeforeDiscardingEdits: false;
 								hideScrollBarsIndefinitely;
-								morphHeight: 30; 
+								morphHeight: 15;
+								morphWidth: 100;
 								setBalloonText: 'Key stroke spec';
 								yourself).
-	keyStrokeBar addMorph: ((TextModelMorph textProvider: self textGetter: #handlerString  textSetter: #handlerString: )
-								acceptOnAny: true;
-								askBeforeDiscardingEdits: false;
-								hideScrollBarsIndefinitely;
-								morphHeight: 30;
-								setBalloonText: 'Key stroke handler'; 
-								yourself).
+	keyStrokeBar addMorph:(LabelMorph contents: 'in: ').
 	keyStrokeBar addMorph: ((TextModelMorph textProvider: self textGetter: #contextString  textSetter: #contextString: )
 								acceptOnAny: true;
 								askBeforeDiscardingEdits: false;
 								hideScrollBarsIndefinitely;
-								morphHeight: 30;
+								morphHeight: 15;
+								morphWidth: 150;
 								setBalloonText: 'Key stroke context';
 								yourself).
+	keyStrokeBar addMorph:(LabelMorph contents: 'send: ').
+	keyStrokeBar addMorph: ((TextModelMorph textProvider: self textGetter: #selectorString  textSetter: #selectorString: )
+								acceptOnAny: true;
+								askBeforeDiscardingEdits: false;
+								hideScrollBarsIndefinitely;
+								morphHeight: 15;
+								morphWidth: 150;
+								setBalloonText: 'Key stroke handler'; 
+								yourself).
+	keyStrokeBar addMorph:(LabelMorph contents: 'to: ').
+	keyStrokeBar addMorph: ((TextModelMorph textProvider: self textGetter: #receiverString  textSetter: #receiverString: )
+								acceptOnAny: true;
+								askBeforeDiscardingEdits: false;
+								hideScrollBarsIndefinitely;
+								morphHeight: 15;
+								morphWidth: 150;
+								setBalloonText: 'Receiver'; 
+								yourself).	
 								
-	layoutMorph addMorph: keyStrokeBar fixedHeight: 30.
+	layoutMorph addMorph: keyStrokeBar fixedHeight: 15.
 	
 	buttonsBar := LayoutMorph newRow.
 	buttonsBar addMorph: (PluggableButtonMorph model: self action: #setKeyStroke label: 'Set').
 	buttonsBar addMorph: (PluggableButtonMorph model: self action: #deleteKeyStroke label: 'Delete').
-	buttonsBar addMorph: (PluggableButtonMorph model: self action: #help label: 'Help').
+	"buttonsBar addMorph: (PluggableButtonMorph model: self action: #help label: 'Help')."
 	layoutMorph addMorph: buttonsBar fixedHeight: 30.! !
 
-!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 08:14:42'!
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 13:31:55'!
 contextString
 
-	^ keyStrokeContext! !
+	^ context! !
 
-!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 08:49:01'!
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 13:31:55'!
 contextString: aString
 
-	keyStrokeContext := aString asString.
+	context := aString asString.
 	
 	"return true to indicate acceptance"
 	
@@ -593,33 +614,19 @@ deleteKeyStroke
 		keyStrokeIndex := 0.
 		self changed: #keyStrokeIndex]! !
 
-!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 08:14:51'!
-handlerString
-
-	^ keyStrokeHandler! !
-
-!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 08:49:06'!
-handlerString: aString
-
-	keyStrokeHandler := aString asString.
-	
-	"return true to indicate acceptance"
-	
-	^true! !
-
 !KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 23:53:29'!
 initialExtent
 
 	^ 200@400! !
 
-!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 08:16:22'!
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 13:46:26'!
 initialize
 
 	super initialize.
-	keyStrokeString := 'ctrl+$i'.
-	keyStrokeContext := 'SmalltalkEditor'.
-	keyStrokeHandler := 'inspectIt'.
-	! !
+	keyStrokeString := 'alt+$t'.
+	context := 'WorldMorph'.
+	selector := 'openTranscript'.
+	receiver := 'TranscriptWindow'! !
 
 !KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 11:40:02'!
 keyStrokeHandler
@@ -630,19 +637,24 @@ keyStrokeIndex
 
 	^ keyStrokeIndex ifNil: [0]! !
 
-!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 08:46:02'!
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 13:47:02'!
 keyStrokeIndex: index
+
+	| handler |
 
 	keyStrokeIndex := index.
 	
 	index isZero ifTrue: [^self].
 	
 	keyStrokeString := self keyStrokeHandler keyStroke asString.
-	keyStrokeContext := self keyStrokeHandler context asString.
-	keyStrokeHandler := self keyStrokeHandler handler asString.
+	context := self keyStrokeHandler context asString.
+	handler := self keyStrokeHandler handler.
+	selector := handler isSymbol ifTrue: [handler asString] ifFalse: [handler selector asString].
+	receiver := handler isSymbol ifTrue: [''] ifFalse: [handler receiver asString].
 	self changed: #keyStrokeString.
 	self changed: #contextString.
-	self changed: #handlerString.! !
+	self changed: #receiverString.
+	self changed: #selectorString.! !
 
 !KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 08:14:23'!
 keyStrokeString
@@ -663,14 +675,45 @@ keyStrokesList
 
 	^ model keyStrokesHandlers asOrderedCollection! !
 
-!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 08:50:00'!
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 13:34:12'!
+receiverString
+
+	^ receiver! !
+
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 13:46:05'!
+receiverString: aString
+
+	receiver := aString asString.
+	
+	^ true! !
+
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 13:34:19'!
+selectorString
+	^selector! !
+
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 13:46:15'!
+selectorString: aString
+
+	selector := aString asString.
+	
+	"return true to indicate acceptance"
+	
+	^true! !
+
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 13:39:12'!
 setKeyStroke
 
 	| handler |
 	
-	handler := KeyStrokeHandler keyStroke: keyStrokeString asKeyStroke 
-							context: (Smalltalk at: keyStrokeContext asSymbol)
-							handler: keyStrokeHandler asSymbol.
+	receiver isEmpty ifFalse: [
+		handler := KeyStrokeHandler keyStroke: keyStrokeString asKeyStroke 
+								context: (Smalltalk at: context asSymbol)
+								receiver: (Smalltalk at: receiver asSymbol)
+								selector: selector asSymbol]
+		ifTrue: [
+			handler := KeyStrokeHandler keyStroke: keyStrokeString asKeyStroke 
+								context: (Smalltalk at: context asSymbol)
+								handler: selector asSymbol].
 							
 	model addKeyStrokeHandler: handler.
 							
