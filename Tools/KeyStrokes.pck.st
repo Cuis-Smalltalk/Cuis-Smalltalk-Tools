@@ -1,8 +1,8 @@
-'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 10:19:30 pm'!
+'From Cuis7.1 [latest update: #6877] on 3 December 2024 at 10:23:48 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>'!
-!provides: 'KeyStrokes' 1 37!
+!provides: 'KeyStrokes' 1 38!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -319,7 +319,7 @@ value: aKeyboardEvent value: aContext
 
 	^ self handle: aKeyboardEvent in: aContext! !
 
-!KeyStrokeHandler class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 22:19:10'!
+!KeyStrokeHandler class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 22:23:31'!
 fromArray: anArray
 
 	"
@@ -341,7 +341,10 @@ fromArray: anArray
 	self assert: (anArray size between: 2  and: 3). 
 	context := anArray size = 3 ifTrue: [Smalltalk at: (anArray at: 3)] ifFalse: [WorldMorph].
 	handlerSpec := anArray at: 2.
-	handler := handlerSpec isSymbol ifTrue: [handlerSpec] ifFalse: [MessageSend receiver: (handlerSpec at: 2) selector: (handlerSpec at: 1)].
+	handler := handlerSpec isSymbol 
+					ifTrue: [handlerSpec] 
+					ifFalse: [MessageSend receiver: (Smalltalk at: (handlerSpec at: 2)) 
+											selector: (handlerSpec at: 1)].
 	
 	^KeyStrokeHandler 
 			keyStroke: (anArray at: 1) asKeyStroke
@@ -427,10 +430,6 @@ on: aKeyStroke send: aSelector to: anObject
 openHelp
 
 	self help edit! !
-
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 21:53:53'!
-reset
-	KeyStrokesHandlers := OrderedCollection new! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 10:20:47'!
 worldMenuOptions
