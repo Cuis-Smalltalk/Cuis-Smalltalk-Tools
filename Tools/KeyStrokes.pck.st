@@ -1,4 +1,4 @@
-'From Cuis7.3 [latest update: #6910] on 12 December 2024 at 12:29:06 pm'!
+'From Cuis7.3 [latest update: #6910] on 12 December 2024 at 4:07:45 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>
@@ -6,7 +6,7 @@ Author: Mariano Montone <marianomontone@gmail.com>
 Edit keystrokes via WorldMenu -> Open -> Edit keystrokes.
 
 KeyStrokes installEmacsLikeKeyBindings ; edit.'!
-!provides: 'KeyStrokes' 1 66!
+!provides: 'KeyStrokes' 1 68!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -534,6 +534,10 @@ openHelp
 
 	self help edit! !
 
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 16:00:11'!
+printOn: aStream
+	aStream nextPutAll: 'KeyStrokes'! !
+
 !KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:53:02'!
 remove: aKeyStrokeHandler
 
@@ -825,13 +829,16 @@ accessoriesCharacterMapIcon
 	^ self fetch: #( '16x16' 'apps' 'accessories-character-map' )
 ! !
 
-!KeyboardEvent methodsFor: '*KeyStrokes' stamp: 'MM 12/12/2024 12:12:54'!
+!KeyboardEvent methodsFor: '*KeyStrokes' stamp: 'MM 12/12/2024 16:07:44'!
 sendEventTo: aMorph
 	"Dispatch the receiver into anObject"
-	type == #keystroke ifTrue: [
+	type == #keystroke ifTrue: [ 
 		(KeyStrokes handleKeyStroke: self in: aMorph)
-			ifTrue: [^self].
-		^ aMorph processKeystroke: self ].
+			ifTrue: [^self wasHandled: true].
+		aMorph processKeystroke: self.
+		self wasHandled ifFalse: [
+			KeyStrokes handleKeyStroke: self in: self runningWorld].
+		^self].
 	type == #keyDown ifTrue: [
 		^ aMorph processKeyDown: self ].
 	type == #keyUp ifTrue: [ 
