@@ -1,4 +1,4 @@
-'From Cuis7.3 [latest update: #6910] on 12 December 2024 at 12:13:17 pm'!
+'From Cuis7.3 [latest update: #6910] on 12 December 2024 at 12:29:06 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>
@@ -6,7 +6,7 @@ Author: Mariano Montone <marianomontone@gmail.com>
 Edit keystrokes via WorldMenu -> Open -> Edit keystrokes.
 
 KeyStrokes installEmacsLikeKeyBindings ; edit.'!
-!provides: 'KeyStrokes' 1 65!
+!provides: 'KeyStrokes' 1 66!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -454,14 +454,14 @@ addAll: aCollection
 	aCollection do: [:keyStrokeHandler |
 		self add: keyStrokeHandler]! !
 
-!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:38:58'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 12:28:09'!
 addKeyStrokeHandler: aHandlerOrArray
 
 	(aHandlerOrArray isKindOf: KeyStrokeHandler)
 		ifTrue: [keyStrokesHandlers remove: aHandlerOrArray ifAbsent: [].
 				^keyStrokesHandlers add: aHandlerOrArray].
 	aHandlerOrArray isArray ifTrue: [
-		^self add: (keyStrokesHandlers fromArray: aHandlerOrArray)].
+		^self add: (KeyStrokeHandler fromArray: aHandlerOrArray)].
 	self error: 'Bad key stroke handler spec'! !
 
 !KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:35:53'!
