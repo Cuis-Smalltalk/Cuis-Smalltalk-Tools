@@ -1,4 +1,4 @@
-'From Cuis7.3 [latest update: #6910] on 12 December 2024 at 9:03:34 am'!
+'From Cuis7.3 [latest update: #6910] on 12 December 2024 at 9:08:29 am'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>
@@ -6,7 +6,7 @@ Author: Mariano Montone <marianomontone@gmail.com>
 Edit keystrokes via WorldMenu -> Open -> Edit keystrokes.
 
 KeyStrokes installEmacsLikeKeyBindings ; edit.'!
-!provides: 'KeyStrokes' 1 59!
+!provides: 'KeyStrokes' 1 60!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -242,6 +242,16 @@ printOn: aStream
 	aKeyStroke keyCharacter = keyCharacter ifFalse: [^false].
 	aKeyStroke keySelector = keySelector ifFalse: [^false].
 	^true! !
+
+!KeyStroke class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 09:06:44'!
+fromKeyboardEvent: aKeyboardEvent
+
+	^ self new
+		control: aKeyboardEvent controlKeyPressed ;
+		shift: aKeyboardEvent shiftPressed ;
+		alt: aKeyboardEvent commandAltKeyPressed ;
+		keyCharacter: aKeyboardEvent keyCharacter ;
+		yourself! !
 
 !KeyStroke class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 12:46:43'!
 readFrom: aStream
@@ -537,15 +547,16 @@ traceKeyStrokesEnabled
 
 	^TraceKeyStrokes ! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 09:01:56'!
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 09:07:36'!
 traceOutput: aKeyboardEvent in: aMorph
 
-	Transcript nextPutAll: 'In: '; show: aMorph;
-		nextPutAll: ' ->';
-		nextPutAll: ' ctrl: '; show: aKeyboardEvent controlKeyPressed ;
-		nextPutAll: ' alt: '; show: aKeyboardEvent commandAltKeyPressed ;
-		nextPutAll: ' shift: '; show: aKeyboardEvent shiftPressed ;
-		nextPutAll: ' key: '; show: aKeyboardEvent keyCharacter ;
+	|keyStroke|
+	
+	keyStroke := KeyStroke fromKeyboardEvent: aKeyboardEvent.
+
+	Transcript nextPutAll: 'In: '; show: aMorph keyStrokeContext ;
+		nextPutAll: ' -> ';
+		show: keyStroke;
 		cr.! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 08:54:35'!
