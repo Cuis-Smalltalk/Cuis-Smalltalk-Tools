@@ -1,4 +1,4 @@
-'From Cuis7.3 [latest update: #6910] on 12 December 2024 at 10:35:06 am'!
+'From Cuis7.3 [latest update: #6910] on 12 December 2024 at 12:13:17 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>
@@ -6,7 +6,7 @@ Author: Mariano Montone <marianomontone@gmail.com>
 Edit keystrokes via WorldMenu -> Open -> Edit keystrokes.
 
 KeyStrokes installEmacsLikeKeyBindings ; edit.'!
-!provides: 'KeyStrokes' 1 64!
+!provides: 'KeyStrokes' 1 65!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -30,14 +30,14 @@ Object subclass: #KeyStrokeHandler
 KeyStrokeHandler class
 	instanceVariableNames: ''!
 
-!classDefinition: #KeyStrokes category: #KeyStrokes!
-Object subclass: #KeyStrokes
-	instanceVariableNames: ''
-	classVariableNames: 'FullScreen KeyStrokesHandlers TraceKeyStrokes'
+!classDefinition: #KeyStrokesRegistry category: #KeyStrokes!
+Object subclass: #KeyStrokesRegistry
+	instanceVariableNames: 'keyStrokesHandlers traceKeyStrokes fullScreen'
+	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'KeyStrokes'!
-!classDefinition: 'KeyStrokes class' category: #KeyStrokes!
-KeyStrokes class
+!classDefinition: 'KeyStrokesRegistry class' category: #KeyStrokes!
+KeyStrokesRegistry class
 	instanceVariableNames: ''!
 
 !classDefinition: #KeyStrokesEditorWindow category: #KeyStrokes!
@@ -96,7 +96,7 @@ KeyStrokeHandler fromArray: #('alt+$b' (open Browser)).
 KeyStrokeHandler fromArray: #('alt+$b' (open Browser) WorldMorph).
 KeyStrokeHandler fromArray: #('alt+$p' printIt SmalltalkEditor).!
 
-!KeyStrokes commentStamp: '<historical>' prior: 0!
+!KeyStrokesRegistry commentStamp: '<historical>' prior: 0!
 I'm a registry of KeyStrokeHandlers.
 
 Use #on:send:to for adding a handler for a particular global key stroke.
@@ -441,11 +441,11 @@ keyStroke: aKeyStroke context: aContext receiver: aReceiver selector: aSelector
 
 	^ self keyStroke: aKeyStroke context: aContext handler: (MessageSend receiver: aReceiver selector: aSelector)! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 16:17:10'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:35:30'!
 add: aHandler
 	^ self addKeyStrokeHandler: aHandler! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 16:50:05'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:35:39'!
 addAll: aCollection
 	"Example:
 		KeyStrokes addAll: #(('alt+$p' open CompactPreferenceBrowser)
@@ -454,35 +454,35 @@ addAll: aCollection
 	aCollection do: [:keyStrokeHandler |
 		self add: keyStrokeHandler]! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 11:45:09'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:38:58'!
 addKeyStrokeHandler: aHandlerOrArray
 
 	(aHandlerOrArray isKindOf: KeyStrokeHandler)
-		ifTrue: [KeyStrokesHandlers remove: aHandlerOrArray ifAbsent: [].
-				^KeyStrokesHandlers add: aHandlerOrArray].
+		ifTrue: [keyStrokesHandlers remove: aHandlerOrArray ifAbsent: [].
+				^keyStrokesHandlers add: aHandlerOrArray].
 	aHandlerOrArray isArray ifTrue: [
-		^self add: (KeyStrokeHandler fromArray: aHandlerOrArray)].
+		^self add: (keyStrokesHandlers fromArray: aHandlerOrArray)].
 	self error: 'Bad key stroke handler spec'! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 10:56:52'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:35:53'!
 edit
 
 	KeyStrokesEditorWindow open! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 10:34:34'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:39:43'!
 handleKeyStroke: aKeyboardEvent in: aMorph
-	TraceKeyStrokes ifTrue: [self traceOutput: aKeyboardEvent in: aMorph].
-	KeyStrokesHandlers do: [:handler |
+	traceKeyStrokes ifTrue: [self traceOutput: aKeyboardEvent in: aMorph].
+	keyStrokesHandlers do: [:handler |
 		(handler value: aKeyboardEvent value: aMorph keyStrokeContext) ifTrue: [
-			TraceKeyStrokes ifTrue: [Transcript nextPutAll: 'Handled by: '; show: handler; cr].
+			traceKeyStrokes ifTrue: [Transcript nextPutAll: 'Handled by: '; show: handler; cr].
 			^true]].
 	^ false! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 16:58:46'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:52:57'!
 help
 
 	^ String streamContents: [:s |
-		KeyStrokesHandlers do: [:handler |
+		keyStrokesHandlers do: [:handler |
 			handler keyStroke printOn: s.
 			s nextPutAll: ' in '.
 			handler context printOn: s.
@@ -491,25 +491,24 @@ help
 			s newLine]]
 			! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 08:53:48'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:40:17'!
 initialize
-	"self initialize"
-	KeyStrokesHandlers := Set new.
-	TraceKeyStrokes := false.
+	keyStrokesHandlers := Set new.
+	traceKeyStrokes := false.
 	self initializeDefaults.
 	self initializeHelpers.! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 21:58:48'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:37:03'!
 initializeDefaults
 
 	self on: 'alt+$b' send: #open to: Browser.! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 08:29:00'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:40:33'!
 initializeHelpers
 
-	FullScreen := false.! !
+	fullScreen := false.! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 22:35:48'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:37:12'!
 installEmacsLikeKeyBindings
 
 	self addAll: #(('alt+$w' copySelection TextEditor)
@@ -517,39 +516,40 @@ installEmacsLikeKeyBindings
 	                       ('ctrl+$e' cursorEnd: TextEditor)
 	                       ('ctrl+$y' paste TextEditor))! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 23:03:04'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:41:02'!
 keyStrokesHandlers
 
-	^ KeyStrokesHandlers ! !
+	^ keyStrokesHandlers! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 11:47:53'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:37:24'!
 on: aKeyStroke in: aContext send: aSelector to: anObject
 	self addKeyStrokeHandler: (KeyStrokeHandler keyStroke: aKeyStroke asKeyStroke context: aContext handler:  (MessageSend receiver: anObject selector: aSelector))! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 11:48:13'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:37:28'!
 on: aKeyStroke send: aSelector to: anObject
 	^self on: aKeyStroke in: WorldMorph send: aSelector to: anObject! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 11/21/2024 13:33:47'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:37:41'!
 openHelp
 
 	self help edit! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 08:54:16'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:53:02'!
 remove: aKeyStrokeHandler
 
-	KeyStrokesHandlers remove: aKeyStrokeHandler! !
+	keyStrokesHandlers remove: aKeyStrokeHandler! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 08:54:21'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:42:15'!
 traceKeyStrokes
-	TraceKeyStrokes := true.! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 08:55:11'!
+	traceKeyStrokes := true! !
+
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:42:35'!
 traceKeyStrokesEnabled
 
-	^TraceKeyStrokes ! !
+	^ traceKeyStrokes! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 09:07:36'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:38:01'!
 traceOutput: aKeyboardEvent in: aMorph
 
 	|keyStroke|
@@ -561,43 +561,35 @@ traceOutput: aKeyboardEvent in: aMorph
 		show: keyStroke;
 		cr.! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 10:23:16'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:42:56'!
 tracingKeyStrokes
 
-	^ TraceKeyStrokes ! !
+	^ traceKeyStrokes ! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 08:54:35'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:43:19'!
 untraceKeyStrokes
 
-	TraceKeyStrokes := false.! !
+	traceKeyStrokes := false. ! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 10:20:47'!
-worldMenuOptions
-	^ `{{
-			#submenuOf 			-> 		TheWorldMenu helpLabel.
-			#itemGroup 			-> 		20.
-			#itemOrder 			-> 		20.
-			#label 			-> 		'Keystrokes'.
-			#object 			-> 		KeyStrokes.
-			#selector 			-> 		#openHelp.
-			#icon 			-> 		#accessoriesCharacterMapIcon.
-			#balloonText 			-> 		'Visualize system keystrokes'.
-		} asDictionary}`! !
-
-!KeyStrokes class methodsFor: 'helpers' stamp: 'MM 12/12/2024 08:27:16'!
+!KeyStrokesRegistry methodsFor: 'helpers' stamp: 'MM 12/12/2024 11:41:51'!
 fullScreenOff
-	FullScreen := false.
-	Display fullScreenMode: FullScreen.! !
+	fullScreen := false.
+	Display fullScreenMode: fullScreen.! !
 
-!KeyStrokes class methodsFor: 'helpers' stamp: 'MM 12/12/2024 08:26:42'!
+!KeyStrokesRegistry methodsFor: 'helpers' stamp: 'MM 12/12/2024 11:41:42'!
 fullScreenOn
-	FullScreen := true.
-	Display fullScreenMode: FullScreen.! !
+	fullScreen := true.
+	Display fullScreenMode: fullScreen.! !
 
-!KeyStrokes class methodsFor: 'helpers' stamp: 'MM 12/12/2024 08:28:15'!
+!KeyStrokesRegistry methodsFor: 'helpers' stamp: 'MM 12/12/2024 11:41:29'!
 toggleFullScreen
-	FullScreen := FullScreen not.
-	Display fullScreenMode: FullScreen.! !
+	fullScreen := fullScreen not.
+	Display fullScreenMode: fullScreen.! !
+
+!KeyStrokesRegistry class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 12:12:28'!
+initialize
+
+	Smalltalk at: #KeyStrokes put: KeyStrokesRegistry new! !
 
 !KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 10:27:24'!
 buildMorphicWindow
@@ -807,7 +799,7 @@ windowColor
 
 	^Color lightYellow! !
 
-!KeyStrokesEditorWindow class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 22:58:29'!
+!KeyStrokesEditorWindow class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 12:12:58'!
 open
 	^ self open: KeyStrokes label: 'Key strokes'! !
 
@@ -833,7 +825,7 @@ accessoriesCharacterMapIcon
 	^ self fetch: #( '16x16' 'apps' 'accessories-character-map' )
 ! !
 
-!KeyboardEvent methodsFor: '*KeyStrokes' stamp: 'MM 12/3/2024 21:56:40'!
+!KeyboardEvent methodsFor: '*KeyStrokes' stamp: 'MM 12/12/2024 12:12:54'!
 sendEventTo: aMorph
 	"Dispatch the receiver into anObject"
 	type == #keystroke ifTrue: [
@@ -860,4 +852,4 @@ keyStrokeContext
 keyStrokeContext
 
 	^ editor! !
-KeyStrokes initialize!
+KeyStrokesRegistry initialize!
