@@ -1,4 +1,4 @@
-'From Cuis7.3 [latest update: #6910] on 12 December 2024 at 10:28:09 am'!
+'From Cuis7.3 [latest update: #6910] on 12 December 2024 at 10:32:11 am'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>
@@ -6,7 +6,7 @@ Author: Mariano Montone <marianomontone@gmail.com>
 Edit keystrokes via WorldMenu -> Open -> Edit keystrokes.
 
 KeyStrokes installEmacsLikeKeyBindings ; edit.'!
-!provides: 'KeyStrokes' 1 62!
+!provides: 'KeyStrokes' 1 63!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -848,6 +848,11 @@ sendEventTo: aMorph
 keyStrokeContext
 
 	^ self! !
+
+!PluggableMorph methodsFor: '*KeyStrokes' stamp: 'MM 12/12/2024 10:31:18'!
+keyStrokeContext
+
+	^ model! !
 
 !InnerTextMorph methodsFor: '*KeyStrokes' stamp: 'MM 12/3/2024 19:32:03'!
 keyStrokeContext
