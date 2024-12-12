@@ -1,4 +1,4 @@
-'From Cuis7.3 [latest update: #6910] on 12 December 2024 at 10:32:11 am'!
+'From Cuis7.3 [latest update: #6910] on 12 December 2024 at 10:35:06 am'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>
@@ -6,7 +6,7 @@ Author: Mariano Montone <marianomontone@gmail.com>
 Edit keystrokes via WorldMenu -> Open -> Edit keystrokes.
 
 KeyStrokes installEmacsLikeKeyBindings ; edit.'!
-!provides: 'KeyStrokes' 1 63!
+!provides: 'KeyStrokes' 1 64!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -469,11 +469,13 @@ edit
 
 	KeyStrokesEditorWindow open! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 08:56:30'!
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 10:34:34'!
 handleKeyStroke: aKeyboardEvent in: aMorph
 	TraceKeyStrokes ifTrue: [self traceOutput: aKeyboardEvent in: aMorph].
 	KeyStrokesHandlers do: [:handler |
-		(handler value: aKeyboardEvent value: aMorph keyStrokeContext) ifTrue: [^true]].
+		(handler value: aKeyboardEvent value: aMorph keyStrokeContext) ifTrue: [
+			TraceKeyStrokes ifTrue: [Transcript nextPutAll: 'Handled by: '; show: handler; cr].
+			^true]].
 	^ false! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 16:58:46'!
