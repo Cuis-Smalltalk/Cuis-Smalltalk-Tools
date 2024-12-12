@@ -1,4 +1,4 @@
-'From Cuis7.1 [latest update: #6378] on 18 May 2024 at 4:46:08 pm'!
+'From Cuis7.3 [latest update: #6910] on 12 December 2024 at 12:22:38 pm'!
 'Description This is a variation of Cuis Finder by Nicolas Papagna, that uses a popup morph as user interface.
 
 Finder is a system-wide search tool for Cuis Smalltalk.
@@ -19,8 +19,8 @@ Also, you can use catalog specific shortcuts:
     alt-s : Selectors catalog.
     alt-p : System categories catalog.
     alt-t : Tools catalog.'!
-!provides: 'PopupFinder' 1 63!
-!requires: 'WorldKeyStrokes' 1 4 nil!
+!provides: 'PopupFinder' 1 64!
+!requires: 'KeyStrokes' 1 65 nil!
 SystemOrganization addCategory: #'PopupFinder-Model'!
 SystemOrganization addCategory: #'PopupFinder-UI'!
 SystemOrganization addCategory: #'PopupFinder-UI-Model'!
@@ -34,16 +34,6 @@ LayoutMorph subclass: #FinderMorph
 	category: 'PopupFinder-UI'!
 !classDefinition: 'FinderMorph class' category: #'PopupFinder-UI'!
 FinderMorph class
-	instanceVariableNames: ''!
-
-!classDefinition: #FinderSearchInnerTextMorph category: #'PopupFinder-UI'!
-InnerTextMorph subclass: #FinderSearchInnerTextMorph
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'PopupFinder-UI'!
-!classDefinition: 'FinderSearchInnerTextMorph class' category: #'PopupFinder-UI'!
-FinderSearchInnerTextMorph class
 	instanceVariableNames: ''!
 
 !classDefinition: #FinderResultsListMorph category: #'PopupFinder-UI'!
@@ -74,6 +64,16 @@ BorderedBoxMorph subclass: #FinderSearchBarMorph
 	category: 'PopupFinder-UI'!
 !classDefinition: 'FinderSearchBarMorph class' category: #'PopupFinder-UI'!
 FinderSearchBarMorph class
+	instanceVariableNames: ''!
+
+!classDefinition: #FinderSearchInnerTextMorph category: #'PopupFinder-UI'!
+InnerTextMorph subclass: #FinderSearchInnerTextMorph
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PopupFinder-UI'!
+!classDefinition: 'FinderSearchInnerTextMorph class' category: #'PopupFinder-UI'!
+FinderSearchInnerTextMorph class
 	instanceVariableNames: ''!
 
 !classDefinition: #Catalog category: #'PopupFinder-Model'!
@@ -592,12 +592,11 @@ openOn: aFinder
 		buildMorphicWindow;
 		openInWorld! !
 
-!FinderMorph class methodsFor: 'as yet unclassified' stamp: 'MM 2/6/2021 16:46:23'!
+!FinderMorph class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 12:22:14'!
 configureAsClassFinder
 	"self configureAsClassFinder"
 	
-	WorldKeyStrokes addKeyStrokeHandler: [:ev | self worldKeystrokeHandler: ev].
-	WorldKeyStrokes addKeyStrokeInterceptor: [:ev :morph | self worldKeystrokeInterceptor: ev].
+	KeyStrokes on: 'ctrl+#isReturnKey' in: WorldMorph send: #open to: FinderMorph.
 
 	! !
 
@@ -614,19 +613,6 @@ isFindClassShortcut: aKeyboardEvent
 
 	^ aKeyboardEvent shiftPressed and: [ aKeyboardEvent isReturnKey ]! !
 
-!FinderMorph class methodsFor: 'as yet unclassified' stamp: 'MM 2/6/2021 13:43:49'!
-worldKeystrokeHandler: aKeyboardEvent
-	(aKeyboardEvent commandAltKeyPressed or: [ aKeyboardEvent controlKeyPressed ])
-		ifTrue: [
-			aKeyboardEvent keyCharacter = $f ifTrue: [ self open. ^true ]].
-	^false! !
-
-!FinderMorph class methodsFor: 'as yet unclassified' stamp: 'MM 2/6/2021 16:47:37'!
-worldKeystrokeInterceptor: aKeyboardEvent
-	(aKeyboardEvent shiftPressed and: [ aKeyboardEvent isReturnKey ])
-		ifTrue: [self open. ^ true].
-	^false! !
-
 !FinderMorph class methodsFor: 'as yet unclassified' stamp: 'MM 9/24/2022 10:20:45'!
 worldMenuOptions
 	^ `{{
@@ -639,13 +625,6 @@ worldMenuOptions
 			#icon 			-> 	#inspectIcon.
 			#balloonText 	-> 		'The system finder'.
 		} asDictionary}`! !
-
-!FinderSearchInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/25/2020 14:49:37'!
-keyboardFocusChange: aBoolean
-	"Notify change due to green border for keyboard focus"
-	aBoolean ifFalse: [
-		"Not pretty at all, but works. Delete the FinderMorph"
-		self owner owner owner owner delete].! !
 
 !FinderResultsListMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/25/2020 14:23:26'!
 gainFocusFrom: aHand
@@ -787,6 +766,13 @@ onChanged: aChangeHandler onKeyPressed: aKeyPressedHandler notifyingChangesAfter
 			initializeHandlingChangesWith: aChangeHandler
 			handlingKeysPressedWith: aKeyPressedHandler
 			notifyingChangesAfter: anAmountOfTime! !
+
+!FinderSearchInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/25/2020 14:49:37'!
+keyboardFocusChange: aBoolean
+	"Notify change due to green border for keyboard focus"
+	aBoolean ifFalse: [
+		"Not pretty at all, but works. Delete the FinderMorph"
+		self owner owner owner owner delete].! !
 
 !Catalog methodsFor: 'accessing' stamp: 'NPM 3/28/2020 02:38:49'!
 name
