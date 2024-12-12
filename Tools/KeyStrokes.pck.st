@@ -1,4 +1,4 @@
-'From Cuis7.3 [latest update: #6910] on 12 December 2024 at 9:20:50 am'!
+'From Cuis7.3 [latest update: #6910] on 12 December 2024 at 10:28:09 am'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>
@@ -6,7 +6,7 @@ Author: Mariano Montone <marianomontone@gmail.com>
 Edit keystrokes via WorldMenu -> Open -> Edit keystrokes.
 
 KeyStrokes installEmacsLikeKeyBindings ; edit.'!
-!provides: 'KeyStrokes' 1 61!
+!provides: 'KeyStrokes' 1 62!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -559,6 +559,11 @@ traceOutput: aKeyboardEvent in: aMorph
 		show: keyStroke;
 		cr.! !
 
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 10:23:16'!
+tracingKeyStrokes
+
+	^ TraceKeyStrokes ! !
+
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 08:54:35'!
 untraceKeyStrokes
 
@@ -592,7 +597,7 @@ toggleFullScreen
 	FullScreen := FullScreen not.
 	Display fullScreenMode: FullScreen.! !
 
-!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 13:53:27'!
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 10:27:24'!
 buildMorphicWindow
 
 	| keyStrokesList keyStrokeBar buttonsBar |
@@ -647,6 +652,8 @@ buildMorphicWindow
 	buttonsBar := LayoutMorph newRow.
 	buttonsBar addMorph: (PluggableButtonMorph model: self action: #setKeyStroke label: 'Set').
 	buttonsBar addMorph: (PluggableButtonMorph model: self action: #deleteKeyStroke label: 'Delete').
+	buttonsBar addMorph: ((PluggableButtonMorph model: self stateGetter: #tracingKeyStrokes action: #toggleTracing label: 'Trace')
+		setBalloonText: 'Trace keystrokes on Transcript'; yourself).
 	"buttonsBar addMorph: (PluggableButtonMorph model: self action: #help label: 'Help')."
 	layoutMorph addMorph: buttonsBar fixedHeight: 30.! !
 
@@ -780,6 +787,18 @@ setKeyStroke
 	model addKeyStrokeHandler: handler.
 							
 	self changed: #keyStrokesList! !
+
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 10:23:56'!
+toggleTracing
+
+	model tracingKeyStrokes 
+		ifTrue: [model untraceKeyStrokes ]
+		ifFalse: [model traceKeyStrokes ]! !
+
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 10:24:48'!
+tracingKeyStrokes
+
+	^ model tracingKeyStrokes ! !
 
 !KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 23:04:48'!
 windowColor
