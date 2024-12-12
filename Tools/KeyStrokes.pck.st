@@ -1,4 +1,4 @@
-'From Cuis7.1 [latest update: #6884] on 4 December 2024 at 1:53:52 pm'!
+'From Cuis7.3 [latest update: #6910] on 12 December 2024 at 8:30:23 am'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>
@@ -6,7 +6,7 @@ Author: Mariano Montone <marianomontone@gmail.com>
 Edit keystrokes via WorldMenu -> Open -> Edit keystrokes.
 
 KeyStrokes installEmacsLikeKeyBindings ; edit.'!
-!provides: 'KeyStrokes' 1 56!
+!provides: 'KeyStrokes' 1 58!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -33,7 +33,7 @@ KeyStrokeHandler class
 !classDefinition: #KeyStrokes category: #KeyStrokes!
 Object subclass: #KeyStrokes
 	instanceVariableNames: ''
-	classVariableNames: 'KeyStrokesHandlers'
+	classVariableNames: 'FullScreen KeyStrokesHandlers'
 	poolDictionaries: ''
 	category: 'KeyStrokes'!
 !classDefinition: 'KeyStrokes class' category: #KeyStrokes!
@@ -96,7 +96,7 @@ KeyStrokeHandler fromArray: #('alt+$b' (open Browser)).
 KeyStrokeHandler fromArray: #('alt+$b' (open Browser) WorldMorph).
 KeyStrokeHandler fromArray: #('alt+$p' printIt SmalltalkEditor).!
 
-!KeyStrokes commentStamp: 'MM 12/4/2024 10:59:38' prior: 0!
+!KeyStrokes commentStamp: '<historical>' prior: 0!
 I'm a registry of KeyStrokeHandlers.
 
 Use #on:send:to for adding a handler for a particular global key stroke.
@@ -112,8 +112,8 @@ KeyStrokes addAll: #(('alt+$p' (open CompactPreferenceBrowser))
 	
 KeyStrokes openHelp.
 KeyStrokes edit.
-
-To reset KeyStrokes evaluate: KeyStrokes initialize.!
+KeyStrokes installEmacsLikeKeyBindings.
+KeyStrokes initialize. "reset keystrokes"!
 
 !KeyStrokesEditorWindow commentStamp: '<historical>' prior: 0!
 Tool for editing key bindings.
@@ -478,16 +478,22 @@ help
 			s newLine]]
 			! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 11:38:28'!
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 08:28:45'!
 initialize
 	"self initialize"
 	KeyStrokesHandlers := Set new.
-	self initializeDefaults.! !
+	self initializeDefaults.
+	self initializeHelpers.! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 21:58:48'!
 initializeDefaults
 
 	self on: 'alt+$b' send: #open to: Browser.! !
+
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 08:29:00'!
+initializeHelpers
+
+	FullScreen := false.! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 22:35:48'!
 installEmacsLikeKeyBindings
@@ -532,6 +538,21 @@ worldMenuOptions
 			#icon 			-> 		#accessoriesCharacterMapIcon.
 			#balloonText 			-> 		'Visualize system keystrokes'.
 		} asDictionary}`! !
+
+!KeyStrokes class methodsFor: 'helpers' stamp: 'MM 12/12/2024 08:27:16'!
+fullScreenOff
+	FullScreen := false.
+	Display fullScreenMode: FullScreen.! !
+
+!KeyStrokes class methodsFor: 'helpers' stamp: 'MM 12/12/2024 08:26:42'!
+fullScreenOn
+	FullScreen := true.
+	Display fullScreenMode: FullScreen.! !
+
+!KeyStrokes class methodsFor: 'helpers' stamp: 'MM 12/12/2024 08:28:15'!
+toggleFullScreen
+	FullScreen := FullScreen not.
+	Display fullScreenMode: FullScreen.! !
 
 !KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 13:53:27'!
 buildMorphicWindow
