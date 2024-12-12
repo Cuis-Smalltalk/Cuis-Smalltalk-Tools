@@ -1,4 +1,4 @@
-'From Cuis7.3 [latest update: #6910] on 12 December 2024 at 8:30:23 am'!
+'From Cuis7.3 [latest update: #6910] on 12 December 2024 at 9:03:34 am'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>
@@ -6,7 +6,7 @@ Author: Mariano Montone <marianomontone@gmail.com>
 Edit keystrokes via WorldMenu -> Open -> Edit keystrokes.
 
 KeyStrokes installEmacsLikeKeyBindings ; edit.'!
-!provides: 'KeyStrokes' 1 58!
+!provides: 'KeyStrokes' 1 59!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -33,7 +33,7 @@ KeyStrokeHandler class
 !classDefinition: #KeyStrokes category: #KeyStrokes!
 Object subclass: #KeyStrokes
 	instanceVariableNames: ''
-	classVariableNames: 'FullScreen KeyStrokesHandlers'
+	classVariableNames: 'FullScreen KeyStrokesHandlers TraceKeyStrokes'
 	poolDictionaries: ''
 	category: 'KeyStrokes'!
 !classDefinition: 'KeyStrokes class' category: #KeyStrokes!
@@ -192,14 +192,14 @@ shift: anObject
 
 	shift _ anObject! !
 
-!KeyStroke methodsFor: 'testing' stamp: 'MM 11/21/2024 13:25:17'!
+!KeyStroke methodsFor: 'testing' stamp: 'MM 12/12/2024 08:45:24'!
 handles: aKeyboardEvent
 
-	(shift not or: [aKeyboardEvent shiftPressed]) ifFalse: [^false].
-	(control not or: [aKeyboardEvent controlKeyPressed]) ifFalse: [^false].
-	(alt not or: [aKeyboardEvent commandAltKeyPressed]) ifFalse: [^false].
-	(keyValue isNil or: [aKeyboardEvent keyValue == keyValue]) ifFalse: [^false].
-	(keyCharacter isNil or: [aKeyboardEvent keyCharacter == keyCharacter]) ifFalse: [^false].
+	aKeyboardEvent shiftPressed = shift ifFalse: [^false].
+	aKeyboardEvent controlKeyPressed = control ifFalse: [^false].
+	aKeyboardEvent commandAltKeyPressed = alt ifFalse: [^false].
+	aKeyboardEvent keyValue == keyValue ifFalse: [^false].
+	aKeyboardEvent keyCharacter == keyCharacter ifFalse: [^false].
 	(keySelector isNil or: [aKeyboardEvent perform: keySelector]) ifFalse: [^false].
 	
 	^ true! !
@@ -459,8 +459,9 @@ edit
 
 	KeyStrokesEditorWindow open! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 21:56:40'!
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 08:56:30'!
 handleKeyStroke: aKeyboardEvent in: aMorph
+	TraceKeyStrokes ifTrue: [self traceOutput: aKeyboardEvent in: aMorph].
 	KeyStrokesHandlers do: [:handler |
 		(handler value: aKeyboardEvent value: aMorph keyStrokeContext) ifTrue: [^true]].
 	^ false! !
@@ -478,10 +479,11 @@ help
 			s newLine]]
 			! !
 
-!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 08:28:45'!
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 08:53:48'!
 initialize
 	"self initialize"
 	KeyStrokesHandlers := Set new.
+	TraceKeyStrokes := false.
 	self initializeDefaults.
 	self initializeHelpers.! !
 
@@ -525,6 +527,31 @@ openHelp
 remove: aKeyStrokeHandler
 
 	KeyStrokesHandlers remove: aKeyStrokeHandler! !
+
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 08:54:21'!
+traceKeyStrokes
+	TraceKeyStrokes := true.! !
+
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 08:55:11'!
+traceKeyStrokesEnabled
+
+	^TraceKeyStrokes ! !
+
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 09:01:56'!
+traceOutput: aKeyboardEvent in: aMorph
+
+	Transcript nextPutAll: 'In: '; show: aMorph;
+		nextPutAll: ' ->';
+		nextPutAll: ' ctrl: '; show: aKeyboardEvent controlKeyPressed ;
+		nextPutAll: ' alt: '; show: aKeyboardEvent commandAltKeyPressed ;
+		nextPutAll: ' shift: '; show: aKeyboardEvent shiftPressed ;
+		nextPutAll: ' key: '; show: aKeyboardEvent keyCharacter ;
+		cr.! !
+
+!KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 08:54:35'!
+untraceKeyStrokes
+
+	TraceKeyStrokes := false.! !
 
 !KeyStrokes class methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 10:20:47'!
 worldMenuOptions
