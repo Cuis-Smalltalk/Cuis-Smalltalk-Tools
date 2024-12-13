@@ -1,4 +1,4 @@
-'From Cuis7.3 [latest update: #6910] on 12 December 2024 at 4:07:45 pm'!
+'From Cuis7.3 [latest update: #6912] on 13 December 2024 at 8:38:54 am'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>
@@ -6,7 +6,7 @@ Author: Mariano Montone <marianomontone@gmail.com>
 Edit keystrokes via WorldMenu -> Open -> Edit keystrokes.
 
 KeyStrokes installEmacsLikeKeyBindings ; edit.'!
-!provides: 'KeyStrokes' 1 68!
+!provides: 'KeyStrokes' 1 69!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -192,15 +192,15 @@ shift: anObject
 
 	shift _ anObject! !
 
-!KeyStroke methodsFor: 'testing' stamp: 'MM 12/12/2024 09:20:32'!
+!KeyStroke methodsFor: 'testing' stamp: 'MM 12/13/2024 08:38:47'!
 handles: aKeyboardEvent
 
 	aKeyboardEvent shiftPressed = shift ifFalse: [^false].
 	aKeyboardEvent controlKeyPressed = control ifFalse: [^false].
 	aKeyboardEvent commandAltKeyPressed = alt ifFalse: [^false].
+	keySelector ifNotNil: [^aKeyboardEvent perform: keySelector].
 	"aKeyboardEvent keyValue == keyValue ifFalse: [^false]."
-	aKeyboardEvent keyCharacter = keyCharacter ifFalse: [^false].
-	(keySelector isNil or: [aKeyboardEvent perform: keySelector]) ifFalse: [^false].
+	aKeyboardEvent keyCharacter = keyCharacter ifFalse: [^false].	
 	
 	^ true! !
 
