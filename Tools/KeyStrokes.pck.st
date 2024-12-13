@@ -1,4 +1,4 @@
-'From Cuis7.3 [latest update: #6912] on 13 December 2024 at 8:38:54 am'!
+'From Cuis7.3 [latest update: #6912] on 13 December 2024 at 8:47:58 am'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>
@@ -6,7 +6,7 @@ Author: Mariano Montone <marianomontone@gmail.com>
 Edit keystrokes via WorldMenu -> Open -> Edit keystrokes.
 
 KeyStrokes installEmacsLikeKeyBindings ; edit.'!
-!provides: 'KeyStrokes' 1 69!
+!provides: 'KeyStrokes' 1 70!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -595,7 +595,7 @@ initialize
 
 	Smalltalk at: #KeyStrokes put: KeyStrokesRegistry new! !
 
-!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 10:27:24'!
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/13/2024 08:44:57'!
 buildMorphicWindow
 
 	| keyStrokesList keyStrokeBar buttonsBar |
@@ -609,7 +609,7 @@ buildMorphicWindow
 	
 	keyStrokeBar := LayoutMorph newRow.
 	keyStrokeBar addMorph:(LabelMorph contents: 'on: ').
-	keyStrokeBar addMorph: ((TextModelMorph textProvider: self textGetter: #keyStrokeString  textSetter: #keyStrokeString: )
+	keyStrokeBar addMorphUseAll: ((TextModelMorph textProvider: self textGetter: #keyStrokeString  textSetter: #keyStrokeString: )
 								acceptOnAny: true;
 								askBeforeDiscardingEdits: false;
 								hideScrollBarsIndefinitely;
@@ -618,7 +618,7 @@ buildMorphicWindow
 								setBalloonText: 'Key stroke spec';
 								yourself).
 	keyStrokeBar addMorph:(LabelMorph contents: 'in: ').
-	keyStrokeBar addMorph: ((TextModelMorph textProvider: self textGetter: #contextString  textSetter: #contextString: )
+	keyStrokeBar addMorphUseAll: ((TextModelMorph textProvider: self textGetter: #contextString  textSetter: #contextString: )
 								acceptOnAny: true;
 								askBeforeDiscardingEdits: false;
 								hideScrollBarsIndefinitely;
@@ -627,7 +627,7 @@ buildMorphicWindow
 								setBalloonText: 'Key stroke context';
 								yourself).
 	keyStrokeBar addMorph:(LabelMorph contents: 'send: ').
-	keyStrokeBar addMorph: ((TextModelMorph textProvider: self textGetter: #selectorString  textSetter: #selectorString: )
+	keyStrokeBar addMorphUseAll: ((TextModelMorph textProvider: self textGetter: #selectorString  textSetter: #selectorString: )
 								acceptOnAny: true;
 								askBeforeDiscardingEdits: false;
 								hideScrollBarsIndefinitely;
@@ -636,7 +636,7 @@ buildMorphicWindow
 								setBalloonText: 'Message selector'; 
 								yourself).
 	keyStrokeBar addMorph:(LabelMorph contents: 'to: ').
-	keyStrokeBar addMorph: ((TextModelMorph textProvider: self textGetter: #receiverString  textSetter: #receiverString: )
+	keyStrokeBar addMorphUseAll: ((TextModelMorph textProvider: self textGetter: #receiverString  textSetter: #receiverString: )
 								acceptOnAny: true;
 								askBeforeDiscardingEdits: false;
 								hideScrollBarsIndefinitely;
@@ -677,11 +677,6 @@ deleteKeyStroke
 		self changed: #keyStrokesList.
 		keyStrokeIndex := 0.
 		self changed: #keyStrokeIndex]! !
-
-!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 23:53:29'!
-initialExtent
-
-	^ 200@400! !
 
 !KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/4/2024 13:46:26'!
 initialize
