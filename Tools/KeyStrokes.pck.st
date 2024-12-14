@@ -1,4 +1,4 @@
-'From Cuis7.3 [latest update: #6912] on 13 December 2024 at 8:47:58 am'!
+'From Cuis7.3 [latest update: #6912] on 14 December 2024 at 9:09:11 am'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>
@@ -6,7 +6,7 @@ Author: Mariano Montone <marianomontone@gmail.com>
 Edit keystrokes via WorldMenu -> Open -> Edit keystrokes.
 
 KeyStrokes installEmacsLikeKeyBindings ; edit.'!
-!provides: 'KeyStrokes' 1 70!
+!provides: 'KeyStrokes' 1 71!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -469,8 +469,14 @@ edit
 
 	KeyStrokesEditorWindow open! !
 
-!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:39:43'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/14/2024 09:08:38'!
 handleKeyStroke: aKeyboardEvent in: aMorph
+	
+	"If #worldKeyStrokesPrecedence preference is enabled, give preference to world keystrokes."
+	aMorph isWorldMorph ifFalse: [
+		(Preferences at: #worldKeyStrokesPrecedence) ifTrue: [
+			(self handleKeyStroke: aKeyboardEvent in: self runningWorld) ifTrue: [^true]]].
+	
 	traceKeyStrokes ifTrue: [self traceOutput: aKeyboardEvent in: aMorph].
 	keyStrokesHandlers do: [:handler |
 		(handler value: aKeyboardEvent value: aMorph keyStrokeContext) ifTrue: [
@@ -590,10 +596,16 @@ toggleFullScreen
 	fullScreen := fullScreen not.
 	Display fullScreenMode: fullScreen.! !
 
-!KeyStrokesRegistry class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 12:12:28'!
+!KeyStrokesRegistry class methodsFor: 'as yet unclassified' stamp: 'MM 12/14/2024 09:01:26'!
 initialize
 
-	Smalltalk at: #KeyStrokes put: KeyStrokesRegistry new! !
+	Smalltalk at: #KeyStrokes put: KeyStrokesRegistry new.
+	
+	Preferences name: #worldKeyStrokesPrecedence
+		description: 'Keystrokes that occur in World take precedence over the others'
+		category: 'gui'
+		type: Boolean
+		value: true.! !
 
 !KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/13/2024 08:44:57'!
 buildMorphicWindow
