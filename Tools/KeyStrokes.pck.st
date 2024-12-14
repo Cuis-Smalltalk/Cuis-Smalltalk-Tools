@@ -1,4 +1,4 @@
-'From Cuis7.3 [latest update: #6912] on 14 December 2024 at 9:09:11 am'!
+'From Cuis7.3 [latest update: #6912] on 14 December 2024 at 10:44:39 am'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>
@@ -6,7 +6,7 @@ Author: Mariano Montone <marianomontone@gmail.com>
 Edit keystrokes via WorldMenu -> Open -> Edit keystrokes.
 
 KeyStrokes installEmacsLikeKeyBindings ; edit.'!
-!provides: 'KeyStrokes' 1 71!
+!provides: 'KeyStrokes' 1 73!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -32,7 +32,7 @@ KeyStrokeHandler class
 
 !classDefinition: #KeyStrokesRegistry category: #KeyStrokes!
 Object subclass: #KeyStrokesRegistry
-	instanceVariableNames: 'keyStrokesHandlers traceKeyStrokes fullScreen'
+	instanceVariableNames: 'keyStrokesHandlers traceKeyStrokes fullScreen readingKeyStroke readKeyStroke'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'KeyStrokes'!
@@ -469,8 +469,18 @@ edit
 
 	KeyStrokesEditorWindow open! !
 
-!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/14/2024 09:08:38'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/14/2024 10:22:29'!
 handleKeyStroke: aKeyboardEvent in: aMorph
+
+	"Handle aKeyboardEvent that occured in aMorph"
+	
+	"If we are reading a keystroke, set it"
+	readingKeyStroke ifTrue: [
+		readKeyStroke := KeyStroke fromKeyboardEvent: aKeyboardEvent.
+		self changed: #readKeyStroke.
+		readingKeyStroke := false.
+		self changed: #readingKeyStroke.
+		^ false].
 	
 	"If #worldKeyStrokesPrecedence preference is enabled, give preference to world keystrokes."
 	aMorph isWorldMorph ifFalse: [
@@ -497,10 +507,11 @@ help
 			s newLine]]
 			! !
 
-!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:40:17'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/14/2024 10:16:49'!
 initialize
 	keyStrokesHandlers := Set new.
 	traceKeyStrokes := false.
+	readingKeyStroke := false.
 	self initializeDefaults.
 	self initializeHelpers.! !
 
@@ -544,10 +555,26 @@ openHelp
 printOn: aStream
 	aStream nextPutAll: 'KeyStrokes'! !
 
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/14/2024 10:30:34'!
+readKeyStroke
+
+	^ readKeyStroke! !
+
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/14/2024 10:17:07'!
+readingKeyStroke
+
+	^ readingKeyStroke! !
+
 !KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:53:02'!
 remove: aKeyStrokeHandler
 
 	keyStrokesHandlers remove: aKeyStrokeHandler! !
+
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/14/2024 10:28:13'!
+toggleReadKeyStroke
+
+	readingKeyStroke := readingKeyStroke not.
+	self changed: #readingKeyStroke! !
 
 !KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:42:15'!
 traceKeyStrokes
@@ -607,7 +634,7 @@ initialize
 		type: Boolean
 		value: true.! !
 
-!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/13/2024 08:44:57'!
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/14/2024 10:43:19'!
 buildMorphicWindow
 
 	| keyStrokesList keyStrokeBar buttonsBar |
@@ -628,6 +655,11 @@ buildMorphicWindow
 								morphHeight: 15;
 								morphWidth: 100;
 								setBalloonText: 'Key stroke spec';
+								yourself).
+	keyStrokeBar addMorph: ((PluggableButtonMorph model: model stateGetter: #readingKeyStroke action: #toggleReadKeyStroke ) 
+								icon: Theme current doItIcon;
+								morphHeight: 15;
+								setBalloonText: 'Read keystroke combination directly from the keyboard'; 
 								yourself).
 	keyStrokeBar addMorph:(LabelMorph contents: 'in: ').
 	keyStrokeBar addMorphUseAll: ((TextModelMorph textProvider: self textGetter: #contextString  textSetter: #contextString: )
@@ -804,6 +836,15 @@ toggleTracing
 tracingKeyStrokes
 
 	^ model tracingKeyStrokes ! !
+
+!KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/14/2024 10:35:55'!
+update: aSymbol
+
+	super update: aSymbol.
+	
+	aSymbol == #readKeyStroke ifTrue: [
+		keyStrokeString := model readKeyStroke asString.
+		self changed: #keyStrokeString]! !
 
 !KeyStrokesEditorWindow methodsFor: 'as yet unclassified' stamp: 'MM 12/3/2024 23:04:48'!
 windowColor
