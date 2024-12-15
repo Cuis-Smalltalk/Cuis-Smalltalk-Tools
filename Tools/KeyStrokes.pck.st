@@ -1,4 +1,4 @@
-'From Cuis7.3 [latest update: #6912] on 14 December 2024 at 10:44:39 am'!
+'From Cuis7.3 [latest update: #6912] on 15 December 2024 at 10:32:34 am'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>
@@ -6,7 +6,7 @@ Author: Mariano Montone <marianomontone@gmail.com>
 Edit keystrokes via WorldMenu -> Open -> Edit keystrokes.
 
 KeyStrokes installEmacsLikeKeyBindings ; edit.'!
-!provides: 'KeyStrokes' 1 73!
+!provides: 'KeyStrokes' 1 74!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -515,10 +515,10 @@ initialize
 	self initializeDefaults.
 	self initializeHelpers.! !
 
-!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:37:03'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/15/2024 10:32:27'!
 initializeDefaults
 
-	self on: 'alt+$b' send: #open to: Browser.! !
+	self on: 'shift+alt+$B' send: #open to: Browser.! !
 
 !KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:40:33'!
 initializeHelpers
