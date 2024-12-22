@@ -1,4 +1,4 @@
-'From Cuis7.3 [latest update: #6943] on 22 December 2024 at 2:09:54 am'!
+'From Cuis7.3 [latest update: #6943] on 22 December 2024 at 3:04:14 am'!
 'Description This is a variation of Cuis Finder by Nicolas Papagna, that uses a popup morph as user interface.
 
 Finder is a system-wide search tool for Cuis Smalltalk.
@@ -19,7 +19,7 @@ Also, you can use catalog specific shortcuts:
     alt-s : Selectors catalog.
     alt-p : System categories catalog.
     alt-t : Tools catalog.'!
-!provides: 'PopupFinder' 1 65!
+!provides: 'PopupFinder' 1 66!
 !requires: 'KeyStrokes' 1 65 nil!
 SystemOrganization addCategory: #'PopupFinder-Model'!
 SystemOrganization addCategory: #'PopupFinder-UI'!
@@ -572,12 +572,12 @@ openInWorld
 		w activeHand newKeyboardFocus: self submorphToFocusKeyboard ].
 	FinderMorph current: self.! !
 
-!FinderMorph class methodsFor: 'class initialization' stamp: 'MM 11/9/2021 14:29:49'!
+!FinderMorph class methodsFor: 'class initialization' stamp: 'Ez3 12/22/2024 02:53:12'!
 initialize
 
 	self configureAsClassFinder.
 	
-	self inform:  'Finder morph installed. Use cmd+f to open.'! !
+	self inform:  'Finder morph installed. Use shift+enter to open.'! !
 
 !FinderMorph class methodsFor: 'instance creation' stamp: 'MM 2/8/2021 09:54:23'!
 open
@@ -592,11 +592,11 @@ openOn: aFinder
 		buildMorphicWindow;
 		openInWorld! !
 
-!FinderMorph class methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 12:22:14'!
+!FinderMorph class methodsFor: 'as yet unclassified' stamp: 'Ez3 12/22/2024 02:30:22'!
 configureAsClassFinder
 	"self configureAsClassFinder"
 	
-	KeyStrokes on: 'ctrl+#isReturnKey' in: WorldMorph send: #open to: FinderMorph.
+	KeyStrokes on: 'shift+#isReturnKey' in: WorldMorph send: #open to: FinderMorph.
 
 	! !
 
