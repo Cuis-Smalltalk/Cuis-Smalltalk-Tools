@@ -1,4 +1,4 @@
-'From Cuis7.3 [latest update: #6912] on 15 December 2024 at 10:32:34 am'!
+'From Cuis7.3 [latest update: #6949] on 24 December 2024 at 3:51:56 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>
@@ -6,7 +6,7 @@ Author: Mariano Montone <marianomontone@gmail.com>
 Edit keystrokes via WorldMenu -> Open -> Edit keystrokes.
 
 KeyStrokes installEmacsLikeKeyBindings ; edit.'!
-!provides: 'KeyStrokes' 1 74!
+!provides: 'KeyStrokes' 1 76!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -515,10 +515,12 @@ initialize
 	self initializeDefaults.
 	self initializeHelpers.! !
 
-!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/15/2024 10:32:27'!
+!KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/24/2024 15:51:51'!
 initializeDefaults
 
-	self on: 'shift+alt+$B' send: #open to: Browser.! !
+	self on: 'shift+alt+$B' send: #open to: Browser.
+	self on: 'alt+$+' send: #increaseDefaultFontSize to: self.
+	self on: 'alt+$-' send: #decreaseDefaultFontSize to: self.! !
 
 !KeyStrokesRegistry methodsFor: 'as yet unclassified' stamp: 'MM 12/12/2024 11:40:33'!
 initializeHelpers
@@ -608,6 +610,14 @@ untraceKeyStrokes
 
 	traceKeyStrokes := false. ! !
 
+!KeyStrokesRegistry methodsFor: 'helpers' stamp: 'MM 12/24/2024 15:48:06'!
+decreaseDefaultFontSize
+
+	| fontSize |
+	
+	fontSize := Preferences at: #defaultFontSize.
+	Preferences at: #defaultFontSize put: ((fontSize - 1) max: 4).! !
+
 !KeyStrokesRegistry methodsFor: 'helpers' stamp: 'MM 12/12/2024 11:41:51'!
 fullScreenOff
 	fullScreen := false.
@@ -617,6 +627,14 @@ fullScreenOff
 fullScreenOn
 	fullScreen := true.
 	Display fullScreenMode: fullScreen.! !
+
+!KeyStrokesRegistry methodsFor: 'helpers' stamp: 'MM 12/24/2024 15:47:27'!
+increaseDefaultFontSize
+	
+	| fontSize |
+	
+	fontSize := Preferences at: #defaultFontSize.
+	Preferences at: #defaultFontSize put: fontSize + 1! !
 
 !KeyStrokesRegistry methodsFor: 'helpers' stamp: 'MM 12/12/2024 11:41:29'!
 toggleFullScreen
