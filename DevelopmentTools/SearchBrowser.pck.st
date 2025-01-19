@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6877] on 2 December 2024 at 8:07:36 am'!
+'From Cuis7.3 [latest update: #6991] on 18 January 2025 at 9:44:20 pm'!
 'Description Browser tool for searching Cuis source code.'!
-!provides: 'SearchBrowser' 1 44!
+!provides: 'SearchBrowser' 1 45!
 !requires: 'Regex-Core' 1 6 nil!
 SystemOrganization addCategory: #SearchBrowser!
 
@@ -125,7 +125,7 @@ initialize
 isCaseSensitive
 	^ caseSensitive ! !
 
-!SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 11:08:19'!
+!SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 1/18/2025 21:43:53'!
 performSearch
 
 	| classes classCount |
@@ -150,6 +150,7 @@ performSearch
 						(self perform: self matcherSelector with: sourceString)		 ifTrue: [
 							messageList add: method ]]		]]].
 	messageList := messageList asArray sort.
+	self messageListIndex: 0. "This clears the code pane"
 	self changed: #messageList! !
 
 !SearchBrowser methodsFor: 'as yet unclassified' stamp: 'MM 6/4/2024 08:13:53'!
