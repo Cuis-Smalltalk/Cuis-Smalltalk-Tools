@@ -1,4 +1,4 @@
-'From Cuis7.3 [latest update: #6943] on 22 December 2024 at 3:04:14 am'!
+'From Cuis7.3 [latest update: #7035] on 28 January 2025 at 11:06:35 pm'!
 'Description This is a variation of Cuis Finder by Nicolas Papagna, that uses a popup morph as user interface.
 
 Finder is a system-wide search tool for Cuis Smalltalk.
@@ -19,7 +19,7 @@ Also, you can use catalog specific shortcuts:
     alt-s : Selectors catalog.
     alt-p : System categories catalog.
     alt-t : Tools catalog.'!
-!provides: 'PopupFinder' 1 66!
+!provides: 'PopupFinder' 1 67!
 !requires: 'KeyStrokes' 1 65 nil!
 SystemOrganization addCategory: #'PopupFinder-Model'!
 SystemOrganization addCategory: #'PopupFinder-UI'!
@@ -34,6 +34,16 @@ LayoutMorph subclass: #FinderMorph
 	category: 'PopupFinder-UI'!
 !classDefinition: 'FinderMorph class' category: #'PopupFinder-UI'!
 FinderMorph class
+	instanceVariableNames: ''!
+
+!classDefinition: #FinderSearchBarMorph category: #'PopupFinder-UI'!
+LayoutMorph subclass: #FinderSearchBarMorph
+	instanceVariableNames: 'searchBox changeHandler keyPressedHandler dateAndTimeOfLastKeyStroke timeToWaitBeforeNotifyingChanges'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PopupFinder-UI'!
+!classDefinition: 'FinderSearchBarMorph class' category: #'PopupFinder-UI'!
+FinderSearchBarMorph class
 	instanceVariableNames: ''!
 
 !classDefinition: #FinderResultsListMorph category: #'PopupFinder-UI'!
@@ -54,16 +64,6 @@ TextModelMorph subclass: #FinderSearchTextModelMorph
 	category: 'PopupFinder-UI'!
 !classDefinition: 'FinderSearchTextModelMorph class' category: #'PopupFinder-UI'!
 FinderSearchTextModelMorph class
-	instanceVariableNames: ''!
-
-!classDefinition: #FinderSearchBarMorph category: #'PopupFinder-UI'!
-BorderedBoxMorph subclass: #FinderSearchBarMorph
-	instanceVariableNames: 'layoutMorph searchBox changeHandler keyPressedHandler dateAndTimeOfLastKeyStroke timeToWaitBeforeNotifyingChanges'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'PopupFinder-UI'!
-!classDefinition: 'FinderSearchBarMorph class' category: #'PopupFinder-UI'!
-FinderSearchBarMorph class
 	instanceVariableNames: ''!
 
 !classDefinition: #FinderSearchInnerTextMorph category: #'PopupFinder-UI'!
@@ -257,9 +257,6 @@ SearchBoxEditor class
 	instanceVariableNames: ''!
 
 
-!FinderResultsListMorph commentStamp: '<historical>' prior: 0!
-Custom list morph for showing finder results that disables keyboard focus.!
-
 !FinderSearchBarMorph commentStamp: 'NPM 5/9/2020 13:51:51' prior: 0!
 I am responsible for capturing the query to be performed.
 
@@ -275,6 +272,9 @@ To implement shortcuts, I use SearchBoxEditor (see #initializeSearchBoxEditor an
 
 
 !
+
+!FinderResultsListMorph commentStamp: '<historical>' prior: 0!
+Custom list morph for showing finder results that disables keyboard focus.!
 
 !ToolsCatalog commentStamp: '<historical>' prior: 0!
 I am a catalog that contains all tools available in the World > Open... menu.
@@ -626,27 +626,6 @@ worldMenuOptions
 			#balloonText 	-> 		'The system finder'.
 		} asDictionary}`! !
 
-!FinderResultsListMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/25/2020 14:23:26'!
-gainFocusFrom: aHand
-! !
-
-!FinderResultsListMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/25/2020 14:15:57'!
-handlesKeyboard
-	^ false! !
-
-!FinderResultsListMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/25/2020 14:20:15'!
-mouseEnter: event! !
-
-!FinderResultsListMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/25/2020 14:21:34'!
-mouseLeave: evt! !
-
-!FinderSearchTextModelMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/25/2020 14:43:52'!
-innerMorphClass
-	^ FinderSearchInnerTextMorph! !
-
-!FinderSearchTextModelMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/25/2020 14:48:53'!
-mouseLeave: evt! !
-
 !FinderSearchBarMorph methodsFor: 'key stroke handling' stamp: 'HAW 6/30/2020 09:31:20'!
 notifyQueryChanged
 
@@ -673,32 +652,24 @@ unregisterKeyStrokeHandler
 	searchBox textMorph
 		removeProperty: #'keyStroke:'! !
 
-!FinderSearchBarMorph methodsFor: 'initialization' stamp: 'NPM 5/9/2020 13:16:37'!
+!FinderSearchBarMorph methodsFor: 'initialization' stamp: 'Ez3 1/28/2025 22:52:36'!
 initializeHandlingChangesWith: aChangeHandler handlingKeysPressedWith: aKeyPressedHandler notifyingChangesAfter: anAmountOfTime  
 	
 	changeHandler := aChangeHandler.
 	keyPressedHandler := aKeyPressedHandler.
 	timeToWaitBeforeNotifyingChanges := anAmountOfTime.
 	
-	self initializeLayout.
 	self initializeSearchBox.
 	self initializeSearchBoxEditor.
 	self registerKeyStrokeHandler.! !
 
-!FinderSearchBarMorph methodsFor: 'initialization' stamp: 'NPM 5/3/2020 20:24:51'!
-initializeLayout
-
-	layoutMorph := LayoutMorph newColumn.
-	
-	self addMorph: layoutMorph.! !
-
-!FinderSearchBarMorph methodsFor: 'initialization' stamp: 'MM 9/25/2020 14:44:13'!
+!FinderSearchBarMorph methodsFor: 'initialization' stamp: 'Ez3 1/28/2025 22:51:04'!
 initializeSearchBox
 
 	searchBox := (FinderSearchTextModelMorph withText: '').
 	searchBox askBeforeDiscardingEdits: false.
 	
-	layoutMorph addMorphUseAll: searchBox.! !
+	self addMorphUseAll: searchBox.! !
 
 !FinderSearchBarMorph methodsFor: 'initialization' stamp: 'NPM 5/3/2020 21:02:26'!
 initializeSearchBoxEditor
@@ -730,13 +701,6 @@ delete
 	
 	^ super delete.! !
 
-!FinderSearchBarMorph methodsFor: 'layout' stamp: 'Ez3 12/22/2024 01:50:22'!
-layoutSubmorphs
-	
-	layoutMorph
-		position: 0@0
-		extent: self morphExtent.! !
-
 !FinderSearchBarMorph methodsFor: 'stepping' stamp: 'HAW 6/30/2020 09:31:12'!
 stepAt: millisecondSinceLast
 
@@ -758,14 +722,35 @@ stepTime
 
 	^ timeToWaitBeforeNotifyingChanges totalMilliseconds! !
 
-!FinderSearchBarMorph class methodsFor: 'instance creation' stamp: 'NPM 5/9/2020 13:31:18'!
+!FinderSearchBarMorph class methodsFor: 'instance creation' stamp: 'Ez3 1/28/2025 22:52:49'!
 onChanged: aChangeHandler onKeyPressed: aKeyPressedHandler notifyingChangesAfter: anAmountOfTime  
 	
 	^ self
-		new
+		newRow
 			initializeHandlingChangesWith: aChangeHandler
 			handlingKeysPressedWith: aKeyPressedHandler
 			notifyingChangesAfter: anAmountOfTime! !
+
+!FinderResultsListMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/25/2020 14:23:26'!
+gainFocusFrom: aHand
+! !
+
+!FinderResultsListMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/25/2020 14:15:57'!
+handlesKeyboard
+	^ false! !
+
+!FinderResultsListMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/25/2020 14:20:15'!
+mouseEnter: event! !
+
+!FinderResultsListMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/25/2020 14:21:34'!
+mouseLeave: evt! !
+
+!FinderSearchTextModelMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/25/2020 14:43:52'!
+innerMorphClass
+	^ FinderSearchInnerTextMorph! !
+
+!FinderSearchTextModelMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/25/2020 14:48:53'!
+mouseLeave: evt! !
 
 !FinderSearchInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/25/2020 14:49:37'!
 keyboardFocusChange: aBoolean
