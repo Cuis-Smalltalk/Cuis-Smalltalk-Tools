@@ -1,4 +1,4 @@
-'From Cuis7.3 [latest update: #7035] on 28 January 2025 at 11:06:35 pm'!
+'From Cuis7.3 [latest update: #7087] on 21 March 2025 at 11:17:21 pm'!
 'Description This is a variation of Cuis Finder by Nicolas Papagna, that uses a popup morph as user interface.
 
 Finder is a system-wide search tool for Cuis Smalltalk.
@@ -19,7 +19,7 @@ Also, you can use catalog specific shortcuts:
     alt-s : Selectors catalog.
     alt-p : System categories catalog.
     alt-t : Tools catalog.'!
-!provides: 'PopupFinder' 1 67!
+!provides: 'PopupFinder' 1 68!
 !requires: 'KeyStrokes' 1 65 nil!
 SystemOrganization addCategory: #'PopupFinder-Model'!
 SystemOrganization addCategory: #'PopupFinder-UI'!
@@ -752,12 +752,11 @@ innerMorphClass
 !FinderSearchTextModelMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/25/2020 14:48:53'!
 mouseLeave: evt! !
 
-!FinderSearchInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/25/2020 14:49:37'!
+!FinderSearchInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'jmv 3/21/2025 23:14:54'!
 keyboardFocusChange: aBoolean
 	"Notify change due to green border for keyboard focus"
 	aBoolean ifFalse: [
-		"Not pretty at all, but works. Delete the FinderMorph"
-		self owner owner owner owner delete].! !
+		(self firstOwnerSuchThat: [ :m | m class ==  FinderMorph ]) delete ]! !
 
 !Catalog methodsFor: 'accessing' stamp: 'NPM 3/28/2020 02:38:49'!
 name
