@@ -752,7 +752,7 @@ innerMorphClass
 !FinderSearchTextModelMorph methodsFor: 'as yet unclassified' stamp: 'MM 9/25/2020 14:48:53'!
 mouseLeave: evt! !
 
-!FinderSearchInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'jmv 3/21/2025 23:14:54'!
+!FinderSearchInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'HAW 3/21/2025 23:14:54'!
 keyboardFocusChange: aBoolean
 	"Notify change due to green border for keyboard focus"
 	aBoolean ifFalse: [
