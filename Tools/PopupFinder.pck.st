@@ -19,7 +19,7 @@ Also, you can use catalog specific shortcuts:
     alt-s : Selectors catalog.
     alt-p : System categories catalog.
     alt-t : Tools catalog.'!
-!provides: 'PopupFinder' 1 68!
+!provides: 'PopupFinder' 1 69!
 !requires: 'KeyStrokes' 1 65 nil!
 SystemOrganization addCategory: #'PopupFinder-Model'!
 SystemOrganization addCategory: #'PopupFinder-UI'!
@@ -27,7 +27,7 @@ SystemOrganization addCategory: #'PopupFinder-UI-Model'!
 
 
 !classDefinition: #FinderMorph category: #'PopupFinder-UI'!
-LayoutMorph subclass: #FinderMorph
+LinearLayoutMorph subclass: #FinderMorph
 	instanceVariableNames: 'toolbar searchBar results model focusFollowsMouse'
 	classVariableNames: 'CurrentFinder'
 	poolDictionaries: ''
@@ -37,7 +37,7 @@ FinderMorph class
 	instanceVariableNames: ''!
 
 !classDefinition: #FinderSearchBarMorph category: #'PopupFinder-UI'!
-LayoutMorph subclass: #FinderSearchBarMorph
+LinearLayoutMorph subclass: #FinderSearchBarMorph
 	instanceVariableNames: 'searchBox changeHandler keyPressedHandler dateAndTimeOfLastKeyStroke timeToWaitBeforeNotifyingChanges'
 	classVariableNames: ''
 	poolDictionaries: ''

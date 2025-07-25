@@ -1,6 +1,6 @@
 'From Cuis7.1 [latest update: #6727] on 18 September 2024 at 11:54:53 am'!
 'Description Tool for browsing and editing Cuis preferences.'!
-!provides: 'CompactPreferenceBrowser' 1 12!
+!provides: 'CompactPreferenceBrowser' 1 13!
 SystemOrganization addCategory: #CompactPreferenceBrowser!
 
 
@@ -15,7 +15,7 @@ PreferenceToggleButtonMorph class
 	instanceVariableNames: ''!
 
 !classDefinition: #PreferenceEditorMorph category: #CompactPreferenceBrowser!
-LayoutMorph subclass: #PreferenceEditorMorph
+LinearLayoutMorph subclass: #PreferenceEditorMorph
 	instanceVariableNames: 'preference'
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -25,7 +25,7 @@ PreferenceEditorMorph class
 	instanceVariableNames: ''!
 
 !classDefinition: #PreferencesPanel category: #CompactPreferenceBrowser!
-LayoutMorph subclass: #PreferencesPanel
+LinearLayoutMorph subclass: #PreferencesPanel
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
