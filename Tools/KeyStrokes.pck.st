@@ -1,4 +1,4 @@
-'From Cuis7.3 [latest update: #6963] on 3 January 2025 at 11:50:04 am'!
+'From Cuis7.5 [latest update: #7680] on 1 November 2025 at 11:41:10 pm'!
 'Description Extensible keystrokes handler.
 
 Author: Mariano Montone <marianomontone@gmail.com>
@@ -6,7 +6,7 @@ Author: Mariano Montone <marianomontone@gmail.com>
 Edit keystrokes via WorldMenu -> Open -> Edit keystrokes.
 
 KeyStrokes installEmacsLikeKeyBindings ; edit.'!
-!provides: 'KeyStrokes' 1 77!
+!provides: 'KeyStrokes' 1 78!
 SystemOrganization addCategory: #KeyStrokes!
 
 
@@ -887,30 +887,37 @@ worldMenuOptions
 			#balloonText 			-> 		'Edit keystrokes'.
 		} asDictionary}`! !
 
-!CharacterSequence methodsFor: '*KeyStrokes' stamp: 'MM 12/3/2024 15:51:55'!
-asKeyStroke
-	^KeyStroke readFrom: self readStream! !
-
 !Theme methodsFor: '*KeyStrokes-icons' stamp: 'MM 12/3/2024 10:22:20'!
 accessoriesCharacterMapIcon
 	^ self fetch: #( '16x16' 'apps' 'accessories-character-map' )
 ! !
 
-!KeyboardEvent methodsFor: '*KeyStrokes' stamp: 'MM 12/12/2024 16:07:44'!
+!CharacterSequence methodsFor: '*KeyStrokes' stamp: 'MM 12/3/2024 15:51:55'!
+asKeyStroke
+	^KeyStroke readFrom: self readStream! !
+
+!KeyboardEvent methodsFor: '*KeyStrokes' stamp: 'Ez3 11/1/2025 23:13:43'!
 sendEventTo: aMorph
-	"Dispatch the receiver into anObject"
-	type == #keystroke ifTrue: [ 
-		(KeyStrokes handleKeyStroke: self in: aMorph)
-			ifTrue: [^self wasHandled: true].
+	"Event dispatch finished. Deliver us straight to aMorph for execution."
+
+	keyEventType == #keystroke ifTrue: [
+		(KeyStrokes
+			handleKeyStroke: self
+			in: aMorph) ifTrue: [
+			self wasHandled: true.
+			^ self ].
 		aMorph processKeystroke: self.
 		self wasHandled ifFalse: [
-			KeyStrokes handleKeyStroke: self in: self runningWorld].
-		^self].
-	type == #keyDown ifTrue: [
-		^ aMorph processKeyDown: self ].
-	type == #keyUp ifTrue: [ 
-		^ aMorph processKeyUp: self ].
-	^ super sendEventTo: aMorph.! !
+			KeyStrokes
+				handleKeyStroke: self
+				in: self runningWorld.
+				^ self ]].
+	keyEventType == #keyDown ifTrue: [
+		aMorph processKeyDown: self.
+		^ self ].
+	keyEventType == #keyUp ifTrue: [
+		aMorph processKeyUp: self.
+		^ self ].! !
 
 !Morph methodsFor: '*KeyStrokes' stamp: 'MM 12/3/2024 19:20:31'!
 keyStrokeContext
